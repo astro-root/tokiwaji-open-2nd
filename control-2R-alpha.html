@@ -3,168 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2R Course α 入力画面</title>
+<title>2R Course α 管理</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: sans-serif; background: #1a1a1a; color: white; padding: 20px; }
-h1 { text-align: center; color: #4caf50; margin-bottom: 20px; }
-.tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-.tab { padding: 12px 40px; font-size: 16px; font-weight: bold; background: #2a2a2a; color: white; border: 2px solid #555; border-radius: 5px; cursor: pointer; }
-.tab.active { background: #2196f3; border-color: #2196f3; }
-.question { background: #2a2a2a; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
-.question input { width: 100px; padding: 10px; font-size: 18px; text-align: center; margin: 0 10px; background: #1a1a1a; color: white; border: 2px solid #555; border-radius: 5px; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 15px; }
-.card { background: #2a2a2a; border: 2px solid #555; border-radius: 10px; padding: 20px; }
-.card.rest { background: #1a1a2a; border-color: #4a4a7a; }
-.card.winner { background: #1a2a1a; border-color: #4a6a4a; }
-.card.disqualified { opacity: 0.6; }
-.name { font-size: 20px; font-weight: bold; margin-bottom: 5px; }
-.meta { font-size: 14px; color: #aaa; margin-bottom: 15px; }
-.score { display: flex; justify-content: space-around; margin: 15px 0; font-size: 24px; font-weight: bold; }
-.score-item { text-align: center; }
-.label { font-size: 14px; color: #aaa; }
-.rest { text-align: center; font-size: 28px; min-height: 40px; margin: 10px 0; }
-.buttons { display: flex; gap: 10px; margin-top: 15px; }
-.btn { flex: 1; padding: 12px; font-size: 16px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; }
-.btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.btn-ok { background: #4caf50; color: white; }
-.btn-ng { background: #f44336; color: white; }
-.btn-win { background: #ff9800; color: white; }
-.btn-reset { background: #9e9e9e; color: white; }
-.badge { padding: 5px 10px; border-radius: 5px; font-size: 14px; font-weight: bold; margin-top: 10px; display: inline-block; }
-.badge-win { background: #ff9800; color: white; }
-.badge-lose { background: #f44336; color: white; }
+body{margin:0;font-family:'Noto Sans JP',sans-serif;background:#0a0a0a;color:#fff;padding:20px}
+section{background:#111;padding:16px;border-radius:10px;margin-bottom:16px}
+button{padding:6px 10px;border-radius:6px;border:1px solid #333;background:#222;color:#fff}
+.list{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.card{background:#181818;padding:10px;border-radius:8px}
+.small{font-size:12px;color:#aaa}
 </style>
 </head>
 <body>
-<h1>2nd Round Course α (5○5×) 入力画面</h1>
-<div class="tabs">
-  <button class="tab active" onclick="switchGroup(1)">Group 1</button>
-  <button class="tab" onclick="switchGroup(2)">Group 2</button>
-</div>
-<div class="question">
-  <h2>問題番号</h2>
-  <button class="btn btn-ng" onclick="changeQ(-1)" style="width: 60px;">-</button>
-  <input type="number" id="qNum" value="1" min="1" max="30">
-  <button class="btn btn-ok" onclick="changeQ(1)" style="width: 60px;">+</button>
-  <div style="margin-top: 10px; color: #aaa;">限定問題数: 30問</div>
-</div>
-<div class="grid" id="grid"></div>
-
+<section>
+  <div>CSV読み込み</div>
+  <input type="file" id="csv" accept=".csv">
+</section>
+<section>
+  <div>問題操作</div>
+  <button id="prev">戻る</button>
+  <button id="next">次へ</button>
+  <button id="skip">スルー</button>
+</section>
+<section>
+  <div>参加者操作</div>
+  <div id="players" class="list"></div>
+</section>
 <script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-import { getDatabase, ref, get, set, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
-
-const app = initializeApp({
-  apiKey: "AIzaSyDB_EIa1D49jxMrNVkqJjSrghh6Yp-MLP0",
-  authDomain: "tokiwaji-open-2nd.firebaseapp.com",
-  databaseURL: "https://tokiwaji-open-2nd-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "tokiwaji-open-2nd",
-  storageBucket: "tokiwaji-open-2nd.firebasestorage.app",
-  messagingSenderId: "1053108487162",
-  appId: "1:1053108487162:web:1cf8f504522b7e95129a43"
-});
-
-const db = getDatabase(app);
-let currentGroup = 1;
-let participants = [];
-let scores = {};
-
-window.switchGroup = function(g) {
-  currentGroup = g;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
-  load();
-}
-
-window.changeQ = function(d) {
-  const input = document.getElementById('qNum');
-  const v = parseInt(input.value) + d;
-  if (v >= 1 && v <= 30) {
-    input.value = v;
-    set(ref(db, `2R/α/group${currentGroup}/questionNumber`), v);
-    Object.keys(scores).forEach(pid => {
-      if (scores[pid].rest > 0) {
-        scores[pid].rest--;
-        set(ref(db, `2R/α/group${currentGroup}/scores/${pid}/rest`), scores[pid].rest);
-      }
-    });
-  }
-}
-
-async function load() {
-  const snap = await get(ref(db, 'participants'));
-  if (snap.exists()) {
-    participants = Object.entries(snap.val()).map(([id, p]) => ({ id, ...p })).filter(p => p.course === 'α' && p.group === currentGroup).sort((a, b) => a.rank - b.rank);
-  }
-  onValue(ref(db, `2R/α/group${currentGroup}/scores`), snap => { scores = snap.val() || {}; render(); });
-  onValue(ref(db, `2R/α/group${currentGroup}/questionNumber`), snap => { document.getElementById('qNum').value = snap.val() || 1; });
-}
-
-function render() {
-  const grid = document.getElementById('grid');
-  grid.innerHTML = '';
-  participants.forEach(p => {
-    const s = scores[p.id] || { correct: 0, wrong: 0, rest: 0, winOrder: null, disqualified: false };
-    const div = document.createElement('div');
-    div.className = 'card';
-    if (s.rest > 0) div.classList.add('rest');
-    if (s.winOrder) div.classList.add('winner');
-    if (s.disqualified) div.classList.add('disqualified');
-    div.innerHTML = `
-      <div class="name">${p.name}</div>
-      <div class="meta">${p.rank}位 | ${p.school} | ${p.grade}</div>
-      <div class="score">
-        <div class="score-item"><div class="label">○</div><div>${s.correct || 0}</div></div>
-        <div class="score-item"><div class="label">×</div><div>${s.wrong || 0}</div></div>
-      </div>
-      <div class="rest">${s.rest > 0 ? '⛄️'.repeat(s.rest) : ''}</div>
-      <div class="buttons">
-        <button class="btn btn-ok" onclick="correct('${p.id}')" ${s.winOrder || s.disqualified ? 'disabled' : ''}>正解</button>
-        <button class="btn btn-ng" onclick="wrong('${p.id}')" ${s.winOrder || s.disqualified ? 'disabled' : ''}>誤答</button>
-      </div>
-      <div class="buttons">
-        <button class="btn btn-win" onclick="win('${p.id}')" ${s.winOrder || s.disqualified ? 'disabled' : ''}>勝ち抜け</button>
-        <button class="btn btn-reset" onclick="reset('${p.id}')">リセット</button>
-      </div>
-      ${s.winOrder ? `<div class="badge badge-win">勝ち抜け ${s.winOrder}位</div>` : ''}
-      ${s.disqualified ? `<div class="badge badge-lose">失格</div>` : ''}
-    `;
-    grid.appendChild(div);
-  });
-}
-
-window.correct = async function(pid) {
-  const s = scores[pid] || { correct: 0, wrong: 0, rest: 0 };
-  s.correct++;
-  if (s.correct >= 5) {
-    const winners = Object.values(scores).filter(x => x.winOrder).length;
-    s.winOrder = winners + 1;
-  }
-  await set(ref(db, `2R/α/group${currentGroup}/scores/${pid}`), s);
-}
-
-window.wrong = async function(pid) {
-  const s = scores[pid] || { correct: 0, wrong: 0, rest: 0 };
-  s.wrong++;
-  s.rest = 5;
-  await set(ref(db, `2R/α/group${currentGroup}/scores/${pid}`), s);
-}
-
-window.win = async function(pid) {
-  const s = scores[pid] || { correct: 0, wrong: 0, rest: 0 };
-  const winners = Object.values(scores).filter(x => x.winOrder).length;
-  s.winOrder = winners + 1;
-  await set(ref(db, `2R/α/group${currentGroup}/scores/${pid}`), s);
-}
-
-window.reset = async function(pid) {
-  if (confirm('リセットしますか？')) {
-    await set(ref(db, `2R/α/group${currentGroup}/scores/${pid}`), { correct: 0, wrong: 0, rest: 0, winOrder: null, disqualified: false });
-  }
-}
-
-load();
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js'
+import{getDatabase,ref,onValue,set,update}from'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js'
+const app=initializeApp({apiKey:"AIzaSyDB_EIa1D49jxMrNVkqJjSrghh6Yp-MLP0",authDomain:"tokiwaji-open-2nd.firebaseapp.com",databaseURL:"https://tokiwaji-open-2nd-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"tokiwaji-open-2nd",storageBucket:"tokiwaji-open-2nd.firebasestorage.app",messagingSenderId:"1053108487162",appId:"1:1053108487162:web:1cf8f504522b7e95129a43"})
+const db=getDatabase(app)
+let participants=[],scores={},qnum=1,lastAction=null
+onValue(ref(db,'participants'),s=>{participants=s.exists()?Object.entries(s.val()).map(([id,p])=>({id,...p})).filter(p=>p.course==='α'):[];render()})
+onValue(ref(db,'2R/α/group1/scores'),s=>{scores=s.val()||{};render()})
+document.getElementById('csv').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const lines=r.result.split(/\r?\n/).filter(l=>l);const qs=lines.map(l=>{const c=l.split(',');return{question:c[0],answer:c.slice(1).join(',')}});set(ref(db,'2R/α/questions'),qs)};r.readAsText(f,'utf-8')})
+document.getElementById('next').onclick=()=>{qnum++;set(ref(db,'2R/α/group1/questionNumber'),qnum)}
+document.getElementById('prev').onclick=()=>{qnum=Math.max(1,qnum-1);set(ref(db,'2R/α/group1/questionNumber'),qnum)}
+document.getElementById('skip').onclick=()=>{participants.forEach(p=>{const s=scores[p.id];if(s&&s.rest>0)update(ref(db,`2R/α/group1/scores/${p.id}`),{rest:s.rest-1})})}
+function render(){const box=document.getElementById('players');box.innerHTML='';participants.forEach(p=>{const s=scores[p.id]||{correct:0,wrong:0,rest:0};const d=document.createElement('div');d.className='card';d.innerHTML=`<div>${p.name}</div><div class="small">○${s.correct} ×${s.wrong} 休み${s.rest}</div><button data-a="c">正解</button><button data-a="w">誤答</button><button data-a="u">戻す</button>`;d.querySelector('[data-a=c]').onclick=()=>{lastAction={id:p.id,type:'c'};update(ref(db,`2R/α/group1/scores/${p.id}`),{correct:(s.correct||0)+1});participants.forEach(o=>{if(o.id!==p.id){const so=scores[o.id];if(so&&so.rest>0)update(ref(db,`2R/α/group1/scores/${o.id}`),{rest:so.rest-1})}})};d.querySelector('[data-a=w]').onclick=()=>{lastAction={id:p.id,type:'w'};update(ref(db,`2R/α/group1/scores/${p.id}`),{wrong:(s.wrong||0)+1,rest:(s.rest||0)+1});participants.forEach(o=>{if(o.id!==p.id){const so=scores[o.id];if(so&&so.rest>0)update(ref(db,`2R/α/group1/scores/${o.id}`),{rest:so.rest-1})}})};d.querySelector('[data-a=u]').onclick=()=>{if(!lastAction||lastAction.id!==p.id)return;if(lastAction.type==='c')update(ref(db,`2R/α/group1/scores/${p.id}`),{correct:Math.max(0,(s.correct||0)-1)});if(lastAction.type==='w')update(ref(db,`2R/α/group1/scores/${p.id}`),{wrong:Math.max(0,(s.wrong||0)-1),rest:Math.max(0,(s.rest||0)-1)});lastAction=null};box.appendChild(d)})}
 </script>
 </body>
 </html>
