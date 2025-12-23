@@ -5,47 +5,60 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2R Course α 表示画面</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap');
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: sans-serif; background: #0a0a0a; color: white; overflow: hidden; }
-.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; text-align: center; }
-.header img { height: 60px; margin-bottom: 10px; }
-.header h1 { font-size: 36px; margin-bottom: 5px; }
-.header .subtitle { font-size: 24px; }
-.tabs { display: flex; justify-content: center; background: #1a1a1a; }
-.tab { padding: 15px 50px; font-size: 20px; cursor: pointer; background: #2a2a2a; border: none; color: white; }
-.tab.active { background: #667eea; }
-.question { background: #1a1a1a; padding: 15px; text-align: center; font-size: 24px; border-bottom: 3px solid #667eea; }
-.content { padding: 20px; height: calc(100vh - 250px); overflow-y: auto; }
-.player { background: #1a1a1a; margin-bottom: 15px; padding: 20px; border-radius: 10px; border: 3px solid #333; display: flex; justify-content: space-between; align-items: center; }
-.player.rest { background: #1a1a2a; border-color: #4a4a7a; }
-.player.winner { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-color: #f5576c; animation: pulse 2s infinite; }
-.player.disqualified { opacity: 0.5; }
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
-.player-info { flex: 1; }
-.rank { font-size: 18px; color: #aaa; }
-.name { font-size: 32px; font-weight: bold; margin: 5px 0; }
-.meta { font-size: 18px; color: #bbb; }
-.score { display: flex; gap: 30px; align-items: center; font-size: 36px; font-weight: bold; }
-.score-item { text-align: center; }
-.label { font-size: 18px; color: #aaa; }
-.rest { font-size: 40px; margin-left: 20px; }
-.badge { padding: 10px 20px; border-radius: 8px; font-size: 24px; margin-left: 20px; }
-.win { background: #ff9800; }
-.lose { background: #f44336; }
+body { font-family: 'Noto Sans JP', sans-serif; background: #000; color: white; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+.header { background: #001f5f; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; height: 80px; border-bottom: 2px solid #444; }
+.header-title { font-size: 32px; font-weight: bold; display: flex; align-items: center; gap: 20px; }
+.header-info { text-align: right; font-size: 24px; font-weight: bold; }
+.logo-box { background: #000; border: 1px solid #333; padding: 5px; height: 70px; display: flex; align-items: center; justify-content: center; margin-left: 20px; }
+.logo-box img { max-height: 100%; }
+.status-bar { background: #000; padding: 5px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; height: 50px; }
+.question-info { font-size: 24px; color: #fff; }
+.question-ans { color: #ffff00; margin-left: 20px; }
+.main-content { flex: 1; display: flex; padding: 5px; gap: 4px; background: #000; overflow: hidden; }
+.player-col { flex: 1; display: flex; flex-direction: column; border: 1px solid #333; background: #000; height: 100%; position: relative; }
+.p-header { background: #333; text-align: center; padding: 4px 0; color: #fff; font-size: 14px; height: 60px; display: flex; flex-direction: column; justify-content: center; border-bottom: 1px solid #555; }
+.p-rank-badge { background: #444; color: #ccc; font-size: 12px; padding: 2px 0; border-bottom: 1px solid #555; }
+.p-body { flex: 1; writing-mode: vertical-rl; text-orientation: upright; display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: bold; letter-spacing: 5px; color: #fff; width: 100%; transition: background 0.3s; }
+.p-body.active { background: #00695c; }
+.p-body.winner { background: #b71c1c; }
+.p-body.lose { background: #212121; color: #777; }
+.p-score-box { background: #000; border-top: 1px solid #555; padding: 10px 0; text-align: center; }
+.score-val { font-size: 40px; color: #ffeb3b; font-weight: bold; line-height: 1; }
+.score-badge { font-size: 16px; color: #fff; background: #b71c1c; display: inline-block; padding: 2px 8px; margin-top: 5px; border-radius: 4px; }
+.p-footer { background: #000; text-align: center; padding-bottom: 10px; height: 40px; display: flex; justify-content: center; gap: 5px; }
+.mark { font-size: 20px; color: #555; }
+.mark.wrong { color: #f44336; }
+.tabs { position: absolute; top: 0; left: 50%; transform: translateX(-50%); display: flex; opacity: 0; } 
+.tabs:hover { opacity: 1; }
+button { padding: 10px; cursor: pointer; }
 </style>
 </head>
 <body>
 <div class="header">
-  <img src="常磐路オープン2nd_ロゴ.png" alt="Logo">
-  <h1>常磐路オープン 2nd</h1>
-  <div class="subtitle">2nd Round - Course α (5○5×)</div>
+  <div class="header-title">
+    <span>2nd Round : 連答付き5○2×</span>
+    <span id="group-display">Group-1</span>
+  </div>
+  <div style="display:flex; align-items:center;">
+    <div class="header-info">10 >>> 4</div>
+    <div class="logo-box"><img src="常磐路オープン2nd_ロゴ.png" alt="Logo"></div>
+  </div>
 </div>
+<div class="status-bar">
+  <div class="question-info">
+    <span id="q-num">問題1</span>
+    <span class="question-ans" id="ans-display"></span>
+  </div>
+</div>
+
 <div class="tabs">
-  <button class="tab active" onclick="switchGroup(1)">Group 1</button>
-  <button class="tab" onclick="switchGroup(2)">Group 2</button>
+  <button onclick="switchGroup(1)">Group 1</button>
+  <button onclick="switchGroup(2)">Group 2</button>
 </div>
-<div class="question" id="question">問題番号: 1 / 30</div>
-<div class="content" id="content"></div>
+
+<div class="main-content" id="content"></div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
@@ -68,8 +81,8 @@ let scores = {};
 
 window.switchGroup = function(g) {
   currentGroup = g;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
+  document.getElementById('group-display').textContent = `Group-${g}`;
+  render();
 }
 
 onValue(ref(db, 'participants'), snap => {
@@ -81,35 +94,47 @@ onValue(ref(db, 'participants'), snap => {
 
 onValue(ref(db, '2R/α/group1/scores'), snap => { scores[1] = snap.val() || {}; render(); });
 onValue(ref(db, '2R/α/group2/scores'), snap => { scores[2] = snap.val() || {}; render(); });
-onValue(ref(db, '2R/α/group1/questionNumber'), snap => { if (currentGroup === 1) document.getElementById('question').textContent = `問題番号: ${snap.val() || 1} / 30`; });
-onValue(ref(db, '2R/α/group2/questionNumber'), snap => { if (currentGroup === 2) document.getElementById('question').textContent = `問題番号: ${snap.val() || 1} / 30`; });
+onValue(ref(db, '2R/α/group1/questionNumber'), snap => { if (currentGroup === 1) document.getElementById('q-num').textContent = `問題${snap.val() || 1}`; });
+onValue(ref(db, '2R/α/group2/questionNumber'), snap => { if (currentGroup === 2) document.getElementById('q-num').textContent = `問題${snap.val() || 1}`; });
 
 function render() {
-  const content = document.getElementById('content');
+  const container = document.getElementById('content');
   const players = participants.filter(p => p.group === currentGroup).sort((a, b) => a.rank - b.rank);
-  content.innerHTML = '';
+  container.innerHTML = '';
+
   players.forEach(p => {
     const s = scores[currentGroup]?.[p.id] || { correct: 0, wrong: 0, rest: 0 };
+    const isWin = s.winOrder > 0;
+    const isLose = s.disqualified || s.wrong >= 2;
+    
+    let statusClass = 'active';
+    if (isWin) statusClass = 'winner';
+    else if (isLose) statusClass = 'lose';
+
+    let wrongMarks = '';
+    for(let i=0; i<2; i++) {
+      wrongMarks += (i < (s.wrong || 0)) ? '<span class="mark wrong">×</span>' : '<span class="mark">・</span>';
+    }
+
     const div = document.createElement('div');
-    div.className = 'player';
-    if (s.rest > 0) div.classList.add('rest');
-    if (s.winOrder) div.classList.add('winner');
-    if (s.disqualified) div.classList.add('disqualified');
+    div.className = 'player-col';
     div.innerHTML = `
-      <div class="player-info">
-        <div class="rank">${p.rank}位</div>
-        <div class="name">${p.name}</div>
-        <div class="meta">${p.school} | ${p.grade}</div>
+      <div class="p-rank-badge">${p.rank}th</div>
+      <div class="p-header">
+        <div>${p.school || ''}</div>
+        <div>${p.grade || ''}</div>
       </div>
-      <div class="score">
-        <div class="score-item"><div class="label">○</div><div>${s.correct || 0}</div></div>
-        <div class="score-item"><div class="label">×</div><div>${s.wrong || 0}</div></div>
-        ${s.rest > 0 ? `<div class="rest">${'⛄️'.repeat(s.rest)}</div>` : ''}
-        ${s.winOrder ? `<div class="badge win">勝ち抜け ${s.winOrder}位</div>` : ''}
-        ${s.disqualified ? `<div class="badge lose">失格</div>` : ''}
+      <div class="p-body ${statusClass}">
+        ${p.name}
+      </div>
+      <div class="p-score-box">
+        ${isWin ? `<div class="score-badge">${s.winOrder}st Win</div>` : `<div class="score-val">${s.correct || 0}</div>`}
+      </div>
+      <div class="p-footer">
+        ${wrongMarks}
       </div>
     `;
-    content.appendChild(div);
+    container.appendChild(div);
   });
 }
 </script>
