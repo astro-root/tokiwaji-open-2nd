@@ -4,61 +4,298 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2R Course α 表示</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-body{margin:0;font-family:'Noto Sans JP',sans-serif;background:#05060a;color:#e6eef8;height:100vh;display:flex;flex-direction:column}
-header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid #222}
-header .left{display:flex;gap:16px;align-items:center}
-header .title{font-weight:900}
-header .group{opacity:.8}
-header .right{display:flex;gap:12px;align-items:center}
-.counter{padding:6px 12px;border-radius:8px;background:#0b1220;border:1px solid #222;font-weight:700}
-.status{padding:10px 24px;border-bottom:1px solid #222;display:flex;gap:12px;align-items:center}
-.status .ans{color:#ffca28;font-weight:700}
-main{flex:1;overflow:hidden;padding:12px}
-.players{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
-.card{background:#0b1220;border:1px solid #222;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px}
-.card.winner{border-color:#c62828}
-.card.rest{border-color:#3f51b5}
-.name{font-weight:700}
-.meta{font-size:12px;color:#9aa4b2}
-.center{flex:1;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;writing-mode:vertical-rl;text-orientation:upright}
-.score{display:flex;gap:8px;justify-content:center}
-.score span{padding:4px 8px;border-radius:6px;background:#000}
-footer{display:flex;justify-content:space-between;font-size:14px}
+:root {
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --border-color: #334155;
+    --accent-color: #3b82f6;
+    --text-color: #f1f5f9;
+    --win-color: #ef4444;
+    --rest-color: #6366f1;
+    --correct-bg: #22c55e;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+/* Header */
+header {
+    background: #020617;
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+.header-left { display: flex; align-items: baseline; gap: 20px; }
+.main-title { font-size: 1.5rem; font-weight: 900; background: linear-gradient(90deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.sub-info { color: #94a3b8; font-weight: 700; font-size: 1.1rem; }
+.header-right { display: flex; gap: 15px; align-items: center; }
+.counter-box {
+    background: #0f172a;
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #cbd5e1;
+}
+
+/* Question Area */
+.question-area {
+    background: #1e293b;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 20px;
+    align-items: center;
+    min-height: 100px;
+}
+.q-number {
+    font-size: 1.1rem;
+    color: #94a3b8;
+    font-weight: 700;
+    text-align: center;
+    border-right: 2px solid var(--border-color);
+    padding-right: 20px;
+}
+.q-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.4;
+}
+.answer-area {
+    margin-top: 0.5rem;
+    font-size: 1.2rem;
+    color: #fbbf24;
+    font-weight: 700;
+    grid-column: 2;
+}
+
+/* Players Grid */
+main {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+.players {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+.player-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    height: 280px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+.player-card.winner { border-color: var(--win-color); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+.player-card.rest { border-color: var(--rest-color); opacity: 0.8; background: #1e1b4b; }
+
+.p-header {
+    padding: 10px 12px;
+    background: rgba(0,0,0,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.p-name { font-size: 1.1rem; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.p-meta { font-size: 0.8rem; color: #94a3b8; margin-top: 2px; }
+
+.p-body {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.p-vertical-name {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 0.2rem;
+    color: rgba(255,255,255,0.1);
+    position: absolute;
+    height: 100%;
+    pointer-events: none;
+    user-select: none;
+}
+.p-score-display {
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+.score-row {
+    display: flex;
+    gap: 15px;
+    font-size: 1.8rem;
+    font-weight: 900;
+    font-family: 'Roboto', sans-serif;
+}
+.score-c { color: var(--correct-bg); text-shadow: 0 0 10px rgba(34, 197, 94, 0.3); }
+.score-w { color: #ef4444; }
+
+.p-footer {
+    padding: 10px;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    min-height: 40px;
+}
+.rest-badge { color: #a5b4fc; font-size: 0.9rem; }
+.win-badge { background: var(--win-color); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; }
 </style>
 </head>
 <body>
+
 <header>
-  <div class="left">
-    <div class="title">2nd Round : 連答付き5○2×</div>
-    <div id="group" class="group">Group-1</div>
-  </div>
-  <div class="right">
-    <div id="count" class="counter">0 >>> 0</div>
-  </div>
+    <div class="header-left">
+        <div class="main-title">Tokiwaji Open 2nd</div>
+        <div class="sub-info">2R: Course α (連答付き5○2×) / <span id="group-name">Group-1</span></div>
+    </div>
+    <div class="header-right">
+        <div class="counter-box" id="survivor-count">Alive: 0</div>
+        <div class="counter-box" id="win-slots">Slots: 0</div>
+    </div>
 </header>
-<div class="status">
-  <div id="qnum">問題 0 / 0</div>
-  <div id="qtext"></div>
-  <div id="ans" class="ans"></div>
+
+<div class="question-area">
+    <div class="q-number" id="qnum">Q. -</div>
+    <div>
+        <div class="q-text" id="qtext">Waiting for question...</div>
+        <div class="answer-area" id="ans"></div>
+    </div>
 </div>
+
 <main>
-  <div id="players" class="players"></div>
+    <div id="players" class="players"></div>
 </main>
+
 <script type="module">
-import{initializeApp}from'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js'
-import{getDatabase,ref,onValue}from'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js'
-const app=initializeApp({apiKey:"AIzaSyDB_EIa1D49jxMrNVkqJjSrghh6Yp-MLP0",authDomain:"tokiwaji-open-2nd.firebaseapp.com",databaseURL:"https://tokiwaji-open-2nd-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"tokiwaji-open-2nd",storageBucket:"tokiwaji-open-2nd.firebasestorage.app",messagingSenderId:"1053108487162",appId:"1:1053108487162:web:1cf8f504522b7e95129a43"})
-const db=getDatabase(app)
-let participants=[],scores={1:{},2:{}},questions=[],currentGroup=1,qIndex=0
-onValue(ref(db,'participants'),s=>{participants=s.exists()?Object.entries(s.val()).map(([id,p])=>({id,...p})).filter(p=>p.course==='α'):[];render()})
-onValue(ref(db,'2R/α/group1/scores'),s=>{scores[1]=s.val()||{};render()})
-onValue(ref(db,'2R/α/group2/scores'),s=>{scores[2]=s.val()||{};render()})
-onValue(ref(db,'2R/α/questions'),s=>{questions=s.exists()?Array.isArray(s.val())?s.val():Object.values(s.val()):[];updateQuestion()})
-onValue(ref(db,'2R/α/group1/questionNumber'),s=>{if(currentGroup===1){qIndex=(s.val()||1)-1;updateQuestion()}})
-function render(){const box=document.getElementById('players');box.innerHTML='';const ps=participants.filter(p=>p.group===currentGroup);ps.forEach(p=>{const s=scores[currentGroup][p.id]||{correct:0,wrong:0,rest:0};const d=document.createElement('div');d.className='card'+(s.winOrder?' winner':'')+(s.rest>0?' rest':'');d.innerHTML=`<div class="name">${p.name}</div><div class="meta">${p.school||''} ${p.grade||''}</div><div class="center">${p.name}</div><div class="score"><span>○${s.correct||0}</span><span>×${s.wrong||0}</span></div><footer><div>${'⛄'.repeat(s.rest||0)}</div><div>${s.winOrder?'WIN':''}</div></footer>`;box.appendChild(d)});const active=participants.filter(p=>{const s1=scores[1][p.id];const s2=scores[2][p.id];const s=s1||s2||{};return !s.disqualified}).length;const win=Object.values({...scores[1],...scores[2]}).filter(s=>s&&s.winOrder).length;document.getElementById('count').textContent=`${active} >>> ${Math.max(0,5-win)}`}
-function updateQuestion(){document.getElementById('qnum').textContent=`問題 ${qIndex+1} / ${questions.length}`;document.getElementById('qtext').textContent=questions[qIndex]?.question||'';document.getElementById('ans').textContent=''}
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js'
+import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js'
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDB_EIa1D49jxMrNVkqJjSrghh6Yp-MLP0",
+    authDomain: "tokiwaji-open-2nd.firebaseapp.com",
+    databaseURL: "https://tokiwaji-open-2nd-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "tokiwaji-open-2nd",
+    storageBucket: "tokiwaji-open-2nd.firebasestorage.app",
+    messagingSenderId: "1053108487162",
+    appId: "1:1053108487162:web:1cf8f504522b7e95129a43"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let participants = [];
+let scores = { 1: {}, 2: {} };
+let questions = [];
+let currentGroup = 1;
+let qIndex = 0;
+
+// Listeners
+onValue(ref(db, 'participants'), snapshot => {
+    participants = snapshot.exists() ? Object.entries(snapshot.val()).map(([id, p]) => ({ id, ...p })).filter(p => p.course === 'α') : [];
+    render();
+});
+
+onValue(ref(db, '2R/α/group1/scores'), s => { scores[1] = s.val() || {}; render(); });
+onValue(ref(db, '2R/α/group2/scores'), s => { scores[2] = s.val() || {}; render(); });
+
+onValue(ref(db, '2R/α/questions'), s => {
+    if (s.exists()) {
+        const val = s.val();
+        questions = Array.isArray(val) ? val : Object.values(val);
+    } else {
+        questions = [];
+    }
+    updateQuestion();
+});
+
+onValue(ref(db, '2R/α/group1/questionNumber'), s => {
+    if (currentGroup === 1) {
+        qIndex = (s.val() || 1) - 1;
+        updateQuestion();
+    }
+});
+
+function render() {
+    const box = document.getElementById('players');
+    box.innerHTML = '';
+    
+    const ps = participants.filter(p => p.group === currentGroup);
+    
+    ps.forEach(p => {
+        const s = scores[currentGroup][p.id] || { correct: 0, wrong: 0, rest: 0 };
+        const isWinner = s.winOrder ? true : false;
+        const isRest = (s.rest || 0) > 0;
+        
+        const div = document.createElement('div');
+        div.className = `player-card ${isWinner ? 'winner' : ''} ${isRest ? 'rest' : ''}`;
+        
+        div.innerHTML = `
+            <div class="p-header">
+                <div class="p-name">${p.name}</div>
+                <div class="p-meta">${p.school || ''} ${p.grade || ''}</div>
+            </div>
+            <div class="p-body">
+                <div class="p-vertical-name">${p.name}</div>
+                <div class="p-score-display">
+                    <div class="score-row">
+                        <span class="score-c">${s.correct || 0}○</span>
+                        <span class="score-w">${s.wrong || 0}×</span>
+                    </div>
+                </div>
+            </div>
+            <div class="p-footer">
+                <div class="rest-badge">${isRest ? 'REST: ' + '⛄'.repeat(s.rest) : ''}</div>
+                ${isWinner ? `<div class="win-badge">WIN #${s.winOrder}</div>` : ''}
+            </div>
+        `;
+        box.appendChild(div);
+    });
+
+    // Stats update
+    const activeCount = participants.filter(p => {
+        if(p.group !== currentGroup) return false;
+        const s = scores[currentGroup][p.id] || {};
+        return !s.winOrder && (s.wrong || 0) < 2; // Assuming 2 wrong is DQ, though this rule might vary
+    }).length;
+
+    const winnerCount = Object.values(scores[currentGroup] || {}).filter(s => s && s.winOrder).length;
+    
+    document.getElementById('survivor-count').textContent = `Alive: ${activeCount}`;
+    document.getElementById('win-slots').textContent = `Slots: ${Math.max(0, 5 - winnerCount)}`;
+}
+
+function updateQuestion() {
+    document.getElementById('qnum').textContent = `Q. ${qIndex + 1}`;
+    const q = questions[qIndex];
+    document.getElementById('qtext').textContent = q ? q.question : '(問題が読み込まれていません)';
+    document.getElementById('ans').textContent = ''; 
+    // 表示側では正解を表示しない、あるいは制御側でフラグ管理が必要な場合はここを調整
+}
 </script>
 </body>
 </html>
