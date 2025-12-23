@@ -46,8 +46,14 @@ th { background: #eee; }
 <table>
 <thead>
 <tr>
-<th>No</th><th>氏名</th><th>学校</th><th>学年</th>
-<th>得点</th><th>近似値</th><th>誤差</th><th>順位</th>
+<th>No</th>
+<th>氏名</th>
+<th>学校</th>
+<th>学年</th>
+<th>得点</th>
+<th>近似値</th>
+<th>誤差</th>
+<th>順位</th>
 </tr>
 </thead>
 <tbody id="firstTable"></tbody>
@@ -62,7 +68,13 @@ th { background: #eee; }
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>No</th><th>氏名</th><th>順位</th><th>コース</th><th>グループ</th></tr>
+<tr>
+<th>No</th>
+<th>氏名</th>
+<th>順位</th>
+<th>コース</th>
+<th>グループ</th>
+</tr>
 </thead>
 <tbody id="assignTable"></tbody>
 </table>
@@ -85,81 +97,118 @@ let participants = [];
 
 async function load() {
 const snap = await get(ref(db, "participants"));
-participants = snap.exists() ? Object.entries(snap.val()).map(([id,p])=>({id,...p})) : [];
-participants.sort((a,b)=>a.entryNumber-b.entryNumber);
+participants = snap.exists()
+  ? Object.entries(snap.val()).map(([id, p]) => ({ id, ...p }))
+  : [];
+participants.sort((a, b) => a.entryNumber - b.entryNumber);
 document.getElementById("count").textContent = participants.length;
 loadFirstTable();
 loadAssignTable();
 
-const qSnap = await get(ref(db,"questions"));
-document.getElementById("qCount").textContent = qSnap.exists() ? Object.keys(qSnap.val()).length : 0;
+const qSnap = await get(ref(db, "questions"));
+document.getElementById("qCount").textContent = qSnap.exists()
+  ? Object.keys(qSnap.val()).length
+  : 0;
 }
 
-document.getElementById("csvFile").addEventListener("change", async e=>{
+document.getElementById("csvFile").addEventListener("change", async e => {
 const text = await e.target.files[0].text();
 const data = {};
-text.trim().split("\n").forEach(line=>{
-const [n,name,school,grade]=line.split(",");
-data["p"+n.padStart(3,"0")]={entryNumber:+n,name,school,grade,score:null,proximityAnswer:null,proximityError:null,rank:null,course:null,group:null};
+text.trim().split("\n").forEach(line => {
+const [n, name, school, grade] = line.split(",");
+data["p" + n.padStart(3, "0")] = {
+entryNumber: Number(n),
+name,
+school,
+grade,
+score: null,
+proximityAnswer: null,
+proximityError: null,
+rank: null,
+course: null,
+group: null
+};
 });
-await set(ref(db,"participants"),data);
+await set(ref(db, "participants"), data);
 load();
 });
 
-document.getElementById("questionFile").addEventListener("change", async e=>{
+document.getElementById("questionFile").addEventListener("change", async e => {
 const text = await e.target.files[0].text();
 const data = {};
-text.trim().split("\n").forEach((l,i)=>{
-const [,q,a]=l.split(",");
-data["q"+(i+1)]={number:i+1,question:q,answer:a};
+text.trim().split("\n").forEach((line, i) => {
+const [, q, a] = line.split(",");
+data["q" + (i + 1)] = { number: i + 1, question: q, answer: a };
 });
-await set(ref(db,"questions"),data);
+await set(ref(db, "questions"), data);
 load();
 });
 
-function loadFirstTable(){
-const tb=document.getElementById("firstTable");
-tb.innerHTML="";
-participants.forEach(p=>{
-tb.insertAdjacentHTML("beforeend",`
+function loadFirstTable() {
+const tb = document.getElementById("firstTable");
+tb.innerHTML = "";
+participants.forEach(p => {
+tb.insertAdjacentHTML("beforeend", `
 <tr>
 <td>${p.entryNumber}</td>
 <td>${p.name}</td>
 <td>${p.school}</td>
 <td>${p.grade}</td>
-<td><input type="number" id="s_${p.id}" value="${p.score??""}"></td>
-<td><input type="number" id="a_${p.id}" value="${p.proximityAnswer??""}"></td>
-<td>${p.proximityError!=null?p.proximityError.toFixed(2):"-"}</td>
-<td>${p.rank??"-"}</td>
-</tr>`);
+<td><input type="number" id="s_${p.id}" value="${p.score ?? ""}"></td>
+<td><input type="number" id="a_${p.id}" value="${p.proximityAnswer ?? ""}"></td>
+<td>${p.proximityError === Infinity ? "-" : p.proximityError != null ? p.proximityError.toFixed(2) : "-"}</td>
+<td>${p.rank ?? "-"}</td>
+</tr>
+`);
 });
 }
 
-window.calculate=async()=>{
-const correct=Number(document.getElementById("correctAnswer").value);
-if(!correct)return alert("模範解答を入力してください");
-const up={};
-participants.forEach(p=>{
-const s=Number(document.getElementById("s_"+p.id).value);
-const a=document.getElementById("a_"+p.id).value;
-up[`participants/${p.id}/score`]=isNaN(s)?null:s;
-up[`participants/${p.id}/proximityAnswer`]=a===""?null:Number(a);
-up[`participants/${p.id}/proximityError`]=a===""?Infinity:Math.abs(Number(a)-correct);
-});
-await update(ref(db),up);
+window.calculate = async () => {
+const correct = Number(document.getElementById("correctAnswer").value);
+if (!correct) { alert("近似値模範解答を入力してください"); return; }
 
-const ranked=[...participants].filter(p=>p.score!=null).sort((a,b)=>b.score-a.score||a.proximityError-b.proximityError);
-const rUp={};
-ranked.forEach((p,i)=>rUp[`participants/${p.id}/rank`]=i+1);
-await update(ref(db),rUp);
+const updates = {};
+
+participants.forEach(p => {
+const scoreInput = document.getElementById("s_" + p.id).value;
+const proxInput  = document.getElementById("a_" + p.id).value;
+
+const score = scoreInput === "" ? null : Number(scoreInput);
+const prox  = proxInput === "" ? null : Number(proxInput);
+const error = prox === null ? Infinity : Math.abs(prox - correct);
+
+updates[`participants/${p.id}/score`] = score;
+updates[`participants/${p.id}/proximityAnswer`] = prox;
+updates[`participants/${p.id}/proximityError`] = error;
+});
+
+await update(ref(db), updates);
+
+const ranked = participants
+  .filter(p => p.score !== null)
+  .sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    if (a.proximityError !== b.proximityError) return a.proximityError - b.proximityError;
+    return a.entryNumber - b.entryNumber;
+  });
+
+const rankUpdates = {};
+ranked.forEach((p, i) => {
+rankUpdates[`participants/${p.id}/rank`] = i + 1;
+});
+
+await update(ref(db), rankUpdates);
 load();
 };
 
-function loadAssignTable(){
-const tb=document.getElementById("assignTable");
-tb.innerHTML="";
-participants.filter(p=>p.rank!=null).sort((a,b)=>a.rank-b.rank).forEach(p=>{
-tb.insertAdjacentHTML("beforeend",`
+function loadAssignTable() {
+const tb = document.getElementById("assignTable");
+tb.innerHTML = "";
+participants
+  .filter(p => p.rank !== null)
+  .sort((a, b) => a.rank - b.rank)
+  .forEach(p => {
+tb.insertAdjacentHTML("beforeend", `
 <tr>
 <td>${p.entryNumber}</td>
 <td>${p.name}</td>
@@ -180,20 +229,22 @@ tb.insertAdjacentHTML("beforeend",`
 <option value="2">2</option>
 </select>
 </td>
-</tr>`);
-document.getElementById("c_"+p.id).value=p.course??"";
-document.getElementById("g_"+p.id).value=p.group??"";
+</tr>
+`);
+document.getElementById("c_" + p.id).value = p.course ?? "";
+document.getElementById("g_" + p.id).value = p.group ?? "";
 });
 }
 
-window.saveAssignment=async()=>{
-const up={};
-participants.forEach(p=>{
-up[`participants/${p.id}/course`]=document.getElementById("c_"+p.id)?.value||null;
-const g=document.getElementById("g_"+p.id)?.value;
-up[`participants/${p.id}/group`]=g===""?null:Number(g);
+window.saveAssignment = async () => {
+const updates = {};
+participants.forEach(p => {
+updates[`participants/${p.id}/course`] =
+  document.getElementById("c_" + p.id)?.value || null;
+const g = document.getElementById("g_" + p.id)?.value;
+updates[`participants/${p.id}/group`] = g === "" ? null : Number(g);
 });
-await update(ref(db),up);
+await update(ref(db), updates);
 load();
 };
 
