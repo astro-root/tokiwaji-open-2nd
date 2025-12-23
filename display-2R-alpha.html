@@ -76,13 +76,13 @@ header {
 /* Question Area */
 .question-area {
     background: #1e293b;
-    padding: 1.5rem 2rem;
+    padding: 1rem 2rem;
     border-bottom: 1px solid var(--border-color);
     display: grid;
-    grid-template-columns: 100px 1fr;
+    grid-template-columns: 80px 1fr;
     gap: 20px;
     align-items: center;
-    min-height: 120px;
+    min-height: 100px;
 }
 .q-number {
     font-size: 1.5rem;
@@ -96,10 +96,10 @@ header {
     align-items: center;
     justify-content: center;
 }
-.q-content { display: flex; flex-direction: column; gap: 8px; }
-.q-text { font-size: 1.6rem; font-weight: 700; line-height: 1.3; }
-.a-text { font-size: 1.2rem; color: #fbbf24; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-.a-label { font-size: 0.9rem; background: #451a03; color: #fbbf24; padding: 2px 8px; border-radius: 4px; }
+.q-content { display: flex; flex-direction: column; gap: 5px; }
+.q-text { font-size: 1.4rem; font-weight: 700; line-height: 1.3; }
+.a-text { font-size: 1.1rem; color: #fbbf24; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+.a-label { font-size: 0.8rem; background: #451a03; color: #fbbf24; padding: 2px 8px; border-radius: 4px; }
 
 /* Players Grid */
 main {
@@ -109,82 +109,110 @@ main {
 }
 .players {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* 幅を狭く調整 */
     gap: 15px;
 }
+
+/* 縦書きカードスタイル */
 .player-card {
     background: var(--card-bg);
     border: 2px solid var(--border-color);
     border-radius: 12px;
     display: flex;
     flex-direction: column;
-    height: 260px;
+    height: 320px; /* 高さを確保 */
     position: relative;
     overflow: hidden;
     transition: all 0.2s ease;
 }
+
 .player-card.winner { border-color: var(--win-color); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
 .player-card.rest { border-color: var(--rest-color); background: #1e1b4b; opacity: 0.9; }
+.player-card.lost { opacity: 0.5; filter: grayscale(1); }
 
-.p-header {
-    padding: 8px 12px;
-    background: rgba(0,0,0,0.3);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+/* ランク表示エリア */
+.rank-area {
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 900;
+    font-size: 1.5rem;
+    color: #fbbf24;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.2);
 }
-.p-name { font-size: 1.1rem; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.p-meta { font-size: 0.75rem; color: #94a3b8; margin-top: 2px; }
+.rank-text { color: var(--win-color); }
 
-.p-body {
+/* メイン（縦書きエリア） */
+.vertical-body {
     flex: 1;
     display: flex;
+    flex-direction: row-reverse; /* 右から左へ（氏名→所属） */
     justify-content: center;
     align-items: center;
-    position: relative;
+    padding: 10px;
+    gap: 10px;
+    writing-mode: vertical-rl; /* 縦書き */
 }
-.p-vertical-name {
-    writing-mode: vertical-rl;
-    text-orientation: upright;
-    font-size: 2rem;
-    font-weight: 900;
-    letter-spacing: 0.2rem;
-    color: rgba(255,255,255,0.05);
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    user-select: none;
-}
-.p-score-display {
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    align-items: center;
-}
-.score-row {
-    display: flex;
-    gap: 15px;
-    font-size: 2rem;
-    font-weight: 900;
-    font-family: 'Roboto', sans-serif;
-}
-.score-c { color: var(--correct-bg); text-shadow: 0 0 15px rgba(34, 197, 94, 0.2); }
-.score-w { color: #ef4444; }
 
-.p-footer {
-    padding: 8px;
+.p-name-v {
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: 0.1rem;
+    color: white;
+    /* 長い名前対応 */
+    max-height: 100%;
+}
+.p-school-v {
+    font-size: 1rem;
+    color: #94a3b8;
+    font-weight: 700;
+    letter-spacing: 0.05rem;
+}
+
+/* スコア表示（下部） */
+.score-footer {
+    height: 50px;
     background: rgba(0,0,0,0.4);
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    font-weight: 700;
-    min-height: 36px;
+    gap: 15px;
+    border-top: 1px solid rgba(255,255,255,0.05);
 }
-.rest-badge { color: #a5b4fc; font-size: 0.9rem; }
-.win-badge { background: var(--win-color); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.9rem; }
+.score-item {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+}
+.score-c { color: var(--correct-bg); }
+.score-w { color: #ef4444; }
+
+/* 休み表示オーバーレイ */
+.rest-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(99, 102, 241, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: 10;
+}
+.rest-mark {
+    font-size: 4rem;
+    color: rgba(255,255,255,0.2);
+    transform: rotate(-15deg);
+    font-weight: 900;
+    border: 4px solid rgba(255,255,255,0.2);
+    padding: 10px;
+    border-radius: 10px;
+}
+
 </style>
 </head>
 <body>
@@ -245,25 +273,18 @@ const db = getDatabase(app);
 let participants = [];
 let scores = { 1: {}, 2: {} };
 let questions = [];
-let questionIndices = { 1: 0, 2: 0 }; // 各グループの現在の問題番号
+let questionIndices = { 1: 0, 2: 0 };
 let currentGroup = 1;
 
-// グローバル関数として登録（HTMLから呼べるように）
 window.switchGroup = (groupNum) => {
     currentGroup = groupNum;
-    
-    // タブの見た目更新
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(`tab-${groupNum}`).classList.add('active');
-    
-    // 再描画
     render();
     updateQuestionDisplay();
 };
 
 // --- Firebase Listeners ---
-
-// 1. 参加者データ
 onValue(ref(db, 'participants'), snapshot => {
     if(snapshot.exists()) {
         participants = Object.entries(snapshot.val())
@@ -275,11 +296,9 @@ onValue(ref(db, 'participants'), snapshot => {
     render();
 });
 
-// 2. スコアデータ (Group 1 & 2)
 onValue(ref(db, '2R/α/group1/scores'), s => { scores[1] = s.val() || {}; render(); });
 onValue(ref(db, '2R/α/group2/scores'), s => { scores[2] = s.val() || {}; render(); });
 
-// 3. 問題データ
 onValue(ref(db, '2R/α/questions'), s => {
     if (s.exists()) {
         const val = s.val();
@@ -290,7 +309,6 @@ onValue(ref(db, '2R/α/questions'), s => {
     updateQuestionDisplay();
 });
 
-// 4. 現在の問題番号 (Group 1 & 2)
 onValue(ref(db, '2R/α/group1/questionNumber'), s => {
     questionIndices[1] = (s.val() || 1) - 1;
     if(currentGroup === 1) updateQuestionDisplay();
@@ -302,11 +320,16 @@ onValue(ref(db, '2R/α/group2/questionNumber'), s => {
 
 // --- Render Logic ---
 
+function getOrdinal(n) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
 function render() {
     const box = document.getElementById('players');
     box.innerHTML = '';
     
-    // 現在のグループの参加者を抽出
     const ps = participants.filter(p => Number(p.group) === currentGroup);
 
     if (ps.length === 0 && participants.length > 0) {
@@ -319,28 +342,36 @@ function render() {
         const s = scores[currentGroup][p.id] || { correct: 0, wrong: 0, rest: 0 };
         const isWinner = s.winOrder ? true : false;
         const isRest = (s.rest || 0) > 0;
+        const isLost = (s.wrong || 0) >= 2;
         
         const div = document.createElement('div');
-        div.className = `player-card ${isWinner ? 'winner' : ''} ${isRest ? 'rest' : ''}`;
+        div.className = `player-card ${isWinner ? 'winner' : ''} ${isRest ? 'rest' : ''} ${isLost ? 'lost' : ''}`;
         
+        let rankDisplay = '';
+        if(isWinner) {
+            rankDisplay = `<span class="rank-text">${getOrdinal(s.winOrder)} Win</span>`;
+        } else if (isLost) {
+            rankDisplay = '<span style="color:#666">LOSE</span>';
+        } else if (isRest) {
+            rankDisplay = '<span style="color:#6366f1">WAIT</span>';
+        }
+
         div.innerHTML = `
-            <div class="p-header">
-                <div class="p-name">${p.name}</div>
-                <div class="p-meta">${p.school || ''} ${p.grade || ''}</div>
+            <div class="rank-area">
+                ${rankDisplay}
             </div>
-            <div class="p-body">
-                <div class="p-vertical-name">${p.name}</div>
-                <div class="p-score-display">
-                    <div class="score-row">
-                        <span class="score-c">${s.correct || 0}○</span>
-                        <span class="score-w">${s.wrong || 0}×</span>
-                    </div>
-                </div>
+            
+            <div class="vertical-body">
+                <div class="p-name-v">${p.name}</div>
+                <div class="p-school-v">${p.school || ''} ${p.grade || ''}</div>
             </div>
-            <div class="p-footer">
-                <div class="rest-badge">${isRest ? '休: ' + '⛄'.repeat(s.rest) : ''}</div>
-                ${isWinner ? `<div class="win-badge">WIN #${s.winOrder}</div>` : ''}
+
+            <div class="score-footer">
+                <div class="score-item score-c">${s.correct || 0}○</div>
+                <div class="score-item score-w">${s.wrong || 0}×</div>
             </div>
+
+            ${isRest ? `<div class="rest-overlay"><div class="rest-mark">休 ${s.rest}</div></div>` : ''}
         `;
         box.appendChild(div);
     });
@@ -351,7 +382,6 @@ function render() {
 function updateStats(ps, groupScores) {
     if (!ps || !groupScores) return;
     
-    // 生存者: 勝ち抜けておらず、失格(2x)もしていない
     const activeCount = ps.filter(p => {
         const s = groupScores[p.id] || {};
         return !s.winOrder && (s.wrong || 0) < 2; 
@@ -364,9 +394,7 @@ function updateStats(ps, groupScores) {
 }
 
 function updateQuestionDisplay() {
-    // 現在のグループの問題番号を取得
     const idx = questionIndices[currentGroup];
-    
     document.getElementById('qnum').textContent = `Q.${idx + 1}`;
     
     if (questions && questions.length > idx && questions[idx]) {
