@@ -10,11 +10,12 @@
     --bg-color: #0f172a;
     --card-bg: #1e293b;
     --border-color: #334155;
-    --accent-color: #3b82f6;
     --text-color: #f1f5f9;
     --win-color: #ef4444;
     --rest-color: #6366f1;
     --correct-bg: #22c55e;
+    --active-tab: #3b82f6;
+    --inactive-tab: #1e293b;
 }
 * { box-sizing: border-box; }
 body {
@@ -25,21 +26,39 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
+
 /* Header */
 header {
     background: #020617;
     border-bottom: 1px solid var(--border-color);
-    padding: 1rem 2rem;
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-    z-index: 10;
+    height: 80px;
 }
-.header-left { display: flex; align-items: baseline; gap: 20px; }
-.main-title { font-size: 1.5rem; font-weight: 900; background: linear-gradient(90deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.sub-info { color: #94a3b8; font-weight: 700; font-size: 1.1rem; }
+.header-left { display: flex; align-items: center; gap: 20px; }
+.logo { height: 50px; width: auto; object-fit: contain; }
+.title-group { display: flex; flex-direction: column; }
+.main-title { font-size: 1.2rem; font-weight: 900; color: #94a3b8; }
+.sub-title { font-size: 1rem; font-weight: 700; color: #64748b; }
+
+.tabs { display: flex; background: #0f172a; padding: 4px; border-radius: 8px; gap: 5px; border: 1px solid var(--border-color); }
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    padding: 8px 24px;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.tab-btn.active { background: var(--active-tab); color: white; }
+
 .header-right { display: flex; gap: 15px; align-items: center; }
 .counter-box {
     background: #0f172a;
@@ -50,6 +69,8 @@ header {
     font-size: 1.2rem;
     font-weight: 700;
     color: #cbd5e1;
+    min-width: 100px;
+    text-align: center;
 }
 
 /* Question Area */
@@ -58,31 +79,27 @@ header {
     padding: 1.5rem 2rem;
     border-bottom: 1px solid var(--border-color);
     display: grid;
-    grid-template-columns: 120px 1fr;
+    grid-template-columns: 100px 1fr;
     gap: 20px;
     align-items: center;
-    min-height: 100px;
+    min-height: 120px;
 }
 .q-number {
-    font-size: 1.1rem;
-    color: #94a3b8;
-    font-weight: 700;
-    text-align: center;
-    border-right: 2px solid var(--border-color);
-    padding-right: 20px;
-}
-.q-text {
     font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1.4;
+    color: #60a5fa;
+    font-weight: 900;
+    text-align: center;
+    border-right: 3px solid var(--border-color);
+    padding-right: 20px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.answer-area {
-    margin-top: 0.5rem;
-    font-size: 1.2rem;
-    color: #fbbf24;
-    font-weight: 700;
-    grid-column: 2;
-}
+.q-content { display: flex; flex-direction: column; gap: 8px; }
+.q-text { font-size: 1.6rem; font-weight: 700; line-height: 1.3; }
+.a-text { font-size: 1.2rem; color: #fbbf24; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+.a-label { font-size: 0.9rem; background: #451a03; color: #fbbf24; padding: 2px 8px; border-radius: 4px; }
 
 /* Players Grid */
 main {
@@ -92,7 +109,7 @@ main {
 }
 .players {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 15px;
 }
 .player-card {
@@ -101,21 +118,21 @@ main {
     border-radius: 12px;
     display: flex;
     flex-direction: column;
-    height: 280px;
+    height: 260px;
     position: relative;
     overflow: hidden;
     transition: all 0.2s ease;
 }
 .player-card.winner { border-color: var(--win-color); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
-.player-card.rest { border-color: var(--rest-color); opacity: 0.8; background: #1e1b4b; }
+.player-card.rest { border-color: var(--rest-color); background: #1e1b4b; opacity: 0.9; }
 
 .p-header {
-    padding: 10px 12px;
-    background: rgba(0,0,0,0.2);
+    padding: 8px 12px;
+    background: rgba(0,0,0,0.3);
     border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 .p-name { font-size: 1.1rem; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.p-meta { font-size: 0.8rem; color: #94a3b8; margin-top: 2px; }
+.p-meta { font-size: 0.75rem; color: #94a3b8; margin-top: 2px; }
 
 .p-body {
     flex: 1;
@@ -130,9 +147,13 @@ main {
     font-size: 2rem;
     font-weight: 900;
     letter-spacing: 0.2rem;
-    color: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.05);
     position: absolute;
     height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     pointer-events: none;
     user-select: none;
 }
@@ -140,39 +161,48 @@ main {
     z-index: 2;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
     align-items: center;
 }
 .score-row {
     display: flex;
     gap: 15px;
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 900;
     font-family: 'Roboto', sans-serif;
 }
-.score-c { color: var(--correct-bg); text-shadow: 0 0 10px rgba(34, 197, 94, 0.3); }
+.score-c { color: var(--correct-bg); text-shadow: 0 0 15px rgba(34, 197, 94, 0.2); }
 .score-w { color: #ef4444; }
 
 .p-footer {
-    padding: 10px;
-    background: rgba(0,0,0,0.3);
+    padding: 8px;
+    background: rgba(0,0,0,0.4);
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-weight: 700;
-    min-height: 40px;
+    min-height: 36px;
 }
 .rest-badge { color: #a5b4fc; font-size: 0.9rem; }
-.win-badge { background: var(--win-color); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; }
+.win-badge { background: var(--win-color); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.9rem; }
 </style>
 </head>
 <body>
 
 <header>
     <div class="header-left">
-        <div class="main-title">Tokiwaji Open 2nd</div>
-        <div class="sub-info">2R: Course α (連答付き5○2×) / <span id="group-name">Group-1</span></div>
+        <img src="./常磐路オープン2nd_ロゴ.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+        <div class="title-group">
+            <div class="main-title">Tokiwaji Open 2nd</div>
+            <div class="sub-title">2R Course α</div>
+        </div>
     </div>
+    
+    <div class="tabs">
+        <button id="tab-1" class="tab-btn active" onclick="switchGroup(1)">Group 1</button>
+        <button id="tab-2" class="tab-btn" onclick="switchGroup(2)">Group 2</button>
+    </div>
+
     <div class="header-right">
         <div class="counter-box" id="survivor-count">Alive: 0</div>
         <div class="counter-box" id="win-slots">Slots: 0</div>
@@ -180,10 +210,13 @@ main {
 </header>
 
 <div class="question-area">
-    <div class="q-number" id="qnum">Q. -</div>
-    <div>
-        <div class="q-text" id="qtext">Waiting for question...</div>
-        <div class="answer-area" id="ans"></div>
+    <div class="q-number" id="qnum">Q.-</div>
+    <div class="q-content">
+        <div class="q-text" id="qtext">読み込み中...</div>
+        <div class="a-text">
+            <span class="a-label">ANSWER</span>
+            <span id="ans"></span>
+        </div>
     </div>
 </div>
 
@@ -208,21 +241,45 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// Global State
 let participants = [];
 let scores = { 1: {}, 2: {} };
 let questions = [];
+let questionIndices = { 1: 0, 2: 0 }; // 各グループの現在の問題番号
 let currentGroup = 1;
-let qIndex = 0;
 
-// Listeners
+// グローバル関数として登録（HTMLから呼べるように）
+window.switchGroup = (groupNum) => {
+    currentGroup = groupNum;
+    
+    // タブの見た目更新
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`tab-${groupNum}`).classList.add('active');
+    
+    // 再描画
+    render();
+    updateQuestionDisplay();
+};
+
+// --- Firebase Listeners ---
+
+// 1. 参加者データ
 onValue(ref(db, 'participants'), snapshot => {
-    participants = snapshot.exists() ? Object.entries(snapshot.val()).map(([id, p]) => ({ id, ...p })).filter(p => p.course === 'α') : [];
+    if(snapshot.exists()) {
+        participants = Object.entries(snapshot.val())
+            .map(([id, p]) => ({ id, ...p }))
+            .filter(p => p.course === 'α');
+    } else {
+        participants = [];
+    }
     render();
 });
 
+// 2. スコアデータ (Group 1 & 2)
 onValue(ref(db, '2R/α/group1/scores'), s => { scores[1] = s.val() || {}; render(); });
 onValue(ref(db, '2R/α/group2/scores'), s => { scores[2] = s.val() || {}; render(); });
 
+// 3. 問題データ
 onValue(ref(db, '2R/α/questions'), s => {
     if (s.exists()) {
         const val = s.val();
@@ -230,22 +287,34 @@ onValue(ref(db, '2R/α/questions'), s => {
     } else {
         questions = [];
     }
-    updateQuestion();
+    updateQuestionDisplay();
 });
 
+// 4. 現在の問題番号 (Group 1 & 2)
 onValue(ref(db, '2R/α/group1/questionNumber'), s => {
-    if (currentGroup === 1) {
-        qIndex = (s.val() || 1) - 1;
-        updateQuestion();
-    }
+    questionIndices[1] = (s.val() || 1) - 1;
+    if(currentGroup === 1) updateQuestionDisplay();
 });
+onValue(ref(db, '2R/α/group2/questionNumber'), s => {
+    questionIndices[2] = (s.val() || 1) - 1;
+    if(currentGroup === 2) updateQuestionDisplay();
+});
+
+// --- Render Logic ---
 
 function render() {
     const box = document.getElementById('players');
     box.innerHTML = '';
     
-    const ps = participants.filter(p => p.group === currentGroup);
-    
+    // 現在のグループの参加者を抽出
+    const ps = participants.filter(p => Number(p.group) === currentGroup);
+
+    if (ps.length === 0 && participants.length > 0) {
+        box.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:#aaa">このグループの参加者は登録されていません</div>';
+        updateStats(0, 0);
+        return;
+    }
+
     ps.forEach(p => {
         const s = scores[currentGroup][p.id] || { correct: 0, wrong: 0, rest: 0 };
         const isWinner = s.winOrder ? true : false;
@@ -269,32 +338,45 @@ function render() {
                 </div>
             </div>
             <div class="p-footer">
-                <div class="rest-badge">${isRest ? 'REST: ' + '⛄'.repeat(s.rest) : ''}</div>
+                <div class="rest-badge">${isRest ? '休: ' + '⛄'.repeat(s.rest) : ''}</div>
                 ${isWinner ? `<div class="win-badge">WIN #${s.winOrder}</div>` : ''}
             </div>
         `;
         box.appendChild(div);
     });
 
-    // Stats update
-    const activeCount = participants.filter(p => {
-        if(p.group !== currentGroup) return false;
-        const s = scores[currentGroup][p.id] || {};
-        return !s.winOrder && (s.wrong || 0) < 2; // Assuming 2 wrong is DQ, though this rule might vary
+    updateStats(ps, scores[currentGroup]);
+}
+
+function updateStats(ps, groupScores) {
+    if (!ps || !groupScores) return;
+    
+    // 生存者: 勝ち抜けておらず、失格(2x)もしていない
+    const activeCount = ps.filter(p => {
+        const s = groupScores[p.id] || {};
+        return !s.winOrder && (s.wrong || 0) < 2; 
     }).length;
 
-    const winnerCount = Object.values(scores[currentGroup] || {}).filter(s => s && s.winOrder).length;
+    const winnerCount = Object.values(groupScores).filter(s => s && s.winOrder).length;
     
     document.getElementById('survivor-count').textContent = `Alive: ${activeCount}`;
     document.getElementById('win-slots').textContent = `Slots: ${Math.max(0, 5 - winnerCount)}`;
 }
 
-function updateQuestion() {
-    document.getElementById('qnum').textContent = `Q. ${qIndex + 1}`;
-    const q = questions[qIndex];
-    document.getElementById('qtext').textContent = q ? q.question : '(問題が読み込まれていません)';
-    document.getElementById('ans').textContent = ''; 
-    // 表示側では正解を表示しない、あるいは制御側でフラグ管理が必要な場合はここを調整
+function updateQuestionDisplay() {
+    // 現在のグループの問題番号を取得
+    const idx = questionIndices[currentGroup];
+    
+    document.getElementById('qnum').textContent = `Q.${idx + 1}`;
+    
+    if (questions && questions.length > idx && questions[idx]) {
+        const q = questions[idx];
+        document.getElementById('qtext').textContent = q.question;
+        document.getElementById('ans').textContent = q.answer || '(解答なし)';
+    } else {
+        document.getElementById('qtext').textContent = '待機中... (問題データなし)';
+        document.getElementById('ans').textContent = '';
+    }
 }
 </script>
 </body>
