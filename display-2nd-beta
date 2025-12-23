@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2R Course β 表示画面</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: sans-serif; background: #0a0a0a; color: white; overflow: hidden; }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; text-align: center; }
+.header img { height: 60px; margin-bottom: 10px; }
+.header h1 { font-size: 36px; margin-bottom: 5px; }
+.header .subtitle { font-size: 24px; }
+.tabs { display: flex; justify-content: center; background: #1a1a1a; }
+.tab { padding: 15px 50px; font-size: 20px; cursor: pointer; background: #2a2a2a; border: none; color: white; }
+.tab.active { background: #667eea; }
+.question { background: #1a1a1a; padding: 15px; text-align: center; font-size: 24px; border-bottom: 3px solid #667eea; }
+.content { padding: 20px; height: calc(100vh - 250px); overflow-y: auto; }
+.player { background: #1a1a1a; margin-bottom: 15px; padding: 20px; border-radius: 10px; border: 3px solid #333; display: flex; justify-content: space-between; align-items: center; }
+.player.winner { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-color: #f5576c; animation: pulse 2s infinite; }
+.player.disqualified { opacity: 0.5; }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+.player-info { flex: 1; }
+.rank { font-size: 18px; color: #aaa; }
+.name { font-size: 32px; font-weight: bold; margin: 5px 0; }
+.meta { font-size: 18px; color: #bbb; }
+.score { display: flex; gap: 30px; align-items: center; font-size: 36px; font-weight: bold; }
+.score-item { text-align: center; }
+.label { font-size: 18px; color: #aaa; }
+.badge { padding: 10px 20px; border-radius: 8px; font-size: 24px; margin-left: 20px; }
+.win { background: #ff9800; }
+.lose { background: #f44336; }
+</style>
+</head>
+<body>
+<div class="header">
+  <img src="常磐路オープン2nd_ロゴ.png" alt="Logo">
+  <h1>常磐路オープン 2nd</h1>
+  <div class="subtitle">2nd Round - Course β (5up-down)</div>
+</div>
+<div class="tabs">
+  <button class="tab active" onclick="switchGroup(1)">Group 1</button>
+  <button class="tab" onclick="switchGroup(2)">Group 2</button>
+</div>
+<div class="question" id="question">問題番号: 1 / 30</div>
+<div class="content" id="content"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
+const app = initializeApp({
+  apiKey: "AIzaSyDB_EIa1D49jxMrNVkqJjSrghh6Yp-MLP0",
+  authDomain: "tokiwaji-open-2nd.firebaseapp.com",
+  databaseURL: "https://tokiwaji-open-2nd-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "tokiwaji-open-2nd",
+  storageBucket: "tokiwaji-open-2nd.firebasestorage.app",
+  messagingSenderId: "1053108487162",
+  appId: "1:1053108487162:web:1cf8f504522b7e95129a43"
+});
+
+const db = getDatabase(app);
+let currentGroup = 1;
+let participants = [];
+let scores = {};
+
+window.switchGroup = function(g) {
+  currentGroup = g;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+onValue(ref(db, 'participants'), snap => {
+  if (snap.exists()) {
+    participants = Object.entries(snap.val()).map(([id, p]) => ({ id, ...p })).filter(p => p.course === 'β');
+    render();
+  }
+});
+
+onValue(ref(db, '2R/β/group1/scores'), snap => { scores[1] = snap.val() || {}; render(); });
+onValue(ref(db, '2R/β/group2/scores'), snap => { scores[2] = snap.val() || {}; render(); });
+onValue(ref(db, '2R/β/group1/questionNumber'), snap => { if (currentGroup === 1) document.getElementById('question').textContent = `問題番号: ${snap.val() || 1} / 30`; });
+onValue(ref(db, '2R/β/group2/questionNumber'), snap => { if (currentGroup === 2) document.getElementById('question').textContent = `問題番号: ${snap.val() || 1} / 30`; });
+
+function render() {
+  const content = document.getElementById('content');
+  const players = participants.filter(p => p.group === currentGroup).sort((a, b) => a.rank - b.rank);
+  content.innerHTML = '';
+  players.forEach(p => {
+    const s = scores[currentGroup]?.[p.id] || { correct: 0, wrong: 0 };
+    const div = document.createElement('div');
+    div.className = 'player';
+    if (s.winOrder) div.classList.add('winner');
+    if (s.disqualified) div.classList.add('disqualified');
+    div.innerHTML = `
+      <div class="player-info">
+        <div class="rank">${p.rank}位</div>
+        <div class="name">${p.name}</div>
+        <div class="meta">${p.school} | ${p.grade}</div>
+      </div>
+      <div class="score">
+        <div class="score-item"><div class="label">○</div><div>${s.correct || 0}</div></div>
+        <div class="score-item"><div class="label">×</div><div>${s.wrong || 0}</div></div>
+        ${s.winOrder ? `<div class="badge win">勝ち抜け ${s.winOrder}位</div>` : ''}
+        ${s.disqualified ? `<div class="badge lose">失格</div>` : ''}
+      </div>
+    `;
+    content.appendChild(div);
+  });
+}
+</script>
+</body>
+</html>
