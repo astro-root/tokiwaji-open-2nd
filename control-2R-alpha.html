@@ -117,6 +117,15 @@ input[type="number"] {
 }
 .q-ans-display { color: #fbbf24; font-weight: bold; margin-top: 8px; font-size: 1.1rem; border-top: 1px dashed #333; padding-top: 5px; }
 
+/* Rules Control */
+.rules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.rules-grid label { font-size: 0.8rem; color: #aaa; display: block; margin-bottom: 4px; }
+.rules-grid input { font-size: 1.1rem; padding: 6px; }
+
 /* Player List */
 .player-list {
     display: grid;
@@ -192,6 +201,24 @@ input[type="number"] {
         </section>
 
         <section>
+            <h2>ルール設定 (手動変更可)</h2>
+            <div class="rules-grid">
+                <div>
+                    <label>勝ち抜けポイント</label>
+                    <input type="number" id="win-points-input" value="5">
+                </div>
+                <div>
+                    <label>誤答ペナルティ(休)</label>
+                    <input type="number" id="rest-penalty-input" value="1">
+                </div>
+            </div>
+            <p style="font-size:0.8rem; color:#aaa; margin-top:8px;">
+                ※「誤答」ボタンを押した瞬間の値が適用されます。<br>
+                ※ペナルティは問題番号が変わると自動でその番号に更新されますが、ここで手動変更も可能です。
+            </p>
+        </section>
+
+        <section>
             <h2>システム設定</h2>
             <div class="control-group">
                 <label style="display:block; margin-bottom:5px; font-size:0.9rem;">問題CSV読み込み</label>
@@ -233,11 +260,11 @@ const db = getDatabase(app);
 let participants = [];
 let scores = { 1: {}, 2: {} };
 let questions = [];
-let questionIndices = { 1: 1, 2: 1 }; // 各グループの現在の問題番号(1-based)
+let questionIndices = { 1: 1, 2: 1 }; 
 let currentGroup = 1;
-let lastAction = null; // Undo用 {id, type}
+let lastAction = null; 
 
-// --- Global Functions (HTMLから呼び出し用) ---
+// --- Global Functions ---
 window.switchGroup = (g) => {
     currentGroup = g;
     
@@ -253,6 +280,9 @@ window.switchGroup = (g) => {
     // Update Inputs
     const input = document.getElementById('q-input');
     if(input) input.value = questionIndices[g];
+    
+    // 誤答ペナルティのデフォルト値を更新(問題番号に合わせる)
+    document.getElementById('rest-penalty-input').value = questionIndices[g];
 
     // Re-render
     updateCurrentQuestionDisplay();
@@ -260,18 +290,14 @@ window.switchGroup = (g) => {
 };
 
 // --- Data Sync ---
-
-// 1. 参加者
 onValue(ref(db, 'participants'), s => {
     participants = s.exists() ? Object.entries(s.val()).map(([id, p]) => ({ id, ...p })).filter(p => p.course === 'α') : [];
     renderPlayers();
 });
 
-// 2. スコア (Group 1 & 2)
 onValue(ref(db, '2R/α/group1/scores'), s => { scores[1] = s.val() || {}; if(currentGroup===1) renderPlayers(); });
 onValue(ref(db, '2R/α/group2/scores'), s => { scores[2] = s.val() || {}; if(currentGroup===2) renderPlayers(); });
 
-// 3. 問題
 onValue(ref(db, '2R/α/questions'), s => {
     if (s.exists()) {
         const val = s.val();
@@ -282,11 +308,12 @@ onValue(ref(db, '2R/α/questions'), s => {
     updateCurrentQuestionDisplay();
 });
 
-// 4. 問題番号 (Group 1 & 2)
 onValue(ref(db, '2R/α/group1/questionNumber'), s => {
     questionIndices[1] = s.val() || 1;
     if(currentGroup === 1) {
         document.getElementById('q-input').value = questionIndices[1];
+        // 問題番号が変わったらペナルティのデフォルト値も更新
+        document.getElementById('rest-penalty-input').value = questionIndices[1];
         updateCurrentQuestionDisplay();
     }
 });
@@ -294,13 +321,13 @@ onValue(ref(db, '2R/α/group2/questionNumber'), s => {
     questionIndices[2] = s.val() || 1;
     if(currentGroup === 2) {
         document.getElementById('q-input').value = questionIndices[2];
+        document.getElementById('rest-penalty-input').value = questionIndices[2];
         updateCurrentQuestionDisplay();
     }
 });
 
 // --- Event Listeners ---
 
-// CSV Upload
 document.getElementById('csv').addEventListener('change', e => {
     const f = e.target.files[0];
     if (!f) return;
@@ -317,9 +344,7 @@ document.getElementById('csv').addEventListener('change', e => {
     r.readAsText(f, 'utf-8');
 });
 
-// Question Navigation
 const setQ = (num) => {
-    // 現在のグループに対してセット
     const n = Math.max(1, parseInt(num, 10) || 1);
     set(ref(db, `2R/α/group${currentGroup}/questionNumber`), n);
 };
@@ -328,7 +353,6 @@ document.getElementById('prev').onclick = () => setQ(questionIndices[currentGrou
 document.getElementById('next').onclick = () => setQ(questionIndices[currentGroup] + 1);
 document.getElementById('q-input').onchange = (e) => setQ(e.target.value);
 
-// Reset (Current Group Only)
 document.getElementById('reset-all').onclick = () => {
     if(confirm(`[Group ${currentGroup}] を本当にリセットしますか？\n全員のスコアが0になり、問題番号が1に戻ります。`)) {
         set(ref(db, `2R/α/group${currentGroup}/scores`), {});
@@ -336,11 +360,8 @@ document.getElementById('reset-all').onclick = () => {
     }
 };
 
-// Skip
 document.getElementById('skip').onclick = () => {
-    // 現在のグループの参加者のみ処理
     const ps = participants.filter(p => Number(p.group) === currentGroup);
-    
     ps.forEach(p => {
         const s = scores[currentGroup][p.id];
         if (s && s.rest > 0) {
@@ -364,7 +385,6 @@ function renderPlayers() {
     const box = document.getElementById('players');
     box.innerHTML = '';
     
-    // Filter by Current Group
     const groupParticipants = participants.filter(p => Number(p.group) === currentGroup);
     
     if (groupParticipants.length === 0) {
@@ -376,7 +396,6 @@ function renderPlayers() {
         const s = scores[currentGroup][p.id] || { correct: 0, wrong: 0, rest: 0 };
         const d = document.createElement('div');
         
-        // Visual logic
         const isResting = (s.rest || 0) > 0;
         const isWinner = s.winOrder ? true : false;
         const isDQ = (s.wrong || 0) >= 2;
@@ -401,15 +420,17 @@ function renderPlayers() {
             </div>
         `;
         
-        // Disable buttons style
         if(isWinner || isDQ || isResting) {
             d.querySelectorAll('button:not([data-act="u"])').forEach(b => b.style.opacity = 0.3);
         }
 
-        // Logic
+        // --- Logic Modified to use Manual Inputs ---
+
         d.querySelector('[data-act=c]').onclick = () => {
             if(isWinner || isDQ || isResting) return;
             
+            const winPoint = parseInt(document.getElementById('win-points-input').value) || 5;
+
             lastAction = { id: p.id, type: 'c', group: currentGroup };
             const newCorrect = (s.correct || 0) + 1;
             
@@ -417,8 +438,8 @@ function renderPlayers() {
             const path = `2R/α/group${currentGroup}`;
             updates[`scores/${p.id}/correct`] = newCorrect;
             
-            // Win condition: 5 correct
-            if(newCorrect >= 5 && !s.winOrder) {
+            // Win condition based on input
+            if(newCorrect >= winPoint && !s.winOrder) {
                 const currentWinners = Object.values(scores[currentGroup]).filter(v => v.winOrder).length;
                 updates[`scores/${p.id}/winOrder`] = currentWinners + 1;
             }
@@ -439,9 +460,10 @@ function renderPlayers() {
         d.querySelector('[data-act=w]').onclick = () => {
             if(isWinner || isDQ || isResting) return;
 
+            // Rest count based on input
+            const restCount = parseInt(document.getElementById('rest-penalty-input').value) || 1;
+
             lastAction = { id: p.id, type: 'w', group: currentGroup };
-            // Rule: n回休み = 現在の問題番号分休む
-            const restCount = questionIndices[currentGroup];
 
             update(ref(db, `2R/α/group${currentGroup}/scores/${p.id}`), {
                 wrong: (s.wrong || 0) + 1,
@@ -475,7 +497,7 @@ function renderPlayers() {
             if (lastAction.type === 'w') {
                 update(ref(db, path), { 
                     wrong: Math.max(0, (s.wrong || 0) - 1),
-                    rest: 0 // 誤答取り消し時は休み解除
+                    rest: 0 
                 });
             }
             lastAction = null;
