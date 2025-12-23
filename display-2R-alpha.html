@@ -3,246 +3,259 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2R Course α 管理</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<title>2R Course α 表示</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-    --bg-color: #1a1a1a;
-    --panel-bg: #262626;
-    --border-color: #404040;
-    --text-color: #e5e5e5;
-    --primary: #3b82f6;
-    --danger: #ef4444;
-    --success: #22c55e;
-    --active-tab: #2563eb;
-    --inactive-tab: #404040;
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --border-color: #334155;
+    --text-color: #f1f5f9;
+    --win-color: #ef4444;
+    --rest-color: #6366f1;
+    --correct-color: #22c55e;
+    --wrong-color: #ef4444;
+    --active-tab: #3b82f6;
+    --inactive-tab: #1e293b;
 }
+* { box-sizing: border-box; }
 body {
     margin: 0;
-    font-family: 'Noto Sans JP', sans-serif;
+    font-family: 'Roboto', 'Noto Sans JP', sans-serif;
     background: var(--bg-color);
     color: var(--text-color);
-    padding: 20px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
-/* Header & Tabs */
+/* Header */
 header {
+    background: #020617;
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
+    height: 80px;
 }
-h1 { margin: 0; font-size: 1.5rem; border-left: 5px solid var(--primary); padding-left: 15px; }
+.header-left { display: flex; align-items: center; gap: 20px; }
+.logo { height: 50px; width: auto; object-fit: contain; }
+.title-group { display: flex; flex-direction: column; }
+.main-title { font-size: 1.2rem; font-weight: 900; color: #94a3b8; }
+.sub-title { font-size: 1rem; font-weight: 700; color: #64748b; }
 
-.tabs { display: flex; gap: 5px; }
+.tabs { display: flex; background: #0f172a; padding: 4px; border-radius: 8px; gap: 5px; border: 1px solid var(--border-color); }
 .tab-btn {
-    padding: 8px 20px;
+    background: transparent;
     border: none;
-    background: var(--inactive-tab);
-    color: #aaa;
+    color: #64748b;
+    padding: 8px 24px;
     font-weight: 700;
+    font-size: 1rem;
+    border-radius: 6px;
     cursor: pointer;
-    border-radius: 6px 6px 0 0;
     transition: all 0.2s;
 }
-.tab-btn.active {
-    background: var(--active-tab);
-    color: white;
-    transform: translateY(2px);
-}
+.tab-btn.active { background: var(--active-tab); color: white; }
 
-/* Layout */
-.grid-container {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 20px;
-    align-items: start;
-}
-@media(max-width: 900px) { .grid-container { grid-template-columns: 1fr; } }
-
-section {
-    background: var(--panel-bg);
-    padding: 20px;
-    border-radius: 8px;
+.header-right { display: flex; gap: 15px; align-items: center; }
+.counter-box {
+    background: #0f172a;
     border: 1px solid var(--border-color);
-    margin-bottom: 20px;
-}
-h2 { font-size: 1rem; margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: #a3a3a3; display: flex; justify-content: space-between; }
-
-/* Controls */
-.control-group { margin-bottom: 15px; }
-.btn {
-    cursor: pointer;
-    padding: 10px 16px;
-    border-radius: 6px;
-    border: none;
+    padding: 8px 24px;
+    border-radius: 8px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.8rem;
     font-weight: 700;
-    color: white;
-    transition: opacity 0.2s;
-    font-size: 0.9rem;
-}
-.btn:hover { opacity: 0.8; }
-.btn-primary { background: var(--primary); }
-.btn-danger { background: var(--danger); }
-.btn-success { background: var(--success); }
-.btn-neutral { background: #525252; }
-
-input[type="file"] { width: 100%; font-size: 0.9rem; }
-input[type="number"] {
-    width: 100%;
-    padding: 8px;
-    background: #171717;
-    color: white;
-    border: 1px solid #555;
-    border-radius: 4px;
-    font-size: 1.2rem;
-    font-weight: bold;
+    color: #cbd5e1;
+    min-width: 140px;
     text-align: center;
+    letter-spacing: 2px;
 }
 
-/* Question Control */
-.q-control-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
-.q-control-row .btn { flex: 1; }
-.q-display {
-    background: #000;
-    padding: 15px;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    min-height: 80px;
-    margin-bottom: 10px;
-    border: 1px solid #333;
-}
-.q-ans-display { color: #fbbf24; font-weight: bold; margin-top: 8px; font-size: 1.1rem; border-top: 1px dashed #333; padding-top: 5px; }
-.hidden-q { color: #555; font-style: italic; text-align: center; padding: 20px; }
-
-/* Rules Control */
-.rules-grid {
+/* Question Area */
+.question-area {
+    background: #1e293b;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border-color);
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: 80px 1fr;
+    gap: 20px;
+    align-items: center;
+    min-height: 100px;
 }
-.rules-grid label { font-size: 0.8rem; color: #aaa; display: block; margin-bottom: 4px; }
+.q-number {
+    font-size: 1.5rem;
+    color: #60a5fa;
+    font-weight: 900;
+    text-align: center;
+    border-right: 3px solid var(--border-color);
+    padding-right: 20px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.q-content { display: flex; flex-direction: column; gap: 5px; }
+.q-text { font-size: 1.4rem; font-weight: 700; line-height: 1.3; }
+.a-text { font-size: 1.1rem; color: #fbbf24; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+.a-label { font-size: 0.8rem; background: #451a03; color: #fbbf24; padding: 2px 8px; border-radius: 4px; }
+.hidden-text { color: #64748b; font-style: italic; font-weight: normal; }
 
-/* Player List */
-.player-list {
+/* Players Grid */
+main {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+.players {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     gap: 12px;
 }
+
+/* 縦書きカードスタイル */
 .player-card {
-    background: #171717;
-    border: 1px solid var(--border-color);
-    padding: 12px;
-    border-radius: 6px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    height: 380px; 
     position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
 }
-.player-card.resting { border-color: #6366f1; }
-.player-card.winner { border-color: #22c55e; }
 
-.player-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; font-size: 1.1rem; }
-.player-stats { font-size: 0.9rem; color: #a3a3a3; margin-bottom: 12px; display: flex; gap: 10px; }
-.stat-box { background: #333; padding: 2px 8px; border-radius: 4px; }
+.player-card.winner { border-color: var(--win-color); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+.player-card.rest { border-color: var(--rest-color); background: #1e1b4b; opacity: 0.9; }
+.player-card.lost { opacity: 0.5; filter: grayscale(1); }
 
-.player-actions { display: grid; grid-template-columns: 1fr 1fr 60px; gap: 8px; }
-.player-actions button { padding: 8px 0; font-size: 0.9rem; }
-
-/* Status Indicator */
-.status-indicator {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    margin-left: 10px;
+/* 1st Round順位 (横) */
+.rank-area {
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 900;
+    font-size: 1.6rem;
+    background: rgba(0,0,0,0.3);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }
-.bg-green { background: #064e3b; color: #6ee7b7; }
-.bg-blue { background: #1e3a8a; color: #93c5fd; }
+.rank-text { color: var(--win-color); text-shadow: 0 0 10px rgba(239,68,68,0.4); }
+
+/* 学校・学年 (横) */
+.school-area {
+    padding: 6px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 名前 (縦) */
+.vertical-body {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    writing-mode: vertical-rl;
+    padding: 10px;
+}
+.p-name-v {
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: 0.2rem;
+    color: white;
+    max-height: 100%;
+}
+
+/* スコア表示 (下部、横、数字のみ大きく) */
+.score-footer {
+    height: 60px;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+.score-val {
+    font-family: 'Roboto', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    line-height: 1;
+}
+.val-correct { color: var(--correct-color); }
+.val-wrong { color: var(--wrong-color); }
+
+/* 休みオーバーレイ */
+.rest-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: 10;
+}
+.rest-mark {
+    font-size: 5rem;
+    color: rgba(99, 102, 241, 0.4);
+    transform: rotate(-15deg);
+    font-weight: 900;
+    border: 6px solid rgba(99, 102, 241, 0.4);
+    padding: 10px 20px;
+    border-radius: 15px;
+}
+
 </style>
 </head>
 <body>
 
 <header>
-    <h1>2R α : Management</h1>
+    <div class="header-left">
+        <img src="./常磐路オープン2nd_ロゴ.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+        <div class="title-group">
+            <div class="main-title">Tokiwaji Open 2nd</div>
+            <div class="sub-title">2R Course α</div>
+        </div>
+    </div>
+    
     <div class="tabs">
-        <button id="tab-1" class="tab-btn active" onclick="window.switchGroup(1)">Group 1</button>
-        <button id="tab-2" class="tab-btn" onclick="window.switchGroup(2)">Group 2</button>
+        <button id="tab-1" class="tab-btn active" onclick="switchGroup(1)">Group 1</button>
+        <button id="tab-2" class="tab-btn" onclick="switchGroup(2)">Group 2</button>
+    </div>
+
+    <div class="header-right">
+        <div class="counter-box" id="alive-slot-display">0 ▶ 0</div>
     </div>
 </header>
 
-<div class="grid-container">
-    
-    <div class="left-col">
-        <section>
-            <h2>
-                <span>操作パネル</span>
-                <span id="current-group-label" class="status-indicator bg-blue">Group 1</span>
-            </h2>
-            
-            <div class="q-display">
-                <div id="current-q-text" style="font-weight:bold; font-size:1.1rem; margin-bottom:5px;">Q. -</div>
-                <div id="q-content-area">
-                    <div id="current-q-detail" style="color:#aaa; font-size:0.9rem;"></div>
-                    <div id="current-q-ans" class="q-ans-display">A: </div>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label style="display:block; margin-bottom:5px; font-size:0.8rem; color:#aaa;">問題番号 (自動で進みます)</label>
-                <div class="q-control-row">
-                    <button id="prev" class="btn btn-neutral">&lt;</button>
-                    <input type="number" id="q-input" min="1" value="1">
-                    <button id="next" class="btn btn-primary">&gt;</button>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <button id="skip" class="btn btn-neutral" style="width:100%">スルー (次へ & 休み減算)</button>
-            </div>
-        </section>
-
-        <section>
-            <h2>ルール・表示設定 (全体共有)</h2>
-            <div class="rules-grid">
-                <div>
-                    <label>勝ち抜けポイント</label>
-                    <input type="number" id="win-points-input" value="5">
-                </div>
-                <div>
-                    <label>Slots (勝ち抜け枠)</label>
-                    <input type="number" id="max-slots-input" value="5">
-                </div>
-            </div>
-            <div style="margin-top: 10px;">
-                <label style="font-size:0.8rem;color:#aaa;">誤答ペナルティ (現在の問題番号)</label>
-                <input type="number" id="rest-penalty-input" value="1">
-            </div>
-        </section>
-
-        <section>
-            <h2>システム設定</h2>
-            <div class="control-group">
-                <label style="display:block; margin-bottom:5px; font-size:0.9rem;">問題CSV読み込み</label>
-                <input type="file" id="csv" accept=".csv">
-            </div>
-            <div class="control-group">
-                <button id="reset-all" class="btn btn-danger" style="width:100%">このグループをリセット</button>
-            </div>
-        </section>
+<div class="question-area">
+    <div class="q-number" id="qnum">Q.-</div>
+    <div class="q-content" id="q-content-box">
+        <div class="q-text" id="qtext">読み込み中...</div>
+        <div class="a-text">
+            <span class="a-label">ANSWER</span>
+            <span id="ans"></span>
+        </div>
     </div>
-
-    <div class="right-col">
-        <section>
-            <h2>参加者一覧</h2>
-            <div id="players" class="player-list"></div>
-        </section>
-    </div>
-
 </div>
+
+<main>
+    <div id="players" class="players"></div>
+</main>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js'
-import { getDatabase, ref, onValue, set, update } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js'
+import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js'
 
 const firebaseConfig = {
     apiKey: "AIzaSyDB_EIa1D49jxMrNVkqJjSrghh6Yp-MLP0",
@@ -261,39 +274,32 @@ const db = getDatabase(app);
 let participants = [];
 let scores = { 1: {}, 2: {} };
 let questions = [];
-let questionIndices = { 1: 1, 2: 1 }; 
+let questionIndices = { 1: 0, 2: 0 };
 let currentGroup = 1;
-let lastAction = null; 
-let config = { winPoint: 5, maxSlots: 5 };
+let config = { maxSlots: 5 }; // デフォルト
 
-// --- Global Functions ---
-window.switchGroup = (g) => {
-    currentGroup = g;
-    
+window.switchGroup = (groupNum) => {
+    currentGroup = groupNum;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(`tab-${g}`).classList.add('active');
-    
-    const lbl = document.getElementById('current-group-label');
-    lbl.textContent = `Group ${g}`;
-    lbl.className = g === 1 ? 'status-indicator bg-blue' : 'status-indicator bg-green';
-
-    const input = document.getElementById('q-input');
-    if(input) input.value = questionIndices[g];
-    
-    document.getElementById('rest-penalty-input').value = questionIndices[g];
-
-    updateCurrentQuestionDisplay();
-    renderPlayers();
+    document.getElementById(`tab-${groupNum}`).classList.add('active');
+    render();
+    updateQuestionDisplay();
 };
 
-// --- Data Sync ---
-onValue(ref(db, 'participants'), s => {
-    participants = s.exists() ? Object.entries(s.val()).map(([id, p]) => ({ id, ...p })).filter(p => p.course === 'α') : [];
-    renderPlayers();
+// --- Firebase Listeners ---
+onValue(ref(db, 'participants'), snapshot => {
+    if(snapshot.exists()) {
+        participants = Object.entries(snapshot.val())
+            .map(([id, p]) => ({ id, ...p }))
+            .filter(p => p.course === 'α');
+    } else {
+        participants = [];
+    }
+    render();
 });
 
-onValue(ref(db, '2R/α/group1/scores'), s => { scores[1] = s.val() || {}; if(currentGroup===1) renderPlayers(); });
-onValue(ref(db, '2R/α/group2/scores'), s => { scores[2] = s.val() || {}; if(currentGroup===2) renderPlayers(); });
+onValue(ref(db, '2R/α/group1/scores'), s => { scores[1] = s.val() || {}; render(); });
+onValue(ref(db, '2R/α/group2/scores'), s => { scores[2] = s.val() || {}; render(); });
 
 onValue(ref(db, '2R/α/questions'), s => {
     if (s.exists()) {
@@ -302,242 +308,135 @@ onValue(ref(db, '2R/α/questions'), s => {
     } else {
         questions = [];
     }
-    updateCurrentQuestionDisplay();
+    updateQuestionDisplay();
 });
 
 onValue(ref(db, '2R/α/group1/questionNumber'), s => {
-    questionIndices[1] = s.val() || 1;
-    if(currentGroup === 1) {
-        document.getElementById('q-input').value = questionIndices[1];
-        document.getElementById('rest-penalty-input').value = questionIndices[1];
-        updateCurrentQuestionDisplay();
-    }
+    questionIndices[1] = (s.val() || 1) - 1;
+    if(currentGroup === 1) updateQuestionDisplay();
 });
 onValue(ref(db, '2R/α/group2/questionNumber'), s => {
-    questionIndices[2] = s.val() || 1;
-    if(currentGroup === 2) {
-        document.getElementById('q-input').value = questionIndices[2];
-        document.getElementById('rest-penalty-input').value = questionIndices[2];
-        updateCurrentQuestionDisplay();
-    }
+    questionIndices[2] = (s.val() || 1) - 1;
+    if(currentGroup === 2) updateQuestionDisplay();
 });
 
-// 設定の同期
+// Config Listener
 onValue(ref(db, '2R/α/config'), s => {
     if(s.exists()) {
         config = s.val();
-        document.getElementById('win-points-input').value = config.winPoint || 5;
-        document.getElementById('max-slots-input').value = config.maxSlots || 5;
+        render(); // Slot数更新のため再描画
     }
 });
 
-// --- Event Listeners ---
+// --- Render Logic ---
 
-// 設定変更時
-document.getElementById('win-points-input').onchange = (e) => update(ref(db, '2R/α/config'), { winPoint: Number(e.target.value) });
-document.getElementById('max-slots-input').onchange = (e) => update(ref(db, '2R/α/config'), { maxSlots: Number(e.target.value) });
-
-document.getElementById('csv').addEventListener('change', e => {
-    const f = e.target.files[0];
-    if (!f) return;
-    const r = new FileReader();
-    r.onload = () => {
-        const lines = r.result.split(/\r?\n/).filter(l => l.trim());
-        const qs = lines.map(l => {
-            const c = l.split(',');
-            return { question: c[0], answer: c.slice(1).join(',') };
-        });
-        set(ref(db, '2R/α/questions'), qs);
-        alert(`${qs.length}問 読み込み完了`);
-    };
-    r.readAsText(f, 'utf-8');
-});
-
-const setQ = (num) => {
-    const n = Math.max(1, parseInt(num, 10) || 1);
-    set(ref(db, `2R/α/group${currentGroup}/questionNumber`), n);
-};
-
-document.getElementById('prev').onclick = () => setQ(questionIndices[currentGroup] - 1);
-document.getElementById('next').onclick = () => setQ(questionIndices[currentGroup] + 1);
-document.getElementById('q-input').onchange = (e) => setQ(e.target.value);
-
-document.getElementById('reset-all').onclick = () => {
-    if(confirm(`[Group ${currentGroup}] を本当にリセットしますか？\n全員のスコアが0になり、問題番号が1に戻ります。`)) {
-        set(ref(db, `2R/α/group${currentGroup}/scores`), {});
-        set(ref(db, `2R/α/group${currentGroup}/questionNumber`), 1);
-    }
-};
-
-// スルーボタン：休み減算して次の問題へ
-document.getElementById('skip').onclick = () => {
-    const ps = participants.filter(p => Number(p.group) === currentGroup);
-    let updates = {};
-    ps.forEach(p => {
-        const s = scores[currentGroup][p.id];
-        if (s && s.rest > 0) {
-            updates[`scores/${p.id}/rest`] = s.rest - 1;
-        }
-    });
-    
-    if(Object.keys(updates).length > 0) {
-        update(ref(db, `2R/α/group${currentGroup}`), updates);
-    }
-    // 自動で次へ
-    setQ(questionIndices[currentGroup] + 1);
-};
-
-// --- Rendering & Logic ---
-
-function updateCurrentQuestionDisplay() {
-    const idx = questionIndices[currentGroup] - 1;
-    const q = questions[idx];
-    const area = document.getElementById('q-content-area');
-
-    document.getElementById('current-q-text').textContent = `Q${idx + 1}`;
-
-    // 1問目は隠す処理
-    if (idx === 0) {
-        area.innerHTML = `
-            <div class="hidden-q">ここに問題が表示されます</div>
-            <div class="hidden-q" style="border-top:1px dashed #333;margin-top:0;">ここに解答が表示されます</div>
-        `;
-    } else {
-        area.innerHTML = `
-            <div id="current-q-detail" style="color:#aaa; font-size:0.9rem;">${q ? q.question : '(問題未登録)'}</div>
-            <div id="current-q-ans" class="q-ans-display">A: ${q ? q.answer : ''}</div>
-        `;
-    }
+function getOrdinal(n) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 
-function renderPlayers() {
+function render() {
     const box = document.getElementById('players');
     box.innerHTML = '';
     
-    const groupParticipants = participants.filter(p => Number(p.group) === currentGroup);
-    
-    if (groupParticipants.length === 0) {
-        box.innerHTML = '<div style="padding:10px;color:#666">このグループの参加者は表示されません</div>';
+    const ps = participants.filter(p => Number(p.group) === currentGroup);
+
+    if (ps.length === 0 && participants.length > 0) {
+        box.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:#aaa">このグループの参加者は登録されていません</div>';
+        updateStats(0, 0);
         return;
     }
 
-    groupParticipants.forEach(p => {
+    ps.forEach(p => {
         const s = scores[currentGroup][p.id] || { correct: 0, wrong: 0, rest: 0 };
-        const d = document.createElement('div');
-        
-        const isResting = (s.rest || 0) > 0;
         const isWinner = s.winOrder ? true : false;
-        const isDQ = (s.wrong || 0) >= 2;
-
-        d.className = `player-card ${isResting ? 'resting' : ''} ${isWinner ? 'winner' : ''}`;
+        const isRest = (s.rest || 0) > 0;
+        const isLost = (s.wrong || 0) >= 2;
         
-        d.innerHTML = `
-            <div class="player-info">
-                <span>${p.name}</span>
-                <span style="color:${isWinner ? '#22c55e' : (isResting ? '#818cf8' : '#fff')}">
-                    ${isWinner ? 'WIN' : (isResting ? `休${s.rest}` : (isDQ ? 'LOSE' : ''))}
-                </span>
-            </div>
-            <div class="player-stats">
-                <span class="stat-box" style="color:#4ade80">○ ${s.correct || 0}</span>
-                <span class="stat-box" style="color:#f87171">× ${s.wrong || 0}</span>
-            </div>
-            <div class="player-actions">
-                <button class="btn btn-success" data-act="c" ${isWinner||isDQ||isResting?'disabled':''}>正解</button>
-                <button class="btn btn-danger" data-act="w" ${isWinner||isDQ||isResting?'disabled':''}>誤答</button>
-                <button class="btn btn-neutral" data-act="u">戻</button>
-            </div>
-        `;
+        const div = document.createElement('div');
+        div.className = `player-card ${isWinner ? 'winner' : ''} ${isRest ? 'rest' : ''} ${isLost ? 'lost' : ''}`;
         
-        if(isWinner || isDQ || isResting) {
-            d.querySelectorAll('button:not([data-act="u"])').forEach(b => b.style.opacity = 0.3);
+        let rankContent = '';
+        if(isWinner) {
+            rankContent = `<span class="rank-text">${getOrdinal(s.winOrder)}</span>`;
+        } else if(isLost) {
+            rankContent = '<span style="color:#666;font-size:1.2rem;">LOSE</span>';
         }
 
-        d.querySelector('[data-act=c]').onclick = () => {
-            if(isWinner || isDQ || isResting) return;
+        div.innerHTML = `
+            <div class="rank-area">
+                ${rankContent}
+            </div>
             
-            const winPoint = config.winPoint || 5;
+            <div class="school-area">
+                ${p.school || ''} ${p.grade || ''}
+            </div>
 
-            lastAction = { id: p.id, type: 'c', group: currentGroup };
-            const newCorrect = (s.correct || 0) + 1;
-            
-            let updates = {};
-            const path = `2R/α/group${currentGroup}`;
-            updates[`scores/${p.id}/correct`] = newCorrect;
-            
-            // Win condition
-            if(newCorrect >= winPoint && !s.winOrder) {
-                const currentWinners = Object.values(scores[currentGroup]).filter(v => v.winOrder).length;
-                updates[`scores/${p.id}/winOrder`] = currentWinners + 1;
-            }
+            <div class="vertical-body">
+                <div class="p-name-v">${p.name}</div>
+            </div>
 
-            // Reduce others' rest
-            groupParticipants.forEach(o => {
-                if (o.id !== p.id) {
-                    const so = scores[currentGroup][o.id];
-                    if (so && so.rest > 0) {
-                        updates[`scores/${o.id}/rest`] = so.rest - 1;
-                    }
-                }
-            });
+            <div class="score-footer">
+                <div class="score-val val-correct">${s.correct || 0}</div>
+                <div class="score-val val-wrong">${s.wrong || 0}</div>
+            </div>
 
-            update(ref(db, path), updates).then(() => {
-                // 自動で次の問題へ
-                setQ(questionIndices[currentGroup] + 1);
-            });
-        };
-
-        d.querySelector('[data-act=w]').onclick = () => {
-            if(isWinner || isDQ || isResting) return;
-
-            const restCount = parseInt(document.getElementById('rest-penalty-input').value) || 1;
-
-            lastAction = { id: p.id, type: 'w', group: currentGroup };
-            
-            let updates = {};
-            updates[`scores/${p.id}/wrong`] = (s.wrong || 0) + 1;
-            updates[`scores/${p.id}/rest`] = restCount;
-
-            // Reduce others' rest
-            groupParticipants.forEach(o => {
-                if (o.id !== p.id) {
-                    const so = scores[currentGroup][o.id];
-                    if (so && so.rest > 0) {
-                        updates[`scores/${o.id}/rest`] = so.rest - 1;
-                    }
-                }
-            });
-            
-            update(ref(db, `2R/α/group${currentGroup}`), updates).then(() => {
-                // 自動で次の問題へ
-                setQ(questionIndices[currentGroup] + 1);
-            });
-        };
-
-        d.querySelector('[data-act=u]').onclick = () => {
-            if (!lastAction || lastAction.id !== p.id || lastAction.group !== currentGroup) {
-                alert('直前の操作のみ取り消せます（または対象・グループが違います）');
-                return;
-            }
-            const path = `2R/α/group${currentGroup}/scores/${p.id}`;
-            
-            if (lastAction.type === 'c') {
-                update(ref(db, path), { 
-                    correct: Math.max(0, (s.correct || 0) - 1),
-                    winOrder: null
-                });
-            }
-            if (lastAction.type === 'w') {
-                update(ref(db, path), { 
-                    wrong: Math.max(0, (s.wrong || 0) - 1),
-                    rest: 0 
-                });
-            }
-            lastAction = null;
-        };
-
-        box.appendChild(d);
+            ${isRest ? `<div class="rest-overlay"><div class="rest-mark">休 ${s.rest}</div></div>` : ''}
+        `;
+        box.appendChild(div);
     });
+
+    updateStats(ps, scores[currentGroup]);
+}
+
+function updateStats(ps, groupScores) {
+    if (!ps || !groupScores) return;
+    
+    // Alive: 勝ち抜けておらず、失格もしていない
+    const activeCount = ps.filter(p => {
+        const s = groupScores[p.id] || {};
+        return !s.winOrder && (s.wrong || 0) < 2; 
+    }).length;
+
+    const winnerCount = Object.values(groupScores).filter(s => s && s.winOrder).length;
+    const maxSlots = config.maxSlots || 5;
+    const remainingSlots = Math.max(0, maxSlots - winnerCount);
+    
+    document.getElementById('alive-slot-display').textContent = `${activeCount} ▶ ${remainingSlots}`;
+}
+
+function updateQuestionDisplay() {
+    const idx = questionIndices[currentGroup];
+    const box = document.getElementById('q-content-box');
+    
+    document.getElementById('qnum').textContent = `Q.${idx + 1}`;
+    
+    // 第1問目 (idx === 0) は隠す
+    if (idx === 0) {
+        box.innerHTML = `
+            <div class="q-text hidden-text">ここに問題が表示されます</div>
+            <div class="a-text hidden-text" style="margin-top:5px; font-size:1rem;">ここに解答が表示されます</div>
+        `;
+        return;
+    }
+
+    // 通常表示
+    let qText = '待機中... (問題データなし)';
+    let aText = '';
+    
+    if (questions && questions.length > idx && questions[idx]) {
+        qText = questions[idx].question;
+        aText = questions[idx].answer || '(解答なし)';
+    }
+
+    box.innerHTML = `
+        <div class="q-text" id="qtext">${qText}</div>
+        <div class="a-text">
+            <span class="a-label">ANSWER</span>
+            <span id="ans">${aText}</span>
+        </div>
+    `;
 }
 </script>
 </body>
