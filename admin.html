@@ -3,226 +3,95 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>常磐路オープン2nd 管理画面</title>
+<title>参加者管理画面</title>
 <style>
-body {
-  font-family: sans-serif;
-  margin: 0;
-  padding: 20px;
-  background-color: #f5f5f5;
-}
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-h1 {
-  border-bottom: 3px solid #333;
-  padding-bottom: 15px;
-  margin-bottom: 30px;
-}
-.message {
-  padding: 15px;
-  margin: 20px 0;
-  background-color: #e3f2fd;
-  border-radius: 5px;
-  border-left: 4px solid #2196f3;
-  display: none;
-}
-.message.show {
-  display: block;
-}
-.tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 30px;
-  border-bottom: 2px solid #ddd;
-}
-.tab {
-  padding: 12px 24px;
-  border: none;
-  background-color: #f5f5f5;
-  cursor: pointer;
-  font-size: 16px;
-  border-radius: 5px 5px 0 0;
-  transition: background-color 0.3s;
-}
-.tab.active {
-  background-color: white;
-  border-bottom: 3px solid #2196f3;
-}
-.tab-content {
-  display: none;
-}
-.tab-content.active {
-  display: block;
-}
-.btn {
-  padding: 12px 24px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: opacity 0.3s;
-  margin-right: 10px;
-}
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-.btn-primary {
-  background-color: #2196f3;
-  color: white;
-}
-.btn-success {
-  background-color: #4caf50;
-  color: white;
-}
-.btn-warning {
-  background-color: #ff9800;
-  color: white;
-}
-.file-input {
-  padding: 10px;
-  font-size: 16px;
-  margin: 20px 0;
-}
-.info-box {
-  padding: 15px;
-  background-color: #f5f5f5;
-  border-radius: 5px;
-  margin: 20px 0;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-th, td {
-  padding: 12px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-th {
-  background-color: #f5f5f5;
-  font-weight: bold;
-}
-.table-wrapper {
-  max-height: 500px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-.course-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-top: 20px;
-}
-.course-card {
-  border: 2px solid #333;
-  border-radius: 8px;
-  padding: 20px;
-}
-.course-card h3 {
-  margin-top: 0;
-  color: #333;
-}
-.participant-list {
-  max-height: 250px;
-  overflow-y: auto;
-  margin-top: 15px;
-}
-.participant-item {
-  padding: 8px;
-  border-bottom: 1px solid #eee;
-  font-size: 14px;
-}
-.loading {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0,0,0,0.7);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-  z-index: 1000;
-}
-.loading.show {
-  display: flex;
-}
-input[type="number"] {
-  width: 80px;
-  padding: 6px;
-  text-align: center;
-  font-size: 14px;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+.container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
+h1 { margin-bottom: 30px; color: #333; }
+.section { margin-bottom: 40px; padding: 20px; background: #f9f9f9; border-radius: 8px; }
+.section h2 { margin-bottom: 15px; color: #555; }
+.btn { padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px; }
+.btn-primary { background: #2196f3; color: white; }
+.btn-success { background: #4caf50; color: white; }
+.btn-warning { background: #ff9800; color: white; }
+input[type="file"] { margin: 10px 0; }
+input[type="number"] { width: 100px; padding: 5px; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+th { background: #f5f5f5; }
+.table-wrapper { max-height: 500px; overflow-y: auto; border: 1px solid #ddd; }
+select { padding: 5px; }
+.info { color: #666; margin: 10px 0; }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>常磐路オープン2nd 管理画面</h1>
-  
-  <div id="message" class="message"></div>
-  
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('upload')">CSVアップロード</button>
-    <button class="tab" onclick="switchTab('first')">1st Round得点入力</button>
-    <button class="tab" onclick="switchTab('courses')">コース振り分け</button>
+  <h1>常磐路オープン2nd 参加者管理画面</h1>
+
+  <div class="section">
+    <h2>1. 参加者データアップロード</h2>
+    <p class="info">CSV形式: エントリーナンバー,氏名,学校,学年</p>
+    <input type="file" id="csvFile" accept=".csv">
+    <p class="info">登録済み: <span id="count">0</span>名</p>
   </div>
-  
-  <div id="upload" class="tab-content active">
-    <h2>参加者データのアップロード</h2>
-    <p>CSVファイル形式: エントリーナンバー,氏名,学校,学年（ヘッダー行なし）</p>
-    <input type="file" id="csvFile" accept=".csv" class="file-input">
-    <div class="info-box">
-      <strong>登録済み参加者数: </strong><span id="participantCount">0</span>名
-    </div>
+
+  <div class="section">
+    <h2>2. 問題データアップロード</h2>
+    <p class="info">CSV形式: No.,問題,解答</p>
+    <label>最初の問題番号: <input type="number" id="startQ" value="1" min="1"></label>
+    <input type="file" id="questionFile" accept=".csv">
+    <p class="info">登録済み問題数: <span id="qCount">0</span>問</p>
   </div>
-  
-  <div id="first" class="tab-content">
-    <h2>1st Round得点入力</h2>
-    <button class="btn btn-success" onclick="saveFirstRound()">得点を保存して順位を自動計算</button>
+
+  <div class="section">
+    <h2>3. 1st Round得点入力</h2>
+    <p class="info">近似値模範解答: <input type="number" id="correctAnswer" placeholder="例: 12345"></p>
+    <button class="btn btn-success" onclick="calculate()">得点と順位を計算</button>
     <div class="table-wrapper">
-      <table id="firstTable">
+      <table>
         <thead>
           <tr>
-            <th>Entry No.</th>
+            <th>No.</th>
             <th>氏名</th>
             <th>学校</th>
             <th>学年</th>
             <th>得点(80点満点)</th>
-            <th>近似値クイズ誤差</th>
+            <th>近似値解答</th>
+            <th>誤差</th>
             <th>1st順位</th>
           </tr>
         </thead>
-        <tbody id="firstTableBody"></tbody>
+        <tbody id="firstTable"></tbody>
       </table>
     </div>
   </div>
-  
-  <div id="courses" class="tab-content">
-    <h2>2nd Roundコース振り分け</h2>
-    <button class="btn btn-warning" onclick="autoAssignCourses()">自動振り分け実行</button>
-    <p style="color: #666; margin-top: 10px;">※ 1st順位1-24位→3R、25-48位→α、49-72位→β、73-96位→γに自動振り分けされます</p>
-    <div id="courseDisplay"></div>
+
+  <div class="section">
+    <h2>4. コース振り分け</h2>
+    <button class="btn btn-success" onclick="saveAssignment()">振り分けを保存</button>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>氏名</th>
+            <th>1st順位</th>
+            <th>コース</th>
+            <th>グループ</th>
+          </tr>
+        </thead>
+        <tbody id="assignTable"></tbody>
+      </table>
+    </div>
   </div>
 </div>
-
-<div id="loading" class="loading">処理中...</div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
 import { getDatabase, ref, set, get, update } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
 
-const firebaseConfig = {
+const app = initializeApp({
   apiKey: "AIzaSyDB_EIa1D49jxMrNVkqJjSrghh6Yp-MLP0",
   authDomain: "tokiwaji-open-2nd.firebaseapp.com",
   databaseURL: "https://tokiwaji-open-2nd-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -230,239 +99,157 @@ const firebaseConfig = {
   storageBucket: "tokiwaji-open-2nd.firebasestorage.app",
   messagingSenderId: "1053108487162",
   appId: "1:1053108487162:web:1cf8f504522b7e95129a43"
-};
+});
 
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-
+const db = getDatabase(app);
 let participants = [];
 
-window.switchTab = function(tabName) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById(tabName).classList.add('active');
-  
-  if (tabName === 'first') loadFirstTable();
-  if (tabName === 'courses') loadCourseDisplay();
-}
-
-function showMessage(text) {
-  const msg = document.getElementById('message');
-  msg.textContent = text;
-  msg.classList.add('show');
-  setTimeout(() => msg.classList.remove('show'), 5000);
-}
-
-function showLoading(show) {
-  document.getElementById('loading').classList.toggle('show', show);
-}
-
-async function loadParticipants() {
-  try {
-    const snapshot = await get(ref(database, 'participants'));
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      participants = Object.entries(data).map(([id, p]) => ({ id, ...p }));
-      participants.sort((a, b) => a.entryNumber - b.entryNumber);
-      document.getElementById('participantCount').textContent = participants.length;
-    }
-  } catch (error) {
-    console.error('データ読み込みエラー:', error);
+async function load() {
+  const snap = await get(ref(db, 'participants'));
+  if (snap.exists()) {
+    participants = Object.entries(snap.val()).map(([id, p]) => ({ id, ...p }));
+    participants.sort((a, b) => a.entryNumber - b.entryNumber);
+    document.getElementById('count').textContent = participants.length;
+    loadFirstTable();
+    loadAssignTable();
+  }
+  const qSnap = await get(ref(db, 'questions'));
+  if (qSnap.exists()) {
+    const qs = Object.keys(qSnap.val());
+    document.getElementById('qCount').textContent = qs.length;
   }
 }
 
 document.getElementById('csvFile').addEventListener('change', async function(e) {
   const file = e.target.files[0];
   if (!file) return;
-  
-  const reader = new FileReader();
-  reader.onload = async function(event) {
-    try {
-      showLoading(true);
-      const text = event.target.result;
-      const lines = text.trim().split('\n');
-      
-      const newParticipants = {};
-      lines.forEach(line => {
-        const [entryNumber, name, school, grade] = line.split(',').map(s => s.trim());
-        const id = `p${entryNumber.padStart(3, '0')}`;
-        newParticipants[id] = {
-          entryNumber: parseInt(entryNumber),
-          name,
-          school,
-          grade,
-          firstRoundScore: null,
-          firstRoundError: null,
-          firstRoundRank: null,
-          course: null,
-          group: null
-        };
-      });
-      
-      await set(ref(database, 'participants'), newParticipants);
-      showMessage(`${lines.length}名のデータを登録しました`);
-      await loadParticipants();
-    } catch (error) {
-      showMessage('エラー: ' + error.message);
-    } finally {
-      showLoading(false);
-    }
-  };
-  reader.readAsText(file);
+  const text = await file.text();
+  const lines = text.trim().split('\n');
+  const data = {};
+  lines.forEach(line => {
+    const [num, name, school, grade] = line.split(',').map(s => s.trim());
+    const id = `p${num.padStart(3, '0')}`;
+    data[id] = { entryNumber: parseInt(num), name, school, grade, score: null, proximityAnswer: null, proximityError: null, rank: null, course: null, group: null };
+  });
+  await set(ref(db, 'participants'), data);
+  alert('アップロード完了');
+  load();
+});
+
+document.getElementById('questionFile').addEventListener('change', async function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const text = await file.text();
+  const lines = text.trim().split('\n');
+  const start = parseInt(document.getElementById('startQ').value);
+  const data = {};
+  lines.forEach((line, i) => {
+    const [no, q, a] = line.split(',').map(s => s.trim());
+    data[`q${start + i}`] = { number: start + i, question: q, answer: a };
+  });
+  await set(ref(db, 'questions'), data);
+  alert('問題アップロード完了');
+  load();
 });
 
 function loadFirstTable() {
-  const tbody = document.getElementById('firstTableBody');
+  const tbody = document.getElementById('firstTable');
   tbody.innerHTML = '';
-  
   participants.forEach(p => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td style="text-align: center;">${p.entryNumber}</td>
+      <td>${p.entryNumber}</td>
       <td>${p.name}</td>
       <td>${p.school}</td>
-      <td style="text-align: center;">${p.grade}</td>
-      <td style="text-align: center;">
-        <input type="number" id="score_${p.id}" value="${p.firstRoundScore || ''}" min="0" max="80" step="1">
-      </td>
-      <td style="text-align: center;">
-        <input type="number" id="error_${p.id}" value="${p.firstRoundError || ''}" min="0" step="0.01">
-      </td>
-      <td style="text-align: center; font-weight: bold;">${p.firstRoundRank || '-'}</td>
+      <td>${p.grade}</td>
+      <td><input type="number" id="score_${p.id}" value="${p.score || ''}" min="0" max="80"></td>
+      <td><input type="number" id="prox_${p.id}" value="${p.proximityAnswer || ''}" placeholder="空欄可"></td>
+      <td id="error_${p.id}">${p.proximityError !== null ? p.proximityError.toFixed(2) : '-'}</td>
+      <td id="rank_${p.id}">${p.rank || '-'}</td>
     `;
     tbody.appendChild(tr);
   });
 }
 
-window.saveFirstRound = async function() {
-  try {
-    showLoading(true);
-    const updates = {};
-    
-    participants.forEach(p => {
-      const scoreInput = document.getElementById(`score_${p.id}`);
-      const errorInput = document.getElementById(`error_${p.id}`);
-      if (scoreInput) {
-        const score = scoreInput.value ? parseFloat(scoreInput.value) : null;
-        const error = errorInput.value ? parseFloat(errorInput.value) : null;
-        updates[`participants/${p.id}/firstRoundScore`] = score;
-        updates[`participants/${p.id}/firstRoundError`] = error;
-      }
-    });
-    
-    await update(ref(database), updates);
-    await loadParticipants();
-    
-    const ranked = participants
-      .filter(p => p.firstRoundScore !== null)
-      .sort((a, b) => {
-        if (b.firstRoundScore !== a.firstRoundScore) {
-          return b.firstRoundScore - a.firstRoundScore;
-        }
-        if (a.firstRoundError !== b.firstRoundError) {
-          return a.firstRoundError - b.firstRoundError;
-        }
-        return a.entryNumber - b.entryNumber;
-      });
-    
-    const rankUpdates = {};
-    ranked.forEach((p, index) => {
-      rankUpdates[`participants/${p.id}/firstRoundRank`] = index + 1;
-    });
-    
-    await update(ref(database), rankUpdates);
-    showMessage('得点を保存し、順位を自動計算しました');
-    await loadParticipants();
-    loadFirstTable();
-  } catch (error) {
-    showMessage('エラー: ' + error.message);
-  } finally {
-    showLoading(false);
-  }
-}
-
-window.autoAssignCourses = async function() {
-  try {
-    showLoading(true);
-    const ranked = participants
-      .filter(p => p.firstRoundRank !== null)
-      .sort((a, b) => a.firstRoundRank - b.firstRoundRank);
-    
-    const updates = {};
-    
-    ranked.forEach((p, index) => {
-      if (index < 24) {
-        updates[`participants/${p.id}/course`] = '3R';
-        updates[`participants/${p.id}/group`] = null;
-      } else {
-        const position = index - 24;
-        const courseIndex = Math.floor(position / 24);
-        const courses = ['α', 'β', 'γ'];
-        const groupIndex = Math.floor((position % 24) / 12);
-        
-        updates[`participants/${p.id}/course`] = courses[courseIndex];
-        updates[`participants/${p.id}/group`] = groupIndex + 1;
-      }
-    });
-    
-    await update(ref(database), updates);
-    showMessage('コース振り分けを完了しました');
-    await loadParticipants();
-    loadCourseDisplay();
-  } catch (error) {
-    showMessage('エラー: ' + error.message);
-  } finally {
-    showLoading(false);
-  }
-}
-
-function loadCourseDisplay() {
-  const display = document.getElementById('courseDisplay');
+window.calculate = async function() {
+  const correct = parseFloat(document.getElementById('correctAnswer').value);
+  if (isNaN(correct)) { alert('近似値模範解答を入力してください'); return; }
   
-  let html = '<div class="course-grid">';
+  const updates = {};
+  participants.forEach(p => {
+    const score = parseFloat(document.getElementById(`score_${p.id}`).value) || null;
+    const prox = document.getElementById(`prox_${p.id}`).value;
+    const proxAnswer = prox ? parseFloat(prox) : null;
+    const error = proxAnswer !== null ? Math.abs(proxAnswer - correct) : Infinity;
+    updates[`participants/${p.id}/score`] = score;
+    updates[`participants/${p.id}/proximityAnswer`] = proxAnswer;
+    updates[`participants/${p.id}/proximityError`] = error;
+  });
+  await update(ref(db), updates);
+  await load();
   
-  ['α', 'β', 'γ'].forEach(course => {
-    [1, 2].forEach(group => {
-      const members = participants.filter(p => p.course === course && p.group === group);
-      html += `
-        <div class="course-card">
-          <h3>Course ${course} - Group ${group}</h3>
-          <p>参加者数: ${members.length}名</p>
-          <div class="participant-list">
-            ${members.map(p => `
-              <div class="participant-item">
-                ${p.firstRoundRank ? p.firstRoundRank + '位 ' : ''}
-                ${p.name} (${p.school})
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `;
-    });
+  const ranked = participants.filter(p => p.score !== null).sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    if (a.proximityError !== b.proximityError) return a.proximityError - b.proximityError;
+    return a.entryNumber - b.entryNumber;
   });
   
-  const thirdRound = participants.filter(p => p.course === '3R');
-  html += `
-    <div class="course-card" style="grid-column: span 2; border-color: #2196f3;">
-      <h3>3rd Round進出者（上位24名）</h3>
-      <p>参加者数: ${thirdRound.length}名</p>
-      <div class="participant-list">
-        ${thirdRound.map(p => `
-          <div class="participant-item">
-            ${p.firstRoundRank ? p.firstRoundRank + '位 ' : ''}
-            ${p.name} (${p.school})
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-  
-  html += '</div>';
-  display.innerHTML = html;
+  const rankUpdates = {};
+  ranked.forEach((p, i) => { rankUpdates[`participants/${p.id}/rank`] = i + 1; });
+  await update(ref(db), rankUpdates);
+  alert('計算完了');
+  load();
 }
 
-loadParticipants();
+function loadAssignTable() {
+  const tbody = document.getElementById('assignTable');
+  tbody.innerHTML = '';
+  const ranked = participants.filter(p => p.rank !== null).sort((a, b) => a.rank - b.rank);
+  ranked.forEach(p => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${p.entryNumber}</td>
+      <td>${p.name}</td>
+      <td>${p.rank}</td>
+      <td>
+        <select id="course_${p.id}">
+          <option value="">未設定</option>
+          <option value="3R" ${p.course === '3R' ? 'selected' : ''}>3R</option>
+          <option value="α" ${p.course === 'α' ? 'selected' : ''}>α</option>
+          <option value="β" ${p.course === 'β' ? 'selected' : ''}>β</option>
+          <option value="γ" ${p.course === 'γ' ? 'selected' : ''}>γ</option>
+        </select>
+      </td>
+      <td>
+        <select id="group_${p.id}" ${p.course === '3R' ? 'disabled' : ''}>
+          <option value="">-</option>
+          <option value="1" ${p.group === 1 ? 'selected' : ''}>1</option>
+          <option value="2" ${p.group === 2 ? 'selected' : ''}>2</option>
+        </select>
+      </td>
+    `;
+    tbody.appendChild(tr);
+    document.getElementById(`course_${p.id}`).addEventListener('change', function(e) {
+      document.getElementById(`group_${p.id}`).disabled = (e.target.value === '3R');
+      if (e.target.value === '3R') document.getElementById(`group_${p.id}`).value = '';
+    });
+  });
+}
+
+window.saveAssignment = async function() {
+  const updates = {};
+  participants.forEach(p => {
+    const course = document.getElementById(`course_${p.id}`)?.value || null;
+    const group = course === '3R' ? null : (document.getElementById(`group_${p.id}`)?.value ? parseInt(document.getElementById(`group_${p.id}`).value) : null);
+    updates[`participants/${p.id}/course`] = course;
+    updates[`participants/${p.id}/group`] = group;
+  });
+  await update(ref(db), updates);
+  alert('保存完了');
+  load();
+}
+
+load();
 </script>
 </body>
 </html>
