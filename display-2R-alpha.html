@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2R Course α 表示</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
     --bg-color: #0f172a;
     --card-bg: #1e293b;
     --border-color: #334155;
     --text-color: #f1f5f9;
-    --win-color: #ef4444;
-    --rest-color: #6366f1;
-    --correct-color: #22c55e;
-    --wrong-color: #ef4444;
+    --win-color: #ef4444;       /* 赤 */
+    --win-bg: rgba(239, 68, 68, 0.1);
+    --rest-color: #6366f1;      /* 青紫 */
+    --correct-color: #22c55e;   /* 緑 */
     --active-tab: #3b82f6;
-    --inactive-tab: #1e293b;
+    --gold: #fbbf24;
 }
 * { box-sizing: border-box; }
 body {
@@ -30,81 +30,90 @@ body {
     overflow: hidden;
 }
 
-/* Header */
+/* --- Header Layout --- */
 header {
     background: #020617;
-    border-bottom: 1px solid var(--border-color);
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 80px;
-}
-.header-left { display: flex; align-items: center; gap: 20px; }
-.logo { height: 50px; width: auto; object-fit: contain; }
-.title-group { display: flex; flex-direction: column; }
-.main-title { font-size: 1.2rem; font-weight: 900; color: #94a3b8; }
-.sub-title { font-size: 1rem; font-weight: 700; color: #64748b; }
-
-.tabs { display: flex; background: #0f172a; padding: 4px; border-radius: 8px; gap: 5px; border: 1px solid var(--border-color); }
-.tab-btn {
-    background: transparent;
-    border: none;
-    color: #64748b;
-    padding: 8px 24px;
-    font-weight: 700;
-    font-size: 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.tab-btn.active { background: var(--active-tab); color: white; }
-
-.header-right { display: flex; gap: 15px; align-items: center; }
-.counter-box {
-    background: #0f172a;
-    border: 1px solid var(--border-color);
-    padding: 8px 24px;
-    border-radius: 8px;
-    font-family: 'Roboto', sans-serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #cbd5e1;
-    min-width: 140px;
-    text-align: center;
-    letter-spacing: 2px;
-}
-
-/* Question Area */
-.question-area {
-    background: #1e293b;
-    padding: 1rem 2rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 2px solid var(--border-color);
+    padding: 10px 30px;
+    height: 110px; /* 少し高さを確保 */
     display: grid;
-    grid-template-columns: 80px 1fr;
-    gap: 20px;
+    grid-template-columns: 1fr auto 1fr; /* 左・中・右 */
     align-items: center;
-    min-height: 100px;
 }
-.q-number {
-    font-size: 1.5rem;
-    color: #60a5fa;
-    font-weight: 900;
-    text-align: center;
-    border-right: 3px solid var(--border-color);
-    padding-right: 20px;
-    height: 100%;
+
+/* Header Left: Round info */
+.h-left {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2px;
+}
+.h-round { font-size: 1rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.05em; }
+.h-course { font-size: 3rem; font-weight: 900; color: #fff; line-height: 1; letter-spacing: 0.05em; margin-left: -2px; }
+.h-rule { font-size: 1.4rem; font-weight: 700; color: var(--gold); margin-top: 5px; }
+
+/* Header Center: Logo & Title */
+.h-center {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
-.q-content { display: flex; flex-direction: column; gap: 5px; }
-.q-text { font-size: 1.4rem; font-weight: 700; line-height: 1.3; }
-.a-text { font-size: 1.1rem; color: #fbbf24; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-.a-label { font-size: 0.8rem; background: #451a03; color: #fbbf24; padding: 2px 8px; border-radius: 4px; }
+.logo { height: 45px; width: auto; object-fit: contain; margin-bottom: 5px; }
+.h-title { font-size: 0.9rem; font-weight: 700; color: #64748b; letter-spacing: 0.1em; }
+
+/* Header Right: Status */
+.h-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 5px;
+}
+.h-qnum { font-size: 2rem; font-weight: 900; color: #fff; }
+.h-status { font-size: 1.4rem; font-weight: 700; color: #cbd5e1; font-family: 'Roboto', sans-serif; }
+.status-label { font-size: 0.8rem; color: #64748b; margin-right: 5px; }
+
+/* Tabs (Hidden visually but kept for logic if needed, or moved to absolute) */
+.tabs-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 0;
+    overflow: visible;
+    z-index: 100;
+    pointer-events: none;
+}
+.tabs {
+    pointer-events: auto;
+    position: fixed;
+    bottom: 10px; right: 10px; /* 右下に配置して邪魔にならないように */
+    display: flex; gap: 5px; opacity: 0.3; transition: opacity 0.3s;
+}
+.tabs:hover { opacity: 1; }
+.tab-btn { background: #000; color: #fff; border: 1px solid #333; padding: 5px 10px; cursor: pointer; }
+.tab-btn.active { background: var(--active-tab); }
+
+
+/* --- Question Area --- */
+.question-area {
+    background: #1e293b;
+    padding: 0.8rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 90px;
+    position: relative;
+}
+/* Q番号はヘッダーに移動したので、ここでは問題文と解答のみ */
+.q-text { font-size: 1.5rem; font-weight: 700; line-height: 1.3; margin-bottom: 5px; padding-left: 10px; border-left: 4px solid var(--active-tab); }
+.a-container { display: flex; align-items: center; gap: 10px; padding-left: 14px; }
+.a-label { font-size: 1rem; font-weight: 900; color: #fbbf24; }
+.a-text { font-size: 1.3rem; font-weight: 700; color: #fff; }
 .hidden-text { color: #64748b; font-style: italic; font-weight: normal; }
 
-/* Players Grid */
+
+/* --- Players Grid --- */
 main {
     flex: 1;
     padding: 20px;
@@ -112,56 +121,55 @@ main {
 }
 .players {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
 }
 
-/* 縦書きカードスタイル */
+/* Card Design */
 .player-card {
     background: var(--card-bg);
     border: 2px solid var(--border-color);
     border-radius: 12px;
     display: flex;
     flex-direction: column;
-    height: 380px; 
+    height: 360px; 
     position: relative;
     overflow: hidden;
     transition: all 0.2s ease;
 }
 
-.player-card.winner { border-color: var(--win-color); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
-.player-card.rest { border-color: var(--rest-color); background: #1e1b4b; opacity: 0.9; }
-.player-card.lost { opacity: 0.5; filter: grayscale(1); }
+/* 状態ごとのスタイル */
+.player-card.winner { border-color: var(--win-color); background: radial-gradient(circle at center, var(--win-bg), var(--card-bg)); box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); }
+.player-card.rest { border-color: var(--rest-color); }
+.player-card.lost { opacity: 0.4; filter: grayscale(1); border-style: dashed; }
 
-/* 1st Round順位 (横) */
-.rank-area {
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 900;
-    font-size: 1.6rem;
-    background: rgba(0,0,0,0.3);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.rank-text { color: var(--win-color); text-shadow: 0 0 10px rgba(239,68,68,0.4); }
-
-/* 学校・学年 (横) */
-.school-area {
-    padding: 6px;
-    text-align: center;
-    font-size: 0.85rem;
+/* 1. Paper Rank (Top) */
+.p-paper-rank {
+    background: rgba(0,0,0,0.4);
     color: #94a3b8;
+    font-size: 0.9rem;
     font-weight: 700;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    text-align: center;
+    padding: 2px 0;
+    font-family: 'Roboto', sans-serif;
+}
+.winner .p-paper-rank { background: var(--win-color); color: white; }
+
+/* 2. School/Grade (Middle Top) - Larger */
+.p-school {
+    text-align: center;
+    font-size: 1.1rem; /* 大きく */
+    font-weight: 700;
+    color: #e2e8f0;
+    padding: 8px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-/* 名前 (縦) */
-.vertical-body {
+/* 3. Name (Vertical, Center) - Adjusted size */
+.p-body {
     flex: 1;
     display: flex;
     justify-content: center;
@@ -170,81 +178,86 @@ main {
     padding: 10px;
 }
 .p-name-v {
-    font-size: 2.2rem;
+    font-size: 1.8rem; /* 大きすぎないように調整 */
     font-weight: 900;
-    letter-spacing: 0.2rem;
+    letter-spacing: 0.15rem;
     color: white;
     max-height: 100%;
+    /* 縦書きで行が増えないように抑制 */
+    line-height: 1; 
 }
 
-/* スコア表示 (下部、横、数字のみ大きく) */
-.score-footer {
-    height: 60px;
-    background: rgba(0,0,0,0.4);
+/* 4. Score / Rank / Snowman (Bottom) */
+.p-footer {
+    height: 90px;
+    background: rgba(0,0,0,0.3);
+    border-top: 1px solid rgba(255,255,255,0.1);
     display: flex;
-    justify-content: space-evenly;
+    flex-direction: column;
+    justify-content: flex-start; /* 上寄せ */
     align-items: center;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 5px;
 }
-.score-val {
+
+/* Score Number or Rank */
+.score-main {
     font-family: 'Roboto', sans-serif;
-    font-size: 2.2rem;
+    font-size: 3rem;
     font-weight: 900;
     line-height: 1;
 }
-.val-correct { color: var(--correct-color); }
-.val-wrong { color: var(--wrong-color); }
+.score-pt { color: var(--correct-color); }
+.score-rank { color: var(--win-color); font-size: 2.5rem; text-shadow: 0 0 10px rgba(239,68,68,0.5); }
+.score-lose { color: #64748b; font-size: 2rem; }
 
-/* 休みオーバーレイ */
-.rest-overlay {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
+/* Snowman Container */
+.snowman-container {
     display: flex;
     justify-content: center;
-    align-items: center;
-    pointer-events: none;
-    z-index: 10;
+    gap: 2px;
+    margin-top: 5px;
+    height: 20px;
 }
-.rest-mark {
-    font-size: 5rem;
-    color: rgba(99, 102, 241, 0.4);
-    transform: rotate(-15deg);
-    font-weight: 900;
-    border: 6px solid rgba(99, 102, 241, 0.4);
-    padding: 10px 20px;
-    border-radius: 15px;
+.snowman {
+    font-size: 1.2rem;
+    color: #a5b4fc;
+    animation: bounce 1s infinite alternate;
 }
+@keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-2px); } }
 
 </style>
 </head>
 <body>
 
+<div class="tabs">
+    <button id="tab-1" class="tab-btn active" onclick="switchGroup(1)">G1</button>
+    <button id="tab-2" class="tab-btn" onclick="switchGroup(2)">G2</button>
+</div>
+
 <header>
-    <div class="header-left">
-        <img src="./常磐路オープン2nd_ロゴ.png" alt="Logo" class="logo" onerror="this.style.display='none'">
-        <div class="title-group">
-            <div class="main-title">Tokiwaji Open 2nd</div>
-            <div class="sub-title">2R Course α</div>
-        </div>
-    </div>
-    
-    <div class="tabs">
-        <button id="tab-1" class="tab-btn active" onclick="switchGroup(1)">Group 1</button>
-        <button id="tab-2" class="tab-btn" onclick="switchGroup(2)">Group 2</button>
+    <div class="h-left">
+        <div class="h-round">2nd Round</div>
+        <div class="h-course">Course α</div>
+        <div class="h-rule" id="rule-display">5○</div>
     </div>
 
-    <div class="header-right">
-        <div class="counter-box" id="alive-slot-display">0 ▶ 0</div>
+    <div class="h-center">
+        <img src="./常磐路オープン2nd_ロゴ.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+        <div class="h-title">Tokiwaji Open 2nd</div>
+    </div>
+
+    <div class="h-right">
+        <div class="h-qnum" id="header-qnum">Q.-</div>
+        <div class="h-status" id="alive-slot-display">(0) &gt;&gt; (0)</div>
     </div>
 </header>
 
 <div class="question-area">
-    <div class="q-number" id="qnum">Q.-</div>
-    <div class="q-content" id="q-content-box">
+    <div id="q-content-box" style="width: 100%;">
         <div class="q-text" id="qtext">読み込み中...</div>
-        <div class="a-text">
-            <span class="a-label">ANSWER</span>
-            <span id="ans"></span>
+        <div class="a-container">
+            <span class="a-label">Ans.</span>
+            <span class="a-text" id="ans"></span>
         </div>
     </div>
 </div>
@@ -276,8 +289,9 @@ let scores = { 1: {}, 2: {} };
 let questions = [];
 let questionIndices = { 1: 0, 2: 0 };
 let currentGroup = 1;
-let config = { maxSlots: 5 }; // デフォルト
+let config = { winPoint: 5, maxSlots: 5 };
 
+// Group Switching
 window.switchGroup = (groupNum) => {
     currentGroup = groupNum;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -320,11 +334,10 @@ onValue(ref(db, '2R/α/group2/questionNumber'), s => {
     if(currentGroup === 2) updateQuestionDisplay();
 });
 
-// Config Listener
 onValue(ref(db, '2R/α/config'), s => {
     if(s.exists()) {
         config = s.val();
-        render(); // Slot数更新のため再描画
+        render(); // Update slots/rules
     }
 });
 
@@ -337,13 +350,17 @@ function getOrdinal(n) {
 }
 
 function render() {
+    // 1. Update Header Info
+    const winP = config.winPoint || 5;
+    document.getElementById('rule-display').textContent = `${winP}○`; // Rule display
+
     const box = document.getElementById('players');
     box.innerHTML = '';
     
     const ps = participants.filter(p => Number(p.group) === currentGroup);
 
     if (ps.length === 0 && participants.length > 0) {
-        box.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:#aaa">このグループの参加者は登録されていません</div>';
+        box.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:#aaa">待機中...</div>';
         updateStats(0, 0);
         return;
     }
@@ -357,32 +374,45 @@ function render() {
         const div = document.createElement('div');
         div.className = `player-card ${isWinner ? 'winner' : ''} ${isRest ? 'rest' : ''} ${isLost ? 'lost' : ''}`;
         
-        let rankContent = '';
-        if(isWinner) {
-            rankContent = `<span class="rank-text">${getOrdinal(s.winOrder)}</span>`;
-        } else if(isLost) {
-            rankContent = '<span style="color:#666;font-size:1.2rem;">LOSE</span>';
+        // --- Score / Status Display Logic ---
+        let mainDisplay = '';
+        let snowmanDisplay = '';
+
+        if (isWinner) {
+            // 勝ち抜け時は順位を表示
+            mainDisplay = `<span class="score-main score-rank">${getOrdinal(s.winOrder)}</span>`;
+        } else if (isLost) {
+            mainDisplay = `<span class="score-main score-lose">LOSE</span>`;
+        } else {
+            // 通常時はポイント数を表示
+            mainDisplay = `<span class="score-main score-pt">${s.correct || 0}</span>`;
+            
+            // 休みの場合、雪だるまを表示
+            if (isRest) {
+                const count = Math.min(s.rest, 10); // 表示上限
+                snowmanDisplay = '<span class="snowman">⛄</span>'.repeat(count);
+            }
         }
 
-        div.innerHTML = `
-            <div class="rank-area">
-                ${rankContent}
-            </div>
-            
-            <div class="school-area">
-                ${p.school || ''} ${p.grade || ''}
-            </div>
+        // --- Paper Rank Logic ---
+        // データに rank があれば表示、なければ "-"
+        const paperRank = p.rank ? `${getOrdinal(p.rank)}` : '';
 
-            <div class="vertical-body">
+        div.innerHTML = `
+            <div class="p-paper-rank">${paperRank}</div>
+            
+            <div class="p-school">${p.school || ''} ${p.grade || ''}</div>
+
+            <div class="p-body">
                 <div class="p-name-v">${p.name}</div>
             </div>
 
-            <div class="score-footer">
-                <div class="score-val val-correct">${s.correct || 0}</div>
-                <div class="score-val val-wrong">${s.wrong || 0}</div>
+            <div class="p-footer">
+                ${mainDisplay}
+                <div class="snowman-container">
+                    ${snowmanDisplay}
+                </div>
             </div>
-
-            ${isRest ? `<div class="rest-overlay"><div class="rest-mark">休 ${s.rest}</div></div>` : ''}
         `;
         box.appendChild(div);
     });
@@ -393,7 +423,7 @@ function render() {
 function updateStats(ps, groupScores) {
     if (!ps || !groupScores) return;
     
-    // Alive: 勝ち抜けておらず、失格もしていない
+    // Alive: Not Winner AND Not Lost
     const activeCount = ps.filter(p => {
         const s = groupScores[p.id] || {};
         return !s.winOrder && (s.wrong || 0) < 2; 
@@ -403,38 +433,46 @@ function updateStats(ps, groupScores) {
     const maxSlots = config.maxSlots || 5;
     const remainingSlots = Math.max(0, maxSlots - winnerCount);
     
-    document.getElementById('alive-slot-display').textContent = `${activeCount} ▶ ${remainingSlots}`;
+    // (Alive) >> (Slot)
+    document.getElementById('alive-slot-display').innerHTML = `
+        <span style="font-size:1.4rem;">(${activeCount})</span> 
+        <span style="color:#64748b; margin:0 5px;">&gt;&gt;</span> 
+        <span style="font-size:1.8rem; color:#fbbf24;">(${remainingSlots})</span>
+    `;
 }
 
 function updateQuestionDisplay() {
     const idx = questionIndices[currentGroup];
     const box = document.getElementById('q-content-box');
     
-    document.getElementById('qnum').textContent = `Q.${idx + 1}`;
+    // Header Q Number
+    document.getElementById('header-qnum').textContent = `Q.${idx + 1}`;
     
-    // 第1問目 (idx === 0) は隠す
+    // 1問目は隠す
     if (idx === 0) {
         box.innerHTML = `
             <div class="q-text hidden-text">ここに問題が表示されます</div>
-            <div class="a-text hidden-text" style="margin-top:5px; font-size:1rem;">ここに解答が表示されます</div>
+            <div class="a-container">
+                <span class="a-label">Ans.</span>
+                <span class="a-text hidden-text" style="font-size:1rem;">ここに解答が表示されます</span>
+            </div>
         `;
         return;
     }
 
-    // 通常表示
-    let qText = '待機中... (問題データなし)';
+    let qText = 'Wait...';
     let aText = '';
     
     if (questions && questions.length > idx && questions[idx]) {
         qText = questions[idx].question;
-        aText = questions[idx].answer || '(解答なし)';
+        aText = questions[idx].answer || '';
     }
 
     box.innerHTML = `
         <div class="q-text" id="qtext">${qText}</div>
-        <div class="a-text">
-            <span class="a-label">ANSWER</span>
-            <span id="ans">${aText}</span>
+        <div class="a-container">
+            <span class="a-label">Ans.</span>
+            <span class="a-text" id="ans">${aText}</span>
         </div>
     `;
 }
