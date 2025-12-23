@@ -3,209 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2R Course α 表示画面（表示専用）</title>
+<title>2R Course α 表示</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap');
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Noto Sans JP', sans-serif; background: #000; color: white; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
-.header { background: #001f5f; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; height: 80px; border-bottom: 2px solid #444; }
-.header-title { font-size: 32px; font-weight: bold; display: flex; align-items: center; gap: 20px; }
-.header-info { text-align: right; font-size: 24px; font-weight: bold; display:flex; gap:16px; align-items:center; }
-.logo-box { background: #000; border: 1px solid #333; padding: 5px; height: 70px; display: flex; align-items: center; justify-content: center; margin-left: 20px; }
-.logo-box img { max-height: 100%; }
-.status-bar { background: #000; padding: 5px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; height: 50px; }
-.question-info { font-size: 24px; color: #fff; display:flex; align-items:center; gap:12px; }
-.question-ans { color: #ffff00; margin-left: 20px; }
-.main-content { flex: 1; display: flex; padding: 5px; gap: 4px; background: #000; overflow: hidden; }
-.player-col { flex: 1; display: flex; flex-direction: column; border: 1px solid #333; background: #000; height: 100%; position: relative; }
-.p-header { background: #333; text-align: center; padding: 4px 0; color: #fff; font-size: 14px; height: 60px; display: flex; flex-direction: column; justify-content: center; border-bottom: 1px solid #555; }
-.p-rank-badge { background: #444; color: #ccc; font-size: 12px; padding: 2px 0; border-bottom: 1px solid #555; }
-.p-body { flex: 1; writing-mode: vertical-rl; text-orientation: upright; display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: bold; letter-spacing: 5px; color: #fff; width: 100%; transition: background 0.3s; }
-.p-body.active { background: #00695c; }
-.p-body.winner { background: #b71c1c; }
-.p-body.lose { background: #212121; color: #777; }
-.p-score-box { background: #000; border-top: 1px solid #555; padding: 10px 0; text-align: center; }
-.score-val { font-size: 40px; color: #ffeb3b; font-weight: bold; line-height: 1; }
-.score-badge { font-size: 16px; color: #fff; background: #b71c1c; display: inline-block; padding: 2px 8px; margin-top: 5px; border-radius: 4px; }
-.p-footer { background: #000; text-align: center; padding-bottom: 10px; height: 40px; display: flex; justify-content: center; gap: 5px; }
-.mark { font-size: 20px; color: #555; }
-.mark.wrong { color: #f44336; }
-.group-tabs { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); display: flex; gap:6px; }
-.small-btn { background: rgba(255,255,255,0.06); color: #fff; padding:6px 10px; border-radius:6px; border:1px solid #333; cursor:pointer; }
-.csv-controls { display:flex; gap:8px; align-items:center; }
-.hidden-file { display:none; }
+body{margin:0;font-family:'Noto Sans JP',sans-serif;background:#05060a;color:#e6eef8;height:100vh;display:flex;flex-direction:column}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid #222}
+header .left{display:flex;gap:16px;align-items:center}
+header .title{font-weight:900}
+header .group{opacity:.8}
+header .right{display:flex;gap:12px;align-items:center}
+.counter{padding:6px 12px;border-radius:8px;background:#0b1220;border:1px solid #222;font-weight:700}
+.status{padding:10px 24px;border-bottom:1px solid #222;display:flex;gap:12px;align-items:center}
+.status .ans{color:#ffca28;font-weight:700}
+main{flex:1;overflow:hidden;padding:12px}
+.players{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.card{background:#0b1220;border:1px solid #222;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px}
+.card.winner{border-color:#c62828}
+.card.rest{border-color:#3f51b5}
+.name{font-weight:700}
+.meta{font-size:12px;color:#9aa4b2}
+.center{flex:1;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;writing-mode:vertical-rl;text-orientation:upright}
+.score{display:flex;gap:8px;justify-content:center}
+.score span{padding:4px 8px;border-radius:6px;background:#000}
+footer{display:flex;justify-content:space-between;font-size:14px}
 </style>
 </head>
 <body>
-<div class="header">
-  <div class="header-title">
-    <span>2nd Round : 連答付き5○2×</span>
-    <span id="group-display">Group-1</span>
+<header>
+  <div class="left">
+    <div class="title">2nd Round : 連答付き5○2×</div>
+    <div id="group" class="group">Group-1</div>
   </div>
-  <div style="display:flex; align-items:center; gap:12px;">
-    <div class="header-info">
-      <div id="count-display">0 &gt;&gt;&gt;0</div>
-      <div class="logo-box"><img src="常磐路オープン2nd_ロゴ.png" alt="Logo"></div>
-    </div>
-    <div style="display:flex; align-items:center; gap:8px;">
-      <div class="csv-controls">
-        <button id="csvBtn" class="small-btn">CSV読み込み</button>
-        <button id="prevQ" class="small-btn">◀</button>
-        <button id="nextQ" class="small-btn">▶</button>
-      </div>
-      <input id="csvFile" type="file" accept=".csv" class="hidden-file">
-    </div>
+  <div class="right">
+    <div id="count" class="counter">0 >>> 0</div>
   </div>
+</header>
+<div class="status">
+  <div id="qnum">問題 0 / 0</div>
+  <div id="qtext"></div>
+  <div id="ans" class="ans"></div>
 </div>
-<div class="status-bar">
-  <div class="question-info">
-    <span id="q-num">問題1</span>
-    <span class="question-ans" id="ans-display"></span>
-  </div>
-</div>
-<div class="group-tabs">
-  <button class="small-btn" onclick="switchGroup(1)">Group 1</button>
-  <button class="small-btn" onclick="switchGroup(2)">Group 2</button>
-</div>
-<div class="main-content" id="content"></div>
+<main>
+  <div id="players" class="players"></div>
+</main>
 <script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
-const app = initializeApp({
-  apiKey: "AIzaSyDB_EIa1D49jxMrNVkqJjSrghh6Yp-MLP0",
-  authDomain: "tokiwaji-open-2nd.firebaseapp.com",
-  databaseURL: "https://tokiwaji-open-2nd-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "tokiwaji-open-2nd",
-  storageBucket: "tokiwaji-open-2nd.firebasestorage.app",
-  messagingSenderId: "1053108487162",
-  appId: "1:1053108487162:web:1cf8f504522b7e95129a43"
-});
-const db = getDatabase(app);
-let currentGroup = 1;
-let participants = [];
-let scores = {};
-let questions = [];
-let qIndex = 0;
-window.switchGroup = function(g) {
-  currentGroup = g;
-  document.getElementById('group-display').textContent = `Group-${g}`;
-  render();
-}
-onValue(ref(db, 'participants'), snap => {
-  if (snap.exists()) {
-    participants = Object.entries(snap.val()).map(([id, p]) => ({ id, ...p })).filter(p => p.course === 'α');
-    render();
-  }
-});
-onValue(ref(db, '2R/α/group1/scores'), snap => { scores[1] = snap.val() || {}; render(); });
-onValue(ref(db, '2R/α/group2/scores'), snap => { scores[2] = snap.val() || {}; render(); });
-onValue(ref(db, '2R/α/config/win'), snap => { render(); });
-onValue(ref(db, '2R/α/config/lose'), snap => { render(); });
-function getConfigWin() {
-  const v = scores.config && scores.config.win;
-  return v || 5;
-}
-function getConfigLose() {
-  const v = scores.config && scores.config.lose;
-  return v || 2;
-}
-function render() {
-  const container = document.getElementById('content');
-  const players = participants.filter(p => p.group === currentGroup).sort((a, b) => (a.rank || 0) - (b.rank || 0));
-  container.innerHTML = '';
-  players.forEach(p => {
-    const s = scores[currentGroup]?.[p.id] || { correct: 0, wrong: 0 };
-    const isWin = s.winOrder > 0;
-    const isLose = s.disqualified || s.wrong >= getConfigLose();
-    let statusClass = 'active';
-    if (isWin) statusClass = 'winner';
-    else if (isLose) statusClass = 'lose';
-    let wrongMarks = '';
-    for(let i=0; i<2; i++) {
-      wrongMarks += (i < (s.wrong || 0)) ? '<span class="mark wrong">×</span>' : '<span class="mark">・</span>';
-    }
-    const div = document.createElement('div');
-    div.className = 'player-col';
-    div.innerHTML = `
-      <div class="p-rank-badge">${p.rank || ''}</div>
-      <div class="p-header">
-        <div>${p.school || ''}</div>
-        <div>${p.grade || ''}</div>
-      </div>
-      <div class="p-body ${statusClass}">
-        ${p.name}
-      </div>
-      <div class="p-score-box">
-        ${isWin ? `<div class="score-badge">${s.winOrder}st Win</div>` : `<div class="score-val">${s.correct || 0}</div>`}
-      </div>
-      <div class="p-footer">
-        ${wrongMarks}
-      </div>
-    `;
-    container.appendChild(div);
-  });
-  updateCountDisplay(players);
-}
-function updateCountDisplay(players){
-  const loseTh = getConfigLose();
-  const winTh = getConfigWin();
-  const activeCount = players.filter(p => {
-    const s = scores[currentGroup]?.[p.id] || {};
-    return !s.disqualified;
-  }).length;
-  const winnersCount = Object.values(scores[currentGroup] || {}).filter(s => s && s.winOrder > 0).length;
-  const remaining = Math.max(0, winTh - winnersCount);
-  document.getElementById('count-display').textContent = `${activeCount} >>> ${remaining}`;
-}
-function parseCSVText(text){
-  const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(l=>l.length>0);
-  const out = [];
-  lines.forEach(line => {
-    const cols = line.split(',');
-    const q = cols[0] || '';
-    const a = cols.slice(1).join(',') || '';
-    out.push({ question: q, answer: a });
-  });
-  return out;
-}
-document.getElementById('csvBtn').addEventListener('click', ()=> document.getElementById('csvFile').click());
-document.getElementById('csvFile').addEventListener('change', (e)=>{
-  const f = e.target.files && e.target.files[0];
-  if(!f) return;
-  const reader = new FileReader();
-  reader.onload = (ev)=>{
-    questions = parseCSVText(ev.target.result || '');
-    qIndex = 0;
-    showQuestion();
-  };
-  reader.readAsText(f, 'utf-8');
-});
-document.getElementById('nextQ').addEventListener('click', ()=>{
-  if(questions.length === 0) return;
-  qIndex = Math.min(questions.length-1, qIndex+1);
-  showQuestion();
-});
-document.getElementById('prevQ').addEventListener('click', ()=>{
-  if(questions.length === 0) return;
-  qIndex = Math.max(0, qIndex-1);
-  showQuestion();
-});
-function showQuestion(){
-  const qNumEl = document.getElementById('q-num');
-  const ansEl = document.getElementById('ans-display');
-  if(questions.length === 0){
-    qNumEl.textContent = '問題0';
-    ansEl.textContent = '';
-    return;
-  }
-  qNumEl.textContent = `問題${qIndex+1}`;
-  const item = questions[qIndex];
-  const qText = item.question || '';
-  const aText = item.answer || '';
-  qNumEl.title = qText;
-  ansEl.textContent = aText;
-}
-render();
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js'
+import{getDatabase,ref,onValue}from'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js'
+const app=initializeApp({apiKey:"AIzaSyDB_EIa1D49jxMrNVkqJjSrghh6Yp-MLP0",authDomain:"tokiwaji-open-2nd.firebaseapp.com",databaseURL:"https://tokiwaji-open-2nd-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"tokiwaji-open-2nd",storageBucket:"tokiwaji-open-2nd.firebasestorage.app",messagingSenderId:"1053108487162",appId:"1:1053108487162:web:1cf8f504522b7e95129a43"})
+const db=getDatabase(app)
+let participants=[],scores={1:{},2:{}},questions=[],currentGroup=1,qIndex=0
+onValue(ref(db,'participants'),s=>{participants=s.exists()?Object.entries(s.val()).map(([id,p])=>({id,...p})).filter(p=>p.course==='α'):[];render()})
+onValue(ref(db,'2R/α/group1/scores'),s=>{scores[1]=s.val()||{};render()})
+onValue(ref(db,'2R/α/group2/scores'),s=>{scores[2]=s.val()||{};render()})
+onValue(ref(db,'2R/α/questions'),s=>{questions=s.exists()?Array.isArray(s.val())?s.val():Object.values(s.val()):[];updateQuestion()})
+onValue(ref(db,'2R/α/group1/questionNumber'),s=>{if(currentGroup===1){qIndex=(s.val()||1)-1;updateQuestion()}})
+function render(){const box=document.getElementById('players');box.innerHTML='';const ps=participants.filter(p=>p.group===currentGroup);ps.forEach(p=>{const s=scores[currentGroup][p.id]||{correct:0,wrong:0,rest:0};const d=document.createElement('div');d.className='card'+(s.winOrder?' winner':'')+(s.rest>0?' rest':'');d.innerHTML=`<div class="name">${p.name}</div><div class="meta">${p.school||''} ${p.grade||''}</div><div class="center">${p.name}</div><div class="score"><span>○${s.correct||0}</span><span>×${s.wrong||0}</span></div><footer><div>${'⛄'.repeat(s.rest||0)}</div><div>${s.winOrder?'WIN':''}</div></footer>`;box.appendChild(d)});const active=participants.filter(p=>{const s1=scores[1][p.id];const s2=scores[2][p.id];const s=s1||s2||{};return !s.disqualified}).length;const win=Object.values({...scores[1],...scores[2]}).filter(s=>s&&s.winOrder).length;document.getElementById('count').textContent=`${active} >>> ${Math.max(0,5-win)}`}
+function updateQuestion(){document.getElementById('qnum').textContent=`問題 ${qIndex+1} / ${questions.length}`;document.getElementById('qtext').textContent=questions[qIndex]?.question||'';document.getElementById('ans').textContent=''}
 </script>
 </body>
 </html>
