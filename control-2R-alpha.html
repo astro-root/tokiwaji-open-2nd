@@ -14,6 +14,8 @@
     --primary: #3b82f6;
     --danger: #ef4444;
     --success: #22c55e;
+    --active-tab: #2563eb;
+    --inactive-tab: #404040;
 }
 body {
     margin: 0;
@@ -22,11 +24,39 @@ body {
     color: var(--text-color);
     padding: 20px;
 }
-h1 { margin: 0 0 20px 0; font-size: 1.5rem; border-left: 5px solid var(--primary); padding-left: 15px; }
 
+/* Header & Tabs */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+h1 { margin: 0; font-size: 1.5rem; border-left: 5px solid var(--primary); padding-left: 15px; }
+
+.tabs { display: flex; gap: 5px; }
+.tab-btn {
+    padding: 8px 20px;
+    border: none;
+    background: var(--inactive-tab);
+    color: #aaa;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 6px 6px 0 0;
+    transition: all 0.2s;
+}
+.tab-btn.active {
+    background: var(--active-tab);
+    color: white;
+    transform: translateY(2px); /* visual feedback */
+}
+
+/* Layout */
 .grid-container {
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 320px 1fr;
     gap: 20px;
     align-items: start;
 }
@@ -39,53 +69,58 @@ section {
     border: 1px solid var(--border-color);
     margin-bottom: 20px;
 }
-h2 { font-size: 1rem; margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: #a3a3a3; }
+h2 { font-size: 1rem; margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: #a3a3a3; display: flex; justify-content: space-between; }
 
 /* Controls */
 .control-group { margin-bottom: 15px; }
 .btn {
     cursor: pointer;
-    padding: 8px 16px;
+    padding: 10px 16px;
     border-radius: 6px;
     border: none;
     font-weight: 700;
     color: white;
     transition: opacity 0.2s;
+    font-size: 0.9rem;
 }
 .btn:hover { opacity: 0.8; }
 .btn-primary { background: var(--primary); }
 .btn-danger { background: var(--danger); }
 .btn-success { background: var(--success); }
 .btn-neutral { background: #525252; }
+.btn-sm { padding: 4px 8px; font-size: 0.8rem; }
 
 input[type="file"] { width: 100%; font-size: 0.9rem; }
-select {
+input[type="number"] {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     background: #171717;
     color: white;
     border: 1px solid #555;
     border-radius: 4px;
-    font-size: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
 }
 
 /* Question Control */
-.q-control-row { display: flex; gap: 10px; margin-bottom: 10px; }
+.q-control-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
 .q-control-row .btn { flex: 1; }
 .q-display {
     background: #000;
-    padding: 10px;
+    padding: 15px;
     border-radius: 4px;
     font-size: 0.9rem;
-    min-height: 60px;
+    min-height: 80px;
     margin-bottom: 10px;
+    border: 1px solid #333;
 }
-.q-ans-display { color: #fbbf24; font-weight: bold; margin-top: 5px; }
+.q-ans-display { color: #fbbf24; font-weight: bold; margin-top: 8px; font-size: 1.1rem; border-top: 1px dashed #333; padding-top: 5px; }
 
 /* Player List */
 .player-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 12px;
 }
 .player-card {
@@ -93,21 +128,69 @@ select {
     border: 1px solid var(--border-color);
     padding: 12px;
     border-radius: 6px;
+    position: relative;
 }
-.player-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; }
-.player-stats { font-size: 0.85rem; color: #a3a3a3; margin-bottom: 8px; }
-.player-actions { display: flex; gap: 5px; }
-.player-actions button { flex: 1; padding: 6px 0; font-size: 0.85rem; }
+.player-card.resting { border-color: #6366f1; }
+.player-card.winner { border-color: #22c55e; }
 
+.player-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; font-size: 1.1rem; }
+.player-stats { font-size: 0.9rem; color: #a3a3a3; margin-bottom: 12px; display: flex; gap: 10px; }
+.stat-box { background: #333; padding: 2px 8px; border-radius: 4px; }
+
+.player-actions { display: grid; grid-template-columns: 1fr 1fr 60px; gap: 8px; }
+.player-actions button { padding: 8px 0; font-size: 0.9rem; }
+
+/* Status Indicator */
+.status-indicator {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-left: 10px;
+}
+.bg-green { background: #064e3b; color: #6ee7b7; }
+.bg-blue { background: #1e3a8a; color: #93c5fd; }
 </style>
 </head>
 <body>
 
-<h1>2R Course α : Management</h1>
+<header>
+    <h1>2R α : Management</h1>
+    <div class="tabs">
+        <button id="tab-1" class="tab-btn active" onclick="window.switchGroup(1)">Group 1</button>
+        <button id="tab-2" class="tab-btn" onclick="window.switchGroup(2)">Group 2</button>
+    </div>
+</header>
 
 <div class="grid-container">
     
     <div class="left-col">
+        <section>
+            <h2>
+                <span>操作パネル</span>
+                <span id="current-group-label" class="status-indicator bg-blue">Group 1</span>
+            </h2>
+            
+            <div class="q-display">
+                <div id="current-q-text" style="font-weight:bold; font-size:1.1rem; margin-bottom:5px;">Q. -</div>
+                <div id="current-q-detail" style="color:#aaa; font-size:0.9rem;"></div>
+                <div id="current-q-ans" class="q-ans-display">A: </div>
+            </div>
+
+            <div class="control-group">
+                <label style="display:block; margin-bottom:5px; font-size:0.8rem; color:#aaa;">問題番号 (直接入力可)</label>
+                <div class="q-control-row">
+                    <button id="prev" class="btn btn-neutral">&lt;</button>
+                    <input type="number" id="q-input" min="1" value="1">
+                    <button id="next" class="btn btn-primary">&gt;</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <button id="skip" class="btn btn-neutral" style="width:100%">スルー (休み減算のみ)</button>
+            </div>
+        </section>
+
         <section>
             <h2>システム設定</h2>
             <div class="control-group">
@@ -115,34 +198,14 @@ select {
                 <input type="file" id="csv" accept=".csv">
             </div>
             <div class="control-group">
-                <button id="reset-all" class="btn btn-danger" style="width:100%">全体リセット (スコア初期化)</button>
-            </div>
-        </section>
-
-        <section>
-            <h2>問題操作</h2>
-            <div class="control-group">
-                <select id="q-select">
-                    <option value="1">Q. 1</option>
-                </select>
-            </div>
-            <div class="q-display">
-                <div id="current-q-text">選択してください</div>
-                <div id="current-q-ans" class="q-ans-display"></div>
-            </div>
-            <div class="q-control-row">
-                <button id="prev" class="btn btn-neutral">前へ</button>
-                <button id="next" class="btn btn-primary">次へ</button>
-            </div>
-            <div class="control-group">
-                <button id="skip" class="btn btn-neutral" style="width:100%">スルー (休み減算のみ)</button>
+                <button id="reset-all" class="btn btn-danger" style="width:100%">このグループをリセット</button>
             </div>
         </section>
     </div>
 
     <div class="right-col">
         <section>
-            <h2>参加者一覧 (Group 1)</h2>
+            <h2>参加者一覧</h2>
             <div id="players" class="player-list"></div>
         </section>
     </div>
@@ -166,23 +229,49 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// Global State
 let participants = [];
-let scores = {};
+let scores = { 1: {}, 2: {} };
 let questions = [];
-let currentQNum = 1;
+let questionIndices = { 1: 1, 2: 1 }; // 各グループの現在の問題番号(1-based)
+let currentGroup = 1;
 let lastAction = null; // Undo用 {id, type}
 
+// --- Global Functions (HTMLから呼び出し用) ---
+window.switchGroup = (g) => {
+    currentGroup = g;
+    
+    // Update Tabs
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`tab-${g}`).classList.add('active');
+    
+    // Update Label
+    const lbl = document.getElementById('current-group-label');
+    lbl.textContent = `Group ${g}`;
+    lbl.className = g === 1 ? 'status-indicator bg-blue' : 'status-indicator bg-green';
+
+    // Update Inputs
+    const input = document.getElementById('q-input');
+    if(input) input.value = questionIndices[g];
+
+    // Re-render
+    updateCurrentQuestionDisplay();
+    renderPlayers();
+};
+
 // --- Data Sync ---
+
+// 1. 参加者
 onValue(ref(db, 'participants'), s => {
     participants = s.exists() ? Object.entries(s.val()).map(([id, p]) => ({ id, ...p })).filter(p => p.course === 'α') : [];
     renderPlayers();
 });
 
-onValue(ref(db, '2R/α/group1/scores'), s => {
-    scores = s.val() || {};
-    renderPlayers();
-});
+// 2. スコア (Group 1 & 2)
+onValue(ref(db, '2R/α/group1/scores'), s => { scores[1] = s.val() || {}; if(currentGroup===1) renderPlayers(); });
+onValue(ref(db, '2R/α/group2/scores'), s => { scores[2] = s.val() || {}; if(currentGroup===2) renderPlayers(); });
 
+// 3. 問題
 onValue(ref(db, '2R/α/questions'), s => {
     if (s.exists()) {
         const val = s.val();
@@ -190,15 +279,23 @@ onValue(ref(db, '2R/α/questions'), s => {
     } else {
         questions = [];
     }
-    updateSelectOptions();
     updateCurrentQuestionDisplay();
 });
 
+// 4. 問題番号 (Group 1 & 2)
 onValue(ref(db, '2R/α/group1/questionNumber'), s => {
-    currentQNum = s.val() || 1;
-    const sel = document.getElementById('q-select');
-    if(sel) sel.value = currentQNum;
-    updateCurrentQuestionDisplay();
+    questionIndices[1] = s.val() || 1;
+    if(currentGroup === 1) {
+        document.getElementById('q-input').value = questionIndices[1];
+        updateCurrentQuestionDisplay();
+    }
+});
+onValue(ref(db, '2R/α/group2/questionNumber'), s => {
+    questionIndices[2] = s.val() || 1;
+    if(currentGroup === 2) {
+        document.getElementById('q-input').value = questionIndices[2];
+        updateCurrentQuestionDisplay();
+    }
 });
 
 // --- Event Listeners ---
@@ -211,7 +308,6 @@ document.getElementById('csv').addEventListener('change', e => {
     r.onload = () => {
         const lines = r.result.split(/\r?\n/).filter(l => l.trim());
         const qs = lines.map(l => {
-            // シンプルなCSVパース (カンマ区切り)
             const c = l.split(',');
             return { question: c[0], answer: c.slice(1).join(',') };
         });
@@ -223,165 +319,163 @@ document.getElementById('csv').addEventListener('change', e => {
 
 // Question Navigation
 const setQ = (num) => {
-    set(ref(db, '2R/α/group1/questionNumber'), num);
+    // 現在のグループに対してセット
+    const n = Math.max(1, parseInt(num, 10) || 1);
+    set(ref(db, `2R/α/group${currentGroup}/questionNumber`), n);
 };
 
-document.getElementById('prev').onclick = () => setQ(Math.max(1, currentQNum - 1));
-document.getElementById('next').onclick = () => setQ(currentQNum + 1);
+document.getElementById('prev').onclick = () => setQ(questionIndices[currentGroup] - 1);
+document.getElementById('next').onclick = () => setQ(questionIndices[currentGroup] + 1);
+document.getElementById('q-input').onchange = (e) => setQ(e.target.value);
 
-document.getElementById('q-select').onchange = (e) => {
-    setQ(parseInt(e.target.value, 10));
-};
-
-// Reset
+// Reset (Current Group Only)
 document.getElementById('reset-all').onclick = () => {
-    if(confirm('本当にリセットしますか？\n全員のスコアが0になり、問題番号が1に戻ります。')) {
-        set(ref(db, '2R/α/group1/scores'), {});
-        set(ref(db, '2R/α/group1/questionNumber'), 1);
+    if(confirm(`[Group ${currentGroup}] を本当にリセットしますか？\n全員のスコアが0になり、問題番号が1に戻ります。`)) {
+        set(ref(db, `2R/α/group${currentGroup}/scores`), {});
+        set(ref(db, `2R/α/group${currentGroup}/questionNumber`), 1);
     }
 };
 
-// Skip (Through)
+// Skip
 document.getElementById('skip').onclick = () => {
-    // スルー時：休み中の人のカウントのみ減らす
-    participants.forEach(p => {
-        const s = scores[p.id];
+    // 現在のグループの参加者のみ処理
+    const ps = participants.filter(p => Number(p.group) === currentGroup);
+    
+    ps.forEach(p => {
+        const s = scores[currentGroup][p.id];
         if (s && s.rest > 0) {
-            update(ref(db, `2R/α/group1/scores/${p.id}`), { rest: s.rest - 1 });
+            update(ref(db, `2R/α/group${currentGroup}/scores/${p.id}`), { rest: s.rest - 1 });
         }
     });
 };
 
 // --- Rendering & Logic ---
 
-function updateSelectOptions() {
-    const sel = document.getElementById('q-select');
-    sel.innerHTML = '';
-    const max = Math.max(questions.length, 50); // 最低でも50番まで作る
-    for(let i=1; i<=max; i++) {
-        const opt = document.createElement('option');
-        opt.value = i;
-        const qText = questions[i-1] ? ` - ${questions[i-1].question.substring(0, 10)}...` : '';
-        opt.text = `Q. ${i}${qText}`;
-        sel.appendChild(opt);
-    }
-    sel.value = currentQNum;
-}
-
 function updateCurrentQuestionDisplay() {
-    const q = questions[currentQNum - 1];
-    document.getElementById('current-q-text').textContent = q ? `Q${currentQNum}: ${q.question}` : `Q${currentQNum}: (未登録)`;
-    document.getElementById('current-q-ans').textContent = q ? `A: ${q.answer}` : '';
+    const idx = questionIndices[currentGroup] - 1;
+    const q = questions[idx];
+    
+    document.getElementById('current-q-text').textContent = `Q${idx + 1}`;
+    document.getElementById('current-q-detail').textContent = q ? q.question : '(問題未登録)';
+    document.getElementById('current-q-ans').textContent = q ? `A: ${q.answer}` : 'A: ';
 }
 
 function renderPlayers() {
     const box = document.getElementById('players');
     box.innerHTML = '';
     
-    // Group 1 のみ表示 (必要に応じて拡張)
-    const groupParticipants = participants.filter(p => p.group === 1);
+    // Filter by Current Group
+    const groupParticipants = participants.filter(p => Number(p.group) === currentGroup);
     
+    if (groupParticipants.length === 0) {
+        box.innerHTML = '<div style="padding:10px;color:#666">このグループの参加者は表示されません</div>';
+        return;
+    }
+
     groupParticipants.forEach(p => {
-        const s = scores[p.id] || { correct: 0, wrong: 0, rest: 0 };
+        const s = scores[currentGroup][p.id] || { correct: 0, wrong: 0, rest: 0 };
         const d = document.createElement('div');
-        d.className = 'player-card';
         
         // Visual logic
         const isResting = (s.rest || 0) > 0;
         const isWinner = s.winOrder ? true : false;
+        const isDQ = (s.wrong || 0) >= 2;
+
+        d.className = `player-card ${isResting ? 'resting' : ''} ${isWinner ? 'winner' : ''}`;
         
         d.innerHTML = `
             <div class="player-info">
                 <span>${p.name}</span>
                 <span style="color:${isWinner ? '#22c55e' : (isResting ? '#818cf8' : '#fff')}">
-                    ${isWinner ? 'WIN' : (isResting ? `休${s.rest}` : '')}
+                    ${isWinner ? 'WIN' : (isResting ? `休${s.rest}` : (isDQ ? 'LOSE' : ''))}
                 </span>
             </div>
             <div class="player-stats">
-                ○ ${s.correct || 0} / × ${s.wrong || 0}
+                <span class="stat-box" style="color:#4ade80">○ ${s.correct || 0}</span>
+                <span class="stat-box" style="color:#f87171">× ${s.wrong || 0}</span>
             </div>
             <div class="player-actions">
-                <button class="btn btn-success" data-act="c">正解</button>
-                <button class="btn btn-danger" data-act="w">誤答</button>
-                <button class="btn btn-neutral" data-act="u">戻す</button>
+                <button class="btn btn-success" data-act="c" ${isWinner||isDQ||isResting?'disabled':''}>正解</button>
+                <button class="btn btn-danger" data-act="w" ${isWinner||isDQ||isResting?'disabled':''}>誤答</button>
+                <button class="btn btn-neutral" data-act="u">戻</button>
             </div>
         `;
+        
+        // Disable buttons style
+        if(isWinner || isDQ || isResting) {
+            d.querySelectorAll('button:not([data-act="u"])').forEach(b => b.style.opacity = 0.3);
+        }
 
-        // Actions
-        // 正解: 本人のスコア+1, 他の休みカウント-1
+        // Logic
         d.querySelector('[data-act=c]').onclick = () => {
-            lastAction = { id: p.id, type: 'c' };
+            if(isWinner || isDQ || isResting) return;
+            
+            lastAction = { id: p.id, type: 'c', group: currentGroup };
             const newCorrect = (s.correct || 0) + 1;
             
             let updates = {};
+            const path = `2R/α/group${currentGroup}`;
             updates[`scores/${p.id}/correct`] = newCorrect;
             
-            // 勝ち抜け判定 (5○)
+            // Win condition: 5 correct
             if(newCorrect >= 5 && !s.winOrder) {
-                const currentWinners = Object.values(scores).filter(v => v.winOrder).length;
+                const currentWinners = Object.values(scores[currentGroup]).filter(v => v.winOrder).length;
                 updates[`scores/${p.id}/winOrder`] = currentWinners + 1;
             }
 
-            update(ref(db, `2R/α/group1`), updates);
+            update(ref(db, path), updates);
 
-            // 他の人の休みを減らす
+            // Reduce others' rest
             groupParticipants.forEach(o => {
                 if (o.id !== p.id) {
-                    const so = scores[o.id];
+                    const so = scores[currentGroup][o.id];
                     if (so && so.rest > 0) {
-                        update(ref(db, `2R/α/group1/scores/${o.id}`), { rest: so.rest - 1 });
+                        update(ref(db, `2R/α/group${currentGroup}/scores/${o.id}`), { rest: so.rest - 1 });
                     }
                 }
             });
         };
 
-        // 誤答: 本人の誤答+1, 休み付与(n回), 他の休みカウント-1
         d.querySelector('[data-act=w]').onclick = () => {
-            lastAction = { id: p.id, type: 'w' };
-            const n = currentQNum; // 問題番号分休み？それとも固定？ ルール「連答付き5○2×」は通常「n休」
-            // ここでは「問題番号の数だけ休む」実装にします（一般的ルール）
-            // もし「1回休み」ならここを1にしてください
-            
-            // 連答付きルールの解釈:
-            // 一般的には「誤答はその時点での正解数+1回休み」か「n回休み」
-            // ここでは元のコードが `rest: (s.rest||0)+1` (1回休み加算) だったので、
-            // ひとまず「n回休み（問題数依存）」ではなく「n休（前のコードの挙動維持）」または「n休」に変更するなら以下
-            // 今回は元のコードの意図を汲みつつ、クイズ大会の一般的ルール(n休)を適用する場合はここを変えてください。
-            // ※元のコード： rest: (s.rest||0)+1 だったので、それを維持します。
-            
-            update(ref(db, `2R/α/group1/scores/${p.id}`), {
+            if(isWinner || isDQ || isResting) return;
+
+            lastAction = { id: p.id, type: 'w', group: currentGroup };
+            // Rule: n回休み = 現在の問題番号分休む
+            const restCount = questionIndices[currentGroup];
+
+            update(ref(db, `2R/α/group${currentGroup}/scores/${p.id}`), {
                 wrong: (s.wrong || 0) + 1,
-                rest: (s.rest || 0) + 1 // n休にするなら = n
+                rest: restCount
             });
 
-            // 正解が出なくても問題が進んだ扱いなら、他人の休みも減らす？
-            // 元コード: 正解・誤答どちらでも他人の休みを減らしていたので維持
+            // Reduce others' rest
             groupParticipants.forEach(o => {
                 if (o.id !== p.id) {
-                    const so = scores[o.id];
+                    const so = scores[currentGroup][o.id];
                     if (so && so.rest > 0) {
-                        update(ref(db, `2R/α/group1/scores/${o.id}`), { rest: so.rest - 1 });
+                        update(ref(db, `2R/α/group${currentGroup}/scores/${o.id}`), { rest: so.rest - 1 });
                     }
                 }
             });
         };
 
-        // Undo (簡易版: 直前の1手だけ)
         d.querySelector('[data-act=u]').onclick = () => {
-            if (!lastAction || lastAction.id !== p.id) {
-                alert('直前の操作のみ取り消せます（または対象が違います）');
+            if (!lastAction || lastAction.id !== p.id || lastAction.group !== currentGroup) {
+                alert('直前の操作のみ取り消せます（または対象・グループが違います）');
                 return;
             }
+            const path = `2R/α/group${currentGroup}/scores/${p.id}`;
+            
             if (lastAction.type === 'c') {
-                update(ref(db, `2R/α/group1/scores/${p.id}`), { 
+                update(ref(db, path), { 
                     correct: Math.max(0, (s.correct || 0) - 1),
-                    winOrder: null // 勝ち抜け取り消し
+                    winOrder: null
                 });
             }
             if (lastAction.type === 'w') {
-                update(ref(db, `2R/α/group1/scores/${p.id}`), { 
+                update(ref(db, path), { 
                     wrong: Math.max(0, (s.wrong || 0) - 1),
-                    rest: Math.max(0, (s.rest || 0) - 1)
+                    rest: 0 // 誤答取り消し時は休み解除
                 });
             }
             lastAction = null;
