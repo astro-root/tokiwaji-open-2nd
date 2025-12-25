@@ -54,7 +54,20 @@ footer { background: var(--dark); color: #94a3b8; padding: 3rem 1.5rem; text-ali
 .close-search { position: absolute; top: 2rem; right: 2rem; background: none; border: none; font-size: 2rem; color: var(--text-light); cursor: pointer; }
 @keyframes fadeInDown { to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-@media (max-width: 768px) { .desktop-menu { display: none; } .mobile-controls { display: flex; } .pdf-card { padding: 1.5rem; } .pdf-viewer { min-height: 400px; } .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); } .hamburger.active span:nth-child(2) { opacity: 0; } .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); } }
+/* スマホ対応の修正箇所 */
+@media (max-width: 768px) { 
+    .desktop-menu { display: none; } 
+    .mobile-controls { display: flex; } 
+    .pdf-card { padding: 1rem; } /* パディングを少し狭くしてコンテンツ領域を確保 */
+    .pdf-viewer { 
+        min-height: auto; 
+        aspect-ratio: auto; /* 比率固定を解除 */
+        height: 70vh; /* 画面の高さの70%を使用 */
+    } 
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); } 
+    .hamburger.active span:nth-child(2) { opacity: 0; } 
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); } 
+}
 </style>
 </head>
 <body>
