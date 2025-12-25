@@ -5,72 +5,126 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>常磐路オープン2nd - エントリー</title>
 <link rel="icon" href="https://raw.githubusercontent.com/astro-root/tokiwaji-open-2nd/main/tokiwaji-open-2nd-logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-:root { --primary: #667eea; --secondary: #764ba2; --text: #2d3748; --bg: #f7fafc; --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif; line-height: 1.6; color: var(--text); background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-header { position: sticky; top: 0; width: 100%; z-index: 1000; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.3); }
-nav { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-.logo-container { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-.logo-img { height: 48px; width: auto; transition: transform 0.3s; }
-.logo-container:hover .logo-img { transform: scale(1.1); }
-.logo-text { font-size: 1.25rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-nav ul { display: flex; list-style: none; gap: 2rem; }
-nav a { text-decoration: none; color: #4a5568; font-weight: 600; font-size: 0.95rem; position: relative; padding: 0.5rem 0; transition: color 0.3s; }
-nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 0; background: var(--gradient); transition: width 0.3s ease; }
-nav a:hover, nav a.active { color: var(--primary); }
-nav a:hover::after, nav a.active::after { width: 100%; }
-.container { max-width: 1000px; margin: 0 auto; padding: 3rem 2rem; flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.page-header { text-align: center; margin-bottom: 3rem; opacity: 0; animation: fadeDown 0.8s ease forwards; }
-.page-header h1 { font-size: 2.5rem; color: var(--primary); margin-bottom: 0.5rem; font-weight: 800; }
-.page-header::after { content: ''; display: block; width: 60px; height: 4px; background: var(--gradient); margin: 1rem auto 0; border-radius: 2px; }
-.content-card { background: white; border-radius: 24px; padding: 6rem 3rem; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.05); text-align: center; max-width: 800px; width: 100%; position: relative; overflow: hidden; opacity: 0; transform: scale(0.9); animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s forwards; }
-.content-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--gradient); }
-.badge-coming-soon { display: inline-block; background: #fff9e6; color: #d69e2e; padding: 0.5rem 1.5rem; border-radius: 50px; font-weight: 800; font-size: 0.9rem; margin-bottom: 1.5rem; border: 1px solid #f6e05e; animation: pulse 2s infinite; }
-.content-card h2 { color: var(--primary); font-size: 2.2rem; margin-bottom: 2rem; font-weight: 800; letter-spacing: 0.05em; }
-.content-card p { font-size: 1.2rem; color: #4a5568; line-height: 1.8; margin-bottom: 1rem; }
-.notice { background-color: #f7fafc; border-left: 4px solid #667eea; padding: 1.5rem 2rem; margin-top: 3rem; border-radius: 8px; display: inline-flex; align-items: center; gap: 1rem; text-align: left; }
-.notice p { color: #555; font-weight: 600; margin-bottom: 0; font-size: 1rem; }
-.icon { font-size: 1.5rem; }
-footer { background: #1a202c; color: #a0aec0; text-align: center; padding: 3rem 2rem; margin-top: auto; }
-@keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+:root { --primary: #4f46e5; --secondary: #818cf8; --dark: #0f172a; --text: #334155; --text-light: #64748b; --bg: #f8fafc; --surface: #ffffff; --gradient: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%); --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05); --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01); }
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { font-family: 'Plus Jakarta Sans', 'Zen Kaku Gothic New', sans-serif; line-height: 1.8; color: var(--text); background-color: var(--bg); font-feature-settings: "palt"; letter-spacing: 0.04em; overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; }
+body::before { content: ''; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(99, 102, 241, 0.03) 0%, transparent 50%); z-index: -1; pointer-events: none; }
+a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
+header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
+nav { max-width: 1200px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+.logo { display: flex; align-items: center; gap: 0.75rem; font-weight: 800; font-size: 1.2rem; color: var(--dark); }
+.logo img { height: 40px; width: auto; }
+.desktop-menu { display: flex; gap: 2rem; align-items: center; list-style: none; }
+.desktop-menu a { font-size: 0.95rem; font-weight: 600; color: var(--text-light); position: relative; }
+.desktop-menu a:hover, .desktop-menu a.active { color: var(--primary); }
+.desktop-menu a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--gradient); transition: width 0.3s ease; }
+.desktop-menu a:hover::after, .desktop-menu a.active::after { width: 100%; }
+.search-trigger { background: none; border: none; cursor: pointer; color: var(--text-light); padding: 0.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+.search-trigger:hover { color: var(--primary); background: rgba(99, 102, 241, 0.1); }
+.mobile-controls { display: none; align-items: center; gap: 1rem; }
+.hamburger { background: none; border: none; cursor: pointer; padding: 0.5rem; display: flex; flex-direction: column; gap: 5px; z-index: 2000; }
+.hamburger span { display: block; width: 24px; height: 2px; background-color: var(--dark); transition: all 0.3s ease; }
+.mobile-menu { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); z-index: 1500; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: all 0.4s ease; }
+.mobile-menu.active { opacity: 1; pointer-events: all; }
+.mobile-menu ul { list-style: none; text-align: center; display: flex; flex-direction: column; gap: 2rem; }
+.mobile-menu a { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
+.mobile-menu a.active { color: var(--primary); }
+.container { max-width: 1000px; margin: 0 auto; padding: 8rem 1.5rem 6rem; flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; }
+.page-header { text-align: center; margin-bottom: 3rem; opacity: 0; transform: translateY(-20px); animation: fadeInDown 0.8s ease forwards; }
+.page-header h1 { font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 800; color: var(--dark); margin-bottom: 1rem; }
+.page-header span { display: inline-block; width: 60px; height: 4px; background: var(--gradient); border-radius: 4px; }
+.coming-soon-card { background: var(--surface); border-radius: 32px; padding: 5rem 2rem; width: 100%; max-width: 700px; text-align: center; box-shadow: var(--shadow-lg); border: 1px solid rgba(255, 255, 255, 0.8); position: relative; overflow: hidden; opacity: 0; transform: scale(0.95); animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s forwards; }
+.coming-soon-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--gradient); }
+.status-badge { display: inline-block; background: #fffbeb; color: #d97706; padding: 0.6rem 1.5rem; border-radius: 100px; font-weight: 700; font-size: 0.9rem; margin-bottom: 2.5rem; border: 1px solid #fcd34d; letter-spacing: 0.05em; box-shadow: 0 4px 10px rgba(251, 191, 36, 0.15); }
+.message h2 { font-size: clamp(1.4rem, 4vw, 1.8rem); font-weight: 700; color: var(--dark); margin-bottom: 1.5rem; line-height: 1.4; }
+.date-highlight { font-size: clamp(2rem, 5vw, 2.5rem); font-weight: 800; color: transparent; background: var(--gradient); -webkit-background-clip: text; display: block; margin: 1rem 0; line-height: 1.2; letter-spacing: 0.05em; }
+.sub-message { color: var(--text-light); margin-bottom: 3rem; font-size: 1.05rem; }
+.notification-box { background: #f1f5f9; padding: 1.5rem; border-radius: 16px; border-left: 4px solid var(--primary); text-align: left; display: inline-flex; align-items: center; gap: 1rem; max-width: 90%; }
+.notification-icon { font-size: 1.5rem; }
+.notification-text { font-size: 0.95rem; font-weight: 600; color: var(--text); line-height: 1.6; }
+footer { background: var(--dark); color: #94a3b8; padding: 3rem 1.5rem; text-align: center; font-size: 0.85rem; font-weight: 500; margin-top: auto; }
+.search-modal { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); z-index: 2500; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.search-modal.active { opacity: 1; pointer-events: all; }
+.search-box { width: 90%; max-width: 600px; position: relative; }
+.search-input { width: 100%; background: transparent; border: none; border-bottom: 2px solid #e2e8f0; font-size: 2rem; padding: 1rem 0; color: var(--dark); font-weight: 700; text-align: center; outline: none; border-radius: 0; }
+.search-input:focus { border-color: var(--primary); }
+.close-search { position: absolute; top: 2rem; right: 2rem; background: none; border: none; font-size: 2rem; color: var(--text-light); cursor: pointer; }
+@keyframes fadeInDown { to { opacity: 1; transform: translateY(0); } }
 @keyframes popIn { to { opacity: 1; transform: scale(1); } }
-@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(214, 158, 46, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(214, 158, 46, 0); } 100% { box-shadow: 0 0 0 0 rgba(214, 158, 46, 0); } }
-@media (max-width: 768px) { nav { flex-direction: column; gap: 1rem; } .content-card { padding: 4rem 1.5rem; } .notice { width: 100%; } }
+@media (max-width: 768px) { .desktop-menu { display: none; } .mobile-controls { display: flex; } .coming-soon-card { padding: 3rem 1.5rem; } .notification-box { flex-direction: column; text-align: center; } .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); } .hamburger.active span:nth-child(2) { opacity: 0; } .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); } }
 </style>
 </head>
 <body>
 <header>
 <nav>
-<a href="index.html" class="logo-container">
-<img src="https://raw.githubusercontent.com/astro-root/tokiwaji-open-2nd/main/tokiwaji-open-2nd-logo.png" alt="常磐路オープン2nd ロゴ" class="logo-img">
-<span class="logo-text">常磐路オープン2nd</span>
+<a href="index.html" class="logo">
+<img src="https://raw.githubusercontent.com/astro-root/tokiwaji-open-2nd/main/tokiwaji-open-2nd-logo.png" alt="Logo">
+<span>常磐路オープン2nd</span>
 </a>
+<ul class="desktop-menu">
+<li><a href="index.html">トップ</a></li>
+<li><a href="rule.html">企画書</a></li>
+<li><a href="entry.html" class="active">エントリー</a></li>
+<li><a href="privacy-policy.html">プライバシーポリシー</a></li>
+<li><button class="search-trigger" onclick="toggleSearch()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button></li>
+</ul>
+<div class="mobile-controls">
+<button class="search-trigger" onclick="toggleSearch()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+<button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</div>
+</nav>
+</header>
+<div class="mobile-menu" id="mobileMenu">
 <ul>
-<li><a href="index.html">TOP</a></li>
+<li><a href="index.html">トップ</a></li>
 <li><a href="rule.html">企画書</a></li>
 <li><a href="entry.html" class="active">エントリー</a></li>
 <li><a href="privacy-policy.html">プライバシーポリシー</a></li>
 </ul>
-</nav>
-</header>
+</div>
+<div class="search-modal" id="searchModal">
+<button class="close-search" onclick="toggleSearch()">×</button>
+<div class="search-box">
+<input type="text" class="search-input" placeholder="Search..." autofocus>
+</div>
+</div>
 <div class="container">
 <div class="page-header">
 <h1>エントリー</h1>
+<span></span>
 </div>
-<div class="content-card">
-<div class="badge-coming-soon">COMING SOON</div>
-<h2>エントリー受付について</h2>
-<p>「常磐路オープン2nd」のエントリーは<br><strong style="color: #2d3748; background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%); padding: 0 5px;">2026年2月ごろ</strong>から開始する予定です。</p>
-<p>今しばらくお待ち下さい。</p>
-<div class="notice">
-<span class="icon">📢</span>
-<p>エントリー開始時には、このページおよびSNSにてお知らせいたします。</p>
+<div class="coming-soon-card">
+<div class="status-badge">✨ COMING SOON</div>
+<div class="message">
+<h2>エントリー受付開始予定</h2>
+<span class="date-highlight">2026年2月</span>
+</div>
+<p class="sub-message">現在準備中です。<br>公開まで今しばらくお待ちください。</p>
+<div class="notification-box">
+<span class="notification-icon">📢</span>
+<span class="notification-text">エントリー開始時は、本ページおよび公式SNSにてお知らせいたします。</span>
 </div>
 </div>
 </div>
 <footer>
-<p>© 2025 常磐路オープン2nd実行委員会 / @astro_root All Rights Reserved.</p>
+<p>&copy; 2025 常磐路オープン2nd実行委員会 All Rights Reserved.</p>
 </footer>
+<script>
+function toggleMenu() {
+document.getElementById('mobileMenu').classList.toggle('active');
+document.querySelector('.hamburger').classList.toggle('active');
+}
+function toggleSearch() {
+const modal = document.getElementById('searchModal');
+modal.classList.toggle('active');
+if(modal.classList.contains('active')) setTimeout(() => document.querySelector('.search-input').focus(), 100);
+}
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.getElementById('searchModal').classList.remove('active'); });
+</script>
 </body>
 </html>
