@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>常磐路オープン2nd - エントリー</title>
+<link rel="icon" href="https://raw.githubusercontent.com/astro-root/tokiwaji-open-2nd/main/tokiwaji-open-2nd-logo.png" type="image/png">
+<style>
+:root { --primary: #667eea; --secondary: #764ba2; --text: #2d3748; --bg: #f7fafc; --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif; line-height: 1.6; color: var(--text); background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+header { position: sticky; top: 0; width: 100%; z-index: 1000; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.3); }
+nav { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+.logo-container { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.logo-img { height: 48px; width: auto; transition: transform 0.3s; }
+.logo-container:hover .logo-img { transform: scale(1.1); }
+.logo-text { font-size: 1.25rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+nav ul { display: flex; list-style: none; gap: 2rem; }
+nav a { text-decoration: none; color: #4a5568; font-weight: 600; font-size: 0.95rem; position: relative; padding: 0.5rem 0; transition: color 0.3s; }
+nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 0; background: var(--gradient); transition: width 0.3s ease; }
+nav a:hover, nav a.active { color: var(--primary); }
+nav a:hover::after, nav a.active::after { width: 100%; }
+.container { max-width: 1000px; margin: 0 auto; padding: 3rem 2rem; flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.page-header { text-align: center; margin-bottom: 3rem; opacity: 0; animation: fadeDown 0.8s ease forwards; }
+.page-header h1 { font-size: 2.5rem; color: var(--primary); margin-bottom: 0.5rem; font-weight: 800; }
+.page-header::after { content: ''; display: block; width: 60px; height: 4px; background: var(--gradient); margin: 1rem auto 0; border-radius: 2px; }
+.content-card { background: white; border-radius: 24px; padding: 6rem 3rem; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.05); text-align: center; max-width: 800px; width: 100%; position: relative; overflow: hidden; opacity: 0; transform: scale(0.9); animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s forwards; }
+.content-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--gradient); }
+.badge-coming-soon { display: inline-block; background: #fff9e6; color: #d69e2e; padding: 0.5rem 1.5rem; border-radius: 50px; font-weight: 800; font-size: 0.9rem; margin-bottom: 1.5rem; border: 1px solid #f6e05e; animation: pulse 2s infinite; }
+.content-card h2 { color: var(--primary); font-size: 2.2rem; margin-bottom: 2rem; font-weight: 800; letter-spacing: 0.05em; }
+.content-card p { font-size: 1.2rem; color: #4a5568; line-height: 1.8; margin-bottom: 1rem; }
+.notice { background-color: #f7fafc; border-left: 4px solid #667eea; padding: 1.5rem 2rem; margin-top: 3rem; border-radius: 8px; display: inline-flex; align-items: center; gap: 1rem; text-align: left; }
+.notice p { color: #555; font-weight: 600; margin-bottom: 0; font-size: 1rem; }
+.icon { font-size: 1.5rem; }
+footer { background: #1a202c; color: #a0aec0; text-align: center; padding: 3rem 2rem; margin-top: auto; }
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes popIn { to { opacity: 1; transform: scale(1); } }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(214, 158, 46, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(214, 158, 46, 0); } 100% { box-shadow: 0 0 0 0 rgba(214, 158, 46, 0); } }
+@media (max-width: 768px) { nav { flex-direction: column; gap: 1rem; } .content-card { padding: 4rem 1.5rem; } .notice { width: 100%; } }
+</style>
+</head>
+<body>
+<header>
+<nav>
+<a href="index.html" class="logo-container">
+<img src="https://raw.githubusercontent.com/astro-root/tokiwaji-open-2nd/main/tokiwaji-open-2nd-logo.png" alt="常磐路オープン2nd ロゴ" class="logo-img">
+<span class="logo-text">常磐路オープン2nd</span>
+</a>
+<ul>
+<li><a href="index.html">TOP</a></li>
+<li><a href="rule.html">企画書</a></li>
+<li><a href="entry.html" class="active">エントリー</a></li>
+<li><a href="privacy-policy.html">プライバシーポリシー</a></li>
+</ul>
+</nav>
+</header>
+<div class="container">
+<div class="page-header">
+<h1>エントリー</h1>
+</div>
+<div class="content-card">
+<div class="badge-coming-soon">COMING SOON</div>
+<h2>エントリー受付について</h2>
+<p>「常磐路オープン2nd」のエントリーは<br><strong style="color: #2d3748; background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%); padding: 0 5px;">2026年2月ごろ</strong>から開始する予定です。</p>
+<p>今しばらくお待ち下さい。</p>
+<div class="notice">
+<span class="icon">📢</span>
+<p>エントリー開始時には、このページおよびSNSにてお知らせいたします。</p>
+</div>
+</div>
+</div>
+<footer>
+<p>© 2025 常磐路オープン2nd実行委員会 / @astro_root All Rights Reserved.</p>
+</footer>
+</body>
+</html>

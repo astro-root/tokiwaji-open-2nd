@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>常磐路オープン2nd - プライバシーポリシー</title>
+<link rel="icon" href="https://raw.githubusercontent.com/astro-root/tokiwaji-open-2nd/main/tokiwaji-open-2nd-logo.png" type="image/png">
+<style>
+:root { --primary: #667eea; --secondary: #764ba2; --text: #2d3748; --bg: #f7fafc; --white: #ffffff; --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif; line-height: 1.8; color: var(--text); background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+header { position: sticky; top: 0; width: 100%; z-index: 1000; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.3); }
+nav { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+.logo-container { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.logo-img { height: 48px; width: auto; transition: transform 0.3s; }
+.logo-container:hover .logo-img { transform: scale(1.1); }
+.logo-text { font-size: 1.25rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+nav ul { display: flex; list-style: none; gap: 2rem; }
+nav a { text-decoration: none; color: #4a5568; font-weight: 600; font-size: 0.95rem; position: relative; padding: 0.5rem 0; transition: color 0.3s; }
+nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 0; background: var(--gradient); transition: width 0.3s ease; }
+nav a:hover, nav a.active { color: var(--primary); }
+nav a:hover::after, nav a.active::after { width: 100%; }
+.container { max-width: 900px; margin: 0 auto; padding: 4rem 2rem; flex: 1; width: 100%; }
+.page-header { text-align: center; margin-bottom: 4rem; opacity: 0; animation: fadeDown 0.8s ease forwards; }
+.page-header h1 { font-size: 2.2rem; color: var(--primary); margin-bottom: 0.5rem; font-weight: 800; }
+.page-header::after { content: ''; display: block; width: 60px; height: 4px; background: var(--gradient); margin: 1rem auto 0; border-radius: 2px; }
+.content-card { background: white; border-radius: 24px; padding: 4rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05); }
+.policy-section { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; margin-bottom: 3rem; }
+.policy-section.visible { opacity: 1; transform: translateY(0); }
+.content-card p { color: #4a5568; margin-bottom: 1.5rem; text-align: justify; }
+.content-card h2 { color: var(--primary); font-size: 1.4rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #edf2f7; font-weight: 700; position: relative; }
+.content-card h2::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 40px; height: 2px; background: var(--gradient); }
+.content-card ul { margin-left: 1.5rem; margin-bottom: 2rem; color: #4a5568; background: #f8fafc; padding: 2rem; border-radius: 12px; }
+.content-card li { margin-bottom: 0.5rem; list-style-type: square; }
+.contact-box { background: #f7fafc; border: 1px solid #e2e8f0; border-left: 4px solid var(--primary); padding: 2rem; margin-top: 2rem; border-radius: 8px; transition: transform 0.3s; }
+.contact-box:hover { transform: translateX(5px); }
+.date-info { text-align: right; color: #a0aec0; font-size: 0.9rem; margin-top: 5rem; padding-top: 1.5rem; border-top: 1px solid #edf2f7; }
+footer { background: #1a202c; color: #a0aec0; text-align: center; padding: 3rem 2rem; margin-top: auto; }
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 768px) { nav { flex-direction: column; gap: 1rem; } .content-card { padding: 2rem 1.5rem; } }
+</style>
+</head>
+<body>
+<header>
+<nav>
+<a href="index.html" class="logo-container">
+<img src="https://raw.githubusercontent.com/astro-root/tokiwaji-open-2nd/main/tokiwaji-open-2nd-logo.png" alt="常磐路オープン2nd ロゴ" class="logo-img">
+<span class="logo-text">常磐路オープン2nd</span>
+</a>
+<ul>
+<li><a href="index.html">TOP</a></li>
+<li><a href="rule.html">企画書</a></li>
+<li><a href="entry.html">エントリー</a></li>
+<li><a href="privacy-policy.html" class="active">プライバシーポリシー</a></li>
+</ul>
+</nav>
+</header>
+<div class="container">
+<div class="page-header">
+<h1>プライバシーポリシー</h1>
+</div>
+<div class="content-card">
+<div class="policy-section js-scroll">
+<p>常磐路オープン2nd実行委員会（以下「当会」といいます）は、参加者の皆様の個人情報の保護を重要な責務と認識し、以下のとおりプライバシーポリシーを定め、適切な取り扱いに努めます。</p>
+</div>
+
+<div class="policy-section js-scroll">
+<h2>1. 収集する個人情報</h2>
+<p>当会は、クイズ大会の運営にあたり、以下の個人情報を収集する場合があります。</p>
+<ul>
+<li>氏名、ハンドルネーム</li>
+<li>メールアドレス</li>
+<li>所属する教育機関</li>
+<li>学年</li>
+<li>大会での成績・記録</li>
+<li>写真・映像（大会当日撮影されたもの）</li>
+</ul>
+</div>
+
+<div class="policy-section js-scroll">
+<h2>2. 個人情報の利用目的</h2>
+<p>収集した個人情報は、以下の目的で利用いたします。</p>
+<ul>
+<li>クイズ大会への参加受付および本人確認</li>
+<li>大会運営に関する連絡・通知</li>
+<li>成績発表および表彰</li>
+<li>大会の記録・報告</li>
+<li>次回以降の大会に関するご案内</li>
+<li>統計データの作成（個人を特定できない形式で処理）</li>
+<li>ウェブサイトやSNSでの大会の様子の公開</li>
+</ul>
+</div>
+
+<div class="policy-section js-scroll">
+<h2>3. 個人情報の第三者提供</h2>
+<p>当会は、以下の場合を除き、参加者の同意なく個人情報を第三者に提供することはありません。</p>
+<ul>
+<li>法令に基づく場合</li>
+<li>人の生命、身体または財産の保護のために必要がある場合</li>
+<li>協賛企業・後援団体への情報提供について、事前に参加者の同意を得た場合</li>
+</ul>
+</div>
+
+<div class="policy-section js-scroll">
+<h2>4. 個人情報の管理</h2>
+<p>当会は、個人情報の紛失、破壊、改ざん、漏洩等を防止するため、適切な安全管理措置を講じます。個人情報へのアクセスは、必要最小限の担当者に限定し、厳重に管理いたします。</p>
+</div>
+
+<div class="policy-section js-scroll">
+<h2>5. 写真・映像の取り扱い</h2>
+<p>大会当日に撮影された写真・映像は、ウェブサイト、SNS、広報資料等に掲載する場合があります。掲載を希望されない場合は、事前または当日にスタッフまでお申し出ください。掲載の際には個人情報に厳重な配慮を行います。</p>
+</div>
+
+<div class="policy-section js-scroll">
+<h2>6. 個人情報の開示・訂正・削除</h2>
+<p>参加者ご本人から個人情報の開示、訂正、削除等のご請求があった場合は、本人確認の上、速やかに対応いたします。</p>
+</div>
+
+<div class="policy-section js-scroll">
+<h2>7. お問い合わせ窓口</h2>
+<p>個人情報の取り扱いに関するお問い合わせは、以下までご連絡ください。</p>
+<div class="contact-box">
+<p><strong>【連絡先】</strong></p>
+<p>常磐路オープン2nd実行委員会</p>
+<p>メールアドレス: <a href="mailto:tokiwajiopen2024@gmail.com" style="color: #667eea; font-weight: bold; text-decoration: none;">tokiwajiopen2024@gmail.com</a></p>
+<p>大会長：プレストメロディ</p>
+</div>
+</div>
+
+<div class="policy-section js-scroll">
+<h2>8. プライバシーポリシーの変更</h2>
+<p>当会は、必要に応じて本プライバシーポリシーを変更することがあります。変更した場合は、ウェブサイト上でお知らせいたします。</p>
+<div class="date-info">
+<p>制定日: 2025年12月25日</p>
+<p>最終改定日: 2025年12月25日</p>
+<p>常磐路オープン2nd実行委員会</p>
+</div>
+</div>
+</div>
+</div>
+<footer>
+<p>© 2025 常磐路オープン2nd実行委員会 / @astro_root All Rights Reserved.</p>
+</footer>
+<script>
+const observer = new IntersectionObserver((entries) => {
+entries.forEach(entry => {
+if (entry.isIntersecting) {
+entry.target.classList.add('visible');
+}
+});
+}, { threshold: 0.1 });
+document.querySelectorAll('.js-scroll').forEach((el) => observer.observe(el));
+</script>
+</body>
+</html>
