@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>常磐路オープン2nd - トップ</title>
+
+<meta property="og:title" content="常磐路オープン2nd">
+<meta property="og:description" content="茨城県発、高校生が主催する次世代のクイズ大会。新たな知の冒険がここから始まります。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tokiwaji-open-2nd.netlify.app/"> <meta property="og:image" content="https://raw.githubusercontent.com/astro-root/tokiwaji-open-2nd/main/tokiwaji-open-2nd-logo.png">
+<meta name="twitter:card" content="summary"> <meta name="twitter:site" content="@Tokiwaji_Open2">
+
 <link rel="icon" href="https://raw.githubusercontent.com/astro-root/tokiwaji-open-2nd/main/tokiwaji-open-2nd-logo.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,52 +62,34 @@ nav { max-width: 1200px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; ju
 .info-value { font-size: 1.25rem; font-weight: 600; color: var(--dark); line-height: 1.4; }
 .map-wrapper { border-radius: 24px; overflow: hidden; box-shadow: var(--shadow-lg); height: 400px; background: #e2e8f0; opacity: 0; transform: scale(0.98); transition: all 0.6s ease; }
 .map-wrapper.visible { opacity: 1; transform: scale(1); }
-.map-wrapper iframe { width: 100%; height: 100%; border: none; filter: grayscale(100%); transition: filter 0.5s; }
-.map-wrapper:hover iframe { filter: grayscale(0%); }
-/* お問い合わせセクションの修正 */
+/* マップのグレースケールを解除 */
+.map-wrapper iframe { width: 100%; height: 100%; border: none; }
 .contact-section { background: var(--surface); border-radius: 32px; padding: 4rem 2rem; text-align: center; box-shadow: var(--shadow-lg); border: 1px solid rgba(255, 255, 255, 0.8); position: relative; overflow: hidden; opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
 .contact-section.visible { opacity: 1; transform: translateY(0); }
 .contact-section::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--gradient); }
 .email-btn { 
     display: inline-flex; align-items: center; gap: 1rem; background: var(--surface); color: var(--primary); padding: 1rem 2rem; border-radius: 16px; font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.1); margin: 2rem 0; transition: all 0.3s; 
-    /* 修正：スマホ対応 - 折り返しと最大幅設定 */
-    max-width: 100%;
-    word-break: break-all;
-    overflow-wrap: anywhere;
-    text-align: center;
+    max-width: 100%; word-break: break-all; overflow-wrap: anywhere; text-align: center;
 }
 .email-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(99, 102, 241, 0.25); border-color: var(--primary); }
-/* 修正：SNSリンクの改善 */
 .social-links { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-    gap: 1.5rem; 
-    margin-top: 1.5rem; 
-    max-width: 600px; 
-    margin-left: auto; 
-    margin-right: auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; max-width: 600px; margin-left: auto; margin-right: auto;
 }
 .social-item a { 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    gap: 0.8rem; 
-    background: #f1f5f9; 
-    padding: 1rem; 
-    border-radius: 12px; 
-    color: var(--dark); 
-    font-weight: 600; 
-    transition: all 0.3s;
-    border: 1px solid transparent;
+    display: flex; align-items: center; justify-content: center; gap: 0.8rem; background: #f1f5f9; padding: 1rem; border-radius: 12px; color: var(--dark); font-weight: 600; transition: all 0.3s; border: 1px solid transparent;
 }
 .social-item a:hover { 
-    background: white; 
-    color: var(--primary); 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
-    border-color: var(--primary); 
-    transform: translateY(-2px); 
+    background: white; color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-color: var(--primary); transform: translateY(-2px); 
 }
 .social-label { font-size: 0.8rem; color: var(--text-light); display: block; margin-bottom: 0.2rem; }
+/* 更新履歴セクションのスタイル */
+.history-section { max-width: 800px; margin: 0 auto; background: var(--surface); padding: 2rem; border-radius: 24px; box-shadow: var(--shadow-sm); border: 1px solid rgba(255, 255, 255, 0.6); opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
+.history-section.visible { opacity: 1; transform: translateY(0); }
+.history-list { list-style: none; }
+.history-item { display: flex; gap: 2rem; padding: 1rem 0; border-bottom: 1px solid #f1f5f9; align-items: flex-start; }
+.history-item:last-child { border-bottom: none; }
+.history-date { font-weight: 700; color: var(--primary); font-feature-settings: "palt"; white-space: nowrap; }
+.history-content { color: var(--text); font-size: 0.95rem; }
 footer { background: var(--dark); color: #94a3b8; padding: 3rem 1.5rem; text-align: center; font-size: 0.85rem; font-weight: 500; }
 .search-modal { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); z-index: 2500; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
 .search-modal.active { opacity: 1; pointer-events: all; }
@@ -116,6 +105,7 @@ footer { background: var(--dark); color: #94a3b8; padding: 3rem 1.5rem; text-ali
     .hero { padding-top: 5rem; } 
     .info-card { padding: 2rem; } 
     .email-btn { flex-direction: column; gap: 0.5rem; font-size: 1rem; padding: 1.2rem; }
+    .history-item { flex-direction: column; gap: 0.2rem; }
     .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); } 
     .hamburger.active span:nth-child(2) { opacity: 0; } 
     .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); } 
@@ -211,14 +201,14 @@ footer { background: var(--dark); color: #94a3b8; padding: 3rem 1.5rem; text-ali
 <h2>お問い合わせ</h2>
 </div>
 <div class="contact-section js-scroll">
-<p style="color: var(--text-light); margin-bottom: 2rem;">ご不明な点がございましたら、お気軽に下記よりご連絡ください。</p>
+<p style="color: var(--dark); margin-bottom: 2rem; font-weight: 700; font-size: 1.1rem;">ご不明な点がございましたら、お気軽に下記よりご連絡ください。</p>
 <a href="mailto:tokiwajiopen2024@gmail.com" class="email-btn">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
 tokiwajiopen2024@gmail.com
 </a>
 <div class="social-links">
 <div class="social-item">
-<a href="https://twitter.com/Tokiwaji-Open2" target="_blank">
+<a href="https://twitter.com/Tokiwaji_Open2" target="_blank">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
 公式X (旧Twitter)
 </a>
@@ -230,6 +220,22 @@ tokiwajiopen2024@gmail.com
 </a>
 </div>
 </div>
+</div>
+<div class="section-header js-scroll">
+<span>HISTORY</span>
+<h2>更新履歴</h2>
+</div>
+<div class="history-section js-scroll">
+<ul class="history-list">
+<li class="history-item">
+<span class="history-date">2025.12.25</span>
+<span class="history-content">常磐路オープン2nd公式サイトを公開しました。</span>
+</li>
+<li class="history-item">
+<span class="history-date">2025.3.24</span>
+<span class="history-content">常磐路オープン2nd 開催決定！</span>
+</li>
+</ul>
 </div>
 </div>
 <footer>
