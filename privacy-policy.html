@@ -46,11 +46,13 @@ nav { max-width: 1200px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; ju
 .policy-content p { color: var(--text); margin-bottom: 1.5rem; text-align: justify; }
 .policy-content ul { background: #f8fafc; padding: 2rem 2.5rem; border-radius: 16px; margin-bottom: 2rem; border: 1px solid #f1f5f9; }
 .policy-content li { margin-bottom: 0.8rem; list-style-type: disc; color: var(--text); }
-.contact-info { background: #f8fafc; border-left: 4px solid var(--primary); padding: 2rem; border-radius: 12px; margin-top: 1rem; }
-.contact-info p { margin-bottom: 0.5rem; font-size: 0.95rem; }
-.contact-link { color: var(--primary); font-weight: 700; text-decoration: none; }
-.contact-link:hover { text-decoration: underline; }
 .revision-date { text-align: right; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid #f1f5f9; color: var(--text-light); font-size: 0.85rem; }
+.email-btn { display: inline-flex; align-items: center; gap: 1rem; background: #f8fafc; color: var(--primary); padding: 1rem 2rem; border-radius: 16px; font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.1); margin: 1rem 0 2rem; transition: all 0.3s; max-width: 100%; word-break: break-all; overflow-wrap: anywhere; text-align: center; }
+.email-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2); border-color: var(--primary); background: #ffffff; }
+.social-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+.social-item a { display: flex; align-items: center; justify-content: center; gap: 0.8rem; background: #f8fafc; padding: 1rem; border-radius: 12px; color: var(--dark); font-weight: 600; transition: all 0.3s; border: 1px solid #f1f5f9; }
+.social-item a:hover { background: white; color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-color: var(--primary); transform: translateY(-2px); }
+.contact-wrapper { text-align: center; padding: 1rem 0; }
 footer { background: var(--dark); color: #94a3b8; padding: 3rem 1.5rem; text-align: center; font-size: 0.85rem; font-weight: 500; margin-top: auto; }
 .search-modal { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); z-index: 2500; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
 .search-modal.active { opacity: 1; pointer-events: all; }
@@ -59,7 +61,7 @@ footer { background: var(--dark); color: #94a3b8; padding: 3rem 1.5rem; text-ali
 .search-input:focus { border-color: var(--primary); }
 .close-search { position: absolute; top: 2rem; right: 2rem; background: none; border: none; font-size: 2rem; color: var(--text-light); cursor: pointer; }
 @keyframes fadeInDown { to { opacity: 1; transform: translateY(0); } }
-@media (max-width: 768px) { .desktop-menu { display: none; } .mobile-controls { display: flex; } .policy-card { padding: 3rem 1.5rem; } .policy-content ul { padding: 1.5rem 1.5rem 1.5rem 2.5rem; } .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); } .hamburger.active span:nth-child(2) { opacity: 0; } .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); } }
+@media (max-width: 768px) { .desktop-menu { display: none; } .mobile-controls { display: flex; } .policy-card { padding: 3rem 1.5rem; } .policy-content ul { padding: 1.5rem 1.5rem 1.5rem 2.5rem; } .email-btn { flex-direction: column; gap: 0.5rem; font-size: 1rem; padding: 1.2rem; } .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); } .hamburger.active span:nth-child(2) { opacity: 0; } .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); } }
 </style>
 </head>
 <body>
@@ -150,10 +152,25 @@ footer { background: var(--dark); color: #94a3b8; padding: 3rem 1.5rem; text-ali
 <div class="policy-content js-scroll">
 <h2>6. お問い合わせ窓口</h2>
 <p>個人情報の取り扱いに関するお問い合わせは、以下までご連絡ください。</p>
-<div class="contact-info">
-<p><strong>常磐路オープン2nd実行委員会</strong></p>
-<p>Email: <a href="mailto:tokiwajiopen2024@gmail.com" class="contact-link">tokiwajiopen2024@gmail.com</a></p>
-<p>X (旧Twitter): <a href="https://twitter.com/Tokiwaji-Open2" target="_blank" class="contact-link">@Tokiwaji_Open2</a></p>
+<div class="contact-wrapper">
+<a href="mailto:tokiwajiopen2024@gmail.com" class="email-btn">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+tokiwajiopen2024@gmail.com
+</a>
+<div class="social-links">
+<div class="social-item">
+<a href="https://twitter.com/Tokiwaji-Open2" target="_blank">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+公式X (旧Twitter)
+</a>
+</div>
+<div class="social-item">
+<a href="https://twitter.com/Melody1496" target="_blank">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+大会長: プレストメロディ
+</a>
+</div>
+</div>
 </div>
 </div>
 <div class="revision-date">
