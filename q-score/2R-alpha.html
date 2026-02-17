@@ -191,7 +191,7 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
       </div>
       <div class="s-row">
         <div class="s-grp">
-          <label>誤答失格(回)</label>
+          <label>誤答失格(回) [0=無制限]</label>
           <input id="r-max" type="number" value="0" />
         </div>
         <div class="s-grp">
@@ -236,7 +236,7 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
     </div>
 
     <div class="h-center">
-      <div class="h-rule" id="d-rule">5o3x1休</div>
+      <div class="h-rule" id="d-rule"></div>
     </div>
 
     <div class="h-right">
@@ -502,13 +502,20 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
     }
   }
 
+  function getNum(id, def) {
+    const v = document.getElementById(id).value;
+    if (v === "") return def;
+    const n = parseInt(v);
+    return isNaN(n) ? def : n;
+  }
+
   function initGame() {
-    conf.win = parseInt(document.getElementById('r-win').value) || 5;
-    conf.slots = parseInt(document.getElementById('r-slot').value) || 5;
-    conf.maxX = parseInt(document.getElementById('r-max').value) || 3;
-    conf.pen = parseInt(document.getElementById('r-pen').value) || 1;
-    conf.maxQ = parseInt(document.getElementById('r-maxq').value) || 0;
-    conf.start = parseInt(document.getElementById('r-start').value) || 1;
+    conf.win = getNum('r-win', 5);
+    conf.slots = getNum('r-slot', 5);
+    conf.maxX = getNum('r-max', 3);
+    conf.pen = getNum('r-pen', 1);
+    conf.maxQ = getNum('r-maxq', 0);
+    conf.start = getNum('r-start', 1);
     
     state.qNum = conf.start;
     state.qIdx = -1;
@@ -516,9 +523,10 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
     
     document.getElementById('d-group').innerText = document.getElementById('r-name').value;
     
-    let ruleStr = `${conf.win}o`;
-    if (conf.maxX > 0) ruleStr += `${conf.maxX}x`;
-    if (conf.pen > 0) ruleStr += `${conf.pen}休`;
+    let ruleStr = "";
+    if (conf.win > 0) ruleStr += conf.win + "◯";
+    if (conf.maxX > 0) ruleStr += conf.maxX + "×";
+    if (conf.pen > 0) ruleStr += conf.pen + "休";
     document.getElementById('d-rule').innerText = ruleStr;
     
     const maxPos = Math.max(rawP.length, conf.slots);
@@ -608,6 +616,13 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
           d.className = 'w-dot' + (k < p.wr ? ' on' : '');
           dom.wrongs.appendChild(d);
       }
+      
+      // If unlimited wrongs, show dots up to current wrongs if they exceed maxX visual limit (optional fallback)
+      if (conf.maxX <= 0 && p.wr > 0) {
+          // In 0-limit mode, we don't show limit dots, but maybe we show current wrongs?
+          // Current UI design relies on maxX to draw dots. 
+          // If maxX is 0, no dots are drawn. This is correct per "don't display".
+      }
 
       if (p.st === 'won') {
           dom.root.classList.add('is-win');
@@ -682,7 +697,7 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
     dom.scoreEl.classList.remove('pop'); void dom.scoreEl.offsetWidth; dom.scoreEl.classList.add('pop');
     dom.root.classList.add('animate-shake'); setTimeout(()=>dom.root.classList.remove('animate-shake'), 500);
 
-    if (p.wr >= conf.maxX) {
+    if (conf.maxX > 0 && p.wr >= conf.maxX) {
       p.st = 'lost';
     } else {
       p.rest = conf.pen;
