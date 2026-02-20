@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>常磐路オープン2nd 得点表示一覧</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+  --surface: rgba(255, 255, 255, 0.75);
+  --surface-border: rgba(255, 255, 255, 0.5);
+  --accent: #0ea5e9;
+  --accent2: #6366f1;
+  --accent-glow: rgba(14, 165, 233, 0.3);
+  --text: #1e293b;
+  --text-dim: #64748b;
+  --danger: #ef4444;
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 10px 25px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 20px 40px -5px rgba(0, 0, 0, 0.1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg-gradient);
+  color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+#particles-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.logo-img {
+  max-width: 260px;
+  width: 100%;
+  height: auto;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.08));
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.logo-img:hover {
+  transform: scale(1.02) rotate(-1deg);
+}
+#lock-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(248, 250, 252, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  gap: 1.5rem;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+#lock-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+.lock-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  text-align: center;
+}
+.lock-subtitle {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+.passcode-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  width: 100%;
+  max-width: 360px;
+  padding: 2.5rem;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+}
+.passcode-input {
+  width: 100%;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.2rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.5em;
+  text-align: center;
+  color: var(--text);
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+.passcode-input::placeholder {
+  color: #cbd5e1;
+}
+.passcode-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-glow), inset 0 2px 4px rgba(0,0,0,0.02);
+}
+.passcode-input.error {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+@keyframes shake {
+  10%, 90% { transform: translate3d(-2px, 0, 0); }
+  20%, 80% { transform: translate3d(4px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+  40%, 60% { transform: translate3d(8px, 0, 0); }
+}
+.passcode-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  border-radius: 12px;
+  padding: 1.2rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  box-shadow: var(--shadow-md);
+}
+.passcode-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px -8px var(--accent2);
+}
+.passcode-btn:active {
+  transform: translateY(0);
+}
+.error-msg {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--danger);
+  min-height: 1.2em;
+  text-align: center;
+}
+#main-content {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#main-content.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.site-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.site-eyebrow {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.4em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+.site-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
+}
+.site-sub {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+.round-section {
+  margin-bottom: 3.5rem;
+  background: var(--surface);
+  border: 1px solid #ffffff;
+  border-radius: 20px;
+  padding: 2.5rem;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-lg);
+}
+.round-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 1.8rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.round-label::before {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 1.2em;
+  background: linear-gradient(to bottom, var(--accent), var(--accent2));
+  border-radius: 3px;
+}
+.links-grid {
+  display: grid;
+  gap: 1.2rem;
+}
+.links-grid.multi {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+.score-link {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1.2rem;
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 16px;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.score-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 2px transparent;
+  transition: box-shadow 0.3s ease;
+}
+.score-link:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.score-link:hover::after {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+.link-icon {
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  flex-shrink: 0;
+  color: var(--accent);
+  transition: all 0.3s ease;
+}
+.score-link:hover .link-icon {
+  background: var(--accent);
+  color: #fff;
+  transform: scale(1.1);
+}
+.link-body { flex: 1; }
+.link-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.link-url {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  letter-spacing: 0.02em;
+  margin-top: 0.3rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.link-arrow {
+  font-size: 1.2rem;
+  color: var(--text-dim);
+  opacity: 0;
+  transform: translateX(-15px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.score-link:hover .link-arrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--accent);
+}
+</style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+<div id="lock-screen">
+  <img src="https://raw.githubusercontent.com/astro-root/tokiwaji-open-2nd/main/tokiwaji-open-2nd-logo.png" alt="常磐路オープン2nd ロゴ" class="logo-img">
+  <div>
+    <div class="lock-title">Tokiwaji Open 2nd</div>
+    <div class="lock-subtitle">得点表示一覧</div>
+  </div>
+  <div class="passcode-form">
+    <input type="password" id="passcode-input" class="passcode-input" placeholder="●●●●" autocomplete="off" inputmode="numeric">
+    <button class="passcode-btn" id="unlock-btn">Unlock</button>
+    <div class="error-msg" id="error-msg"></div>
+  </div>
+</div>
+<div id="main-content">
+  <header class="site-header">
+    <img src="https://raw.githubusercontent.com/astro-root/tokiwaji-open-2nd/main/tokiwaji-open-2nd-logo.png" alt="常磐路オープン2nd ロゴ" class="logo-img">
+    <div class="site-eyebrow">Score Display</div>
+    <div class="site-title">常磐路オープン2nd</div>
+    <div class="site-sub">当日使用した得点表示ツール</div>
+  </header>
+  <section class="round-section">
+    <div class="round-label">2nd Round</div>
+    <div class="links-grid multi">
+      <a href="https://astro-root.github.io/tokiwaji-open-2nd/q-score/2R-alpha.html" target="_blank" class="score-link">
+        <span class="link-icon">α</span>
+        <div class="link-body">
+          <div class="link-name">Course α</div>
+          <div class="link-url">2R-alpha.html</div>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+      <a href="https://astro-root.github.io/tokiwaji-open-2nd/q-score/2R-beta.html" target="_blank" class="score-link">
+        <span class="link-icon">β</span>
+        <div class="link-body">
+          <div class="link-name">Course β</div>
+          <div class="link-url">2R-beta.html</div>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+      <a href="https://astro-root.github.io/tokiwaji-open-2nd/q-score/2R-gamma.html" target="_blank" class="score-link">
+        <span class="link-icon">γ</span>
+        <div class="link-body">
+          <div class="link-name">Course γ</div>
+          <div class="link-url">2R-gamma.html</div>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+    </div>
+  </section>
+  <section class="round-section">
+    <div class="round-label">3rd Round</div>
+    <div class="links-grid">
+      <a href="https://astro-root.github.io/tokiwaji-open-2nd/q-score/3R.html" target="_blank" class="score-link">
+        <span class="link-icon">🌠</span>
+        <div class="link-body">
+          <div class="link-name">3rd Round</div>
+          <div class="link-url">3R.html</div>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+    </div>
+  </section>
+  <section class="round-section">
+    <div class="round-label">Ex Round — 2nd Step</div>
+    <div class="links-grid">
+      <a href="https://astro-root.github.io/tokiwaji-open-2nd/q-score/Ex-2.html" target="_blank" class="score-link">
+        <span class="link-icon">⚡</span>
+        <div class="link-body">
+          <div class="link-name">Ex Round — 2nd Step</div>
+          <div class="link-url">Ex-2.html</div>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+    </div>
+  </section>
+  <section class="round-section">
+    <div class="round-label">Semi Final Round</div>
+    <div class="links-grid">
+      <a href="https://astro-root.github.io/tokiwaji-open-2nd/q-score/SF.html" target="_blank" class="score-link">
+        <span class="link-icon">🌌</span>
+        <div class="link-body">
+          <div class="link-name">Semi Final Round</div>
+          <div class="link-url">SF.html</div>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+    </div>
+  </section>
+  <section class="round-section">
+    <div class="round-label">Final Round</div>
+    <div class="links-grid">
+      <a href="https://astro-root.github.io/tokiwaji-open-2nd/q-score/F.html" target="_blank" class="score-link">
+        <span class="link-icon">🏆</span>
+        <div class="link-body">
+          <div class="link-name">Final Round</div>
+          <div class="link-url">F.html</div>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+    </div>
+  </section>
+</div>
+<script>
+const PASSCODE_HASH = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4";
+const lockScreen = document.getElementById('lock-screen');
+const mainContent = document.getElementById('main-content');
+const input = document.getElementById('passcode-input');
+const errorMsg = document.getElementById('error-msg');
+const unlockBtn = document.getElementById('unlock-btn');
+async function sha256(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+async function unlock() {
+  const hash = await sha256(input.value);
+  if (hash === PASSCODE_HASH) {
+    lockScreen.classList.add('hidden');
+    mainContent.classList.add('visible');
+    errorMsg.textContent = '';
+  } else {
+    input.classList.add('error');
+    errorMsg.textContent = 'パスコードが違います';
+    input.value = '';
+    setTimeout(() => input.classList.remove('error'), 400);
+  }
+}
+unlockBtn.addEventListener('click', unlock);
+input.addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+const canvas = document.getElementById('particles-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+function initParticles() {
+  particles = [];
+  const count = Math.floor((canvas.width * canvas.height) / 15000);
+  for (let i = 0; i < count; i++) {
+    const hue = Math.random() > 0.5 ? 200 : 230; 
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 40 + 10,
+      dx: (Math.random() - 0.5) * 0.4,
+      dy: (Math.random() - 0.5) * 0.4,
+      color: `hsla(${hue + Math.random() * 20}, 80%, 70%, 0.15)`
+    });
+  }
+}
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.x += p.dx;
+    p.y += p.dy;
+    if (p.x < -p.r) p.x = canvas.width + p.r;
+    if (p.x > canvas.width + p.r) p.x = -p.r;
+    if (p.y < -p.r) p.y = canvas.height + p.r;
+    if (p.y > canvas.height + p.r) p.y = -p.r;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.fill();
+  });
+  requestAnimationFrame(drawParticles);
+}
+window.addEventListener('resize', () => { resize(); initParticles(); });
+resize();
+initParticles();
+drawParticles();
+</script>
+</body>
+</html>
