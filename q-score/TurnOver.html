@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>常磐路オープン2nd ターンオーバー</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Bebas+Neue&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #f5c518;
+    --accent2: #ff6b00;
+    --bg: #030309;
+    --glow: rgba(245,197,24,0.55);
+    --surface: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.2);
+    --glass: rgba(255,255,255,0.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:'Noto Sans JP',sans-serif;color:#fff}
+
+  #particles{position:fixed;inset:0;pointer-events:none;z-index:0}
+  #burst-canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
+  body::before{
+    content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity:0.5;
+  }
+
+  #upload-screen{
+    position:fixed;inset:0;z-index:100;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:radial-gradient(ellipse 80% 80% at 50% 40%,#0c0c25 0%,#030309 70%);
+    gap:24px;padding:24px;
+  }
+  .upload-logo{width:100px;height:100px;object-fit:contain;filter:drop-shadow(0 0 20px var(--accent));margin-bottom:10px}
+  .upload-title{font-family:'Orbitron',sans-serif;font-size:2rem;background:linear-gradient(135deg,#f5c518,#ff9500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:0.2em;text-align:center}
+  
+  .upload-zones{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;width:100%;max-width:720px}
+  .upload-zone{
+    flex:1;min-width:260px;border:2px dashed #2a2a3a;border-radius:20px;padding:30px;
+    display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer;
+    transition:all 0.3s;background:var(--glass);
+    box-shadow:inset 0 0 20px rgba(0,0,0,0.5);
+  }
+  .upload-zone:hover{border-color:var(--accent);background:rgba(255,255,255,0.08);transform:translateY(-5px)}
+  .zone-icon svg{width:40px;height:40px;color:#4a4a5a}
+  .zone-title{font-size:1rem;font-weight:700;color:#888}
+  .zone-loaded{font-size:0.8rem;color:var(--accent);margin-top:4px}
+  #csv-input,#music-input{display:none}
+
+  #start-btn{
+    display:none;padding:20px 80px;border:none;border-radius:60px;
+    background:linear-gradient(135deg,#f5c518,#e0a800);
+    color:#000;font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:900;
+    cursor:pointer;letter-spacing:0.2em;box-shadow:0 0 40px rgba(245,197,24,0.4);transition:0.3s;
+  }
+  #start-btn:hover{transform:scale(1.05);box-shadow:0 0 60px rgba(245,197,24,0.8);background:linear-gradient(135deg,#ffe600,#ffb300);}
+
+  #stage{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse 90% 80% at 50% 40%,#0a0a22 0%,#030309 70%);cursor:pointer;perspective:2000px}
+  
+  #stage-header{
+    position:fixed;top:0;left:0;right:0;z-index:20;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:24px 40px;background:linear-gradient(to bottom,rgba(3,3,9,0.9),transparent);
+  }
+  .header-info{display:flex;align-items:center;gap:16px}
+  .header-logo{width:40px;height:40px;filter:drop-shadow(0 0 10px var(--accent))}
+
+  #rank-layer{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+  #rank-number{
+    font-family:'Bebas Neue',sans-serif;font-size:clamp(150px, 35vw, 400px);line-height:0.8;
+    color:transparent;-webkit-text-stroke:4px var(--accent);
+    filter:drop-shadow(0 0 80px var(--glow));transform:scale(0);opacity:0;
+    text-shadow:0 0 30px rgba(245,197,24,0.3);
+  }
+
+  #card-wrap{position:relative;z-index:30;display:none;width:100%;justify-content:center;transform-style:preserve-3d}
+  
+  #card {
+    width: 90vw;
+    max-width: 800px;
+    aspect-ratio: 16 / 9;
+    border-radius: 24px;
+    padding: 40px 60px;
+    background: var(--surface);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid var(--border);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.9), inset 0 0 30px rgba(255,255,255,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #card::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
+    animation: shine 4s infinite linear;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .card-rank-badge{position:absolute;top:20px;right:30px;font-family:'Bebas Neue';font-size:clamp(1.5rem, 4vw, 3rem);opacity:0.6;letter-spacing:0.1em;text-shadow:0 2px 10px rgba(0,0,0,0.5)}
+  
+  .card-name {
+    font-weight: 900;
+    font-size: clamp(2rem, 6vw, 4.5rem); 
+    line-height: 1.2;
+    letter-spacing: 0.05em;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+    position: relative;
+    z-index: 2;
+  }
+
+  .card-school {
+    margin-top: 15px;
+    font-size: clamp(1.2rem, 3vw, 2.2rem);
+    font-weight: 700;
+    color: rgba(255,255,255,0.9);
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    position: relative;
+    z-index: 2;
+  }
+
+  .card-grade {
+    margin-top: 10px;
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.3em;
+    font-weight: 700;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    z-index: 2;
+  }
+
+  #progress-wrap{position:fixed;bottom:0;left:0;right:0;height:8px;background:rgba(255,255,255,0.05)}
+  #progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width 0.6s cubic-bezier(0.4, 0, 0.2, 1);box-shadow:0 0 15px var(--accent)}
+  #counter{position:fixed;bottom:24px;right:40px;font-family:'Orbitron';font-size:1.2rem;color:#aaa;font-weight:700;text-shadow:0 0 10px rgba(0,0,0,0.8)}
+
+  @keyframes shine {
+    0% { transform: translateX(-100%) translateY(-100%); }
+    100% { transform: translateX(100%) translateY(100%); }
+  }
+
+  @keyframes rankIn{
+    0%{transform:scale(6) translateZ(400px);opacity:0;filter:blur(30px)}
+    50%{filter:blur(0px)}
+    100%{transform:scale(1) translateZ(0);opacity:1;filter:blur(0)}
+  }
+  .rank-anim{animation:rankIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards}
+
+  @keyframes cardIn{
+    0%{transform:translateY(300px) rotateX(60deg) scale(0.7);opacity:0;filter:blur(20px)}
+    100%{transform:translateY(0) rotateX(0) scale(1);opacity:1;filter:blur(0)}
+  }
+  .card-anim{animation:cardIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards}
+
+  #finale-screen{
+    position:fixed;inset:0;z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;
+    background:radial-gradient(circle at center,#1a1a3a 0%,#030309 100%);gap:30px;
+  }
+  .finale-title{font-family:'Orbitron';font-size:5rem;color:var(--accent);letter-spacing:0.3em;text-align:center;text-shadow:0 0 50px var(--glow)}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<canvas id="burst-canvas"></canvas>
+
+<div id="upload-screen">
+  <img class="upload-logo" src="https://raw.githubusercontent.com/astro-root/tokiwaji-open-2nd/main/tokiwaji-open-2nd-logo.png" onerror="this.style.display='none'">
+  <div class="upload-title">TURN OVER</div>
+  
+  <div class="upload-zones">
+    <div class="upload-zone" onclick="document.getElementById('csv-input').click()">
+      <div class="zone-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V7l-5-5H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg></div>
+      <div class="zone-title">順位データ (CSV)</div>
+      <div id="csv-loaded" class="zone-loaded">未選択</div>
+      <input type="file" id="csv-input" accept=".csv">
+    </div>
+    <div class="upload-zone" onclick="document.getElementById('music-input').click()">
+      <div class="zone-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/></svg></div>
+      <div class="zone-title">BGM (任意)</div>
+      <div id="music-loaded" class="zone-loaded">未選択</div>
+      <input type="file" id="music-input" accept="audio/*">
+    </div>
+  </div>
+  <button id="start-btn" onclick="startApp()">START DISPLAY</button>
+</div>
+
+<div id="stage" onclick="advance()">
+  <div id="stage-header">
+    <div class="header-info">
+      <img class="header-logo" src="https://raw.githubusercontent.com/astro-root/tokiwaji-open-2nd/main/tokiwaji-open-2nd-logo.png" onerror="this.style.display='none'">
+      <div style="font-family:'Orbitron'; font-size:1.2rem; letter-spacing:0.2em; color:var(--accent)">1st Round Result</div>
+    </div>
+  </div>
+
+  <div id="rank-layer">
+    <div id="rank-number">1</div>
+  </div>
+
+  <div id="card-wrap">
+    <div id="card">
+      <div class="card-rank-badge" id="c-badge">1st</div>
+      <div class="card-name" id="c-name">---</div>
+      <div class="card-school" id="c-school">---</div>
+      <div class="card-grade" id="c-grade">---</div>
+    </div>
+  </div>
+
+  <div id="counter">0 / 0</div>
+  <div id="progress-wrap"><div id="progress-fill"></div></div>
+</div>
+
+<div id="finale-screen">
+  <div class="finale-title">FINISH</div>
+  <button style="margin-top:40px; padding:15px 50px; background:var(--accent); color:#000; border:none; border-radius:40px; font-weight:900; cursor:pointer; font-family:'Orbitron'; box-shadow:0 0 30px rgba(245,197,24,0.5)" onclick="location.reload()">RELOAD</button>
+</div>
+
+<script>
+let players = [];
+let currentIdx = -1;
+let phase = 'idle';
+const bgm = new Audio();
+
+const COLORS = {
+  gold: {bg:'linear-gradient(135deg, rgba(122,93,0,0.85) 0%, rgba(241,196,15,0.85) 50%, rgba(122,93,0,0.85) 100%)', glow:'rgba(241,196,15,0.7)'},
+  silver: {bg:'linear-gradient(135deg, rgba(62,62,62,0.85) 0%, rgba(189,195,199,0.85) 50%, rgba(62,62,62,0.85) 100%)', glow:'rgba(189,195,199,0.7)'},
+  blue: {bg:'linear-gradient(135deg, rgba(0,31,63,0.85) 0%, rgba(52,152,219,0.85) 50%, rgba(0,31,63,0.85) 100%)', glow:'rgba(52,152,219,0.7)'},
+  red: {bg:'linear-gradient(135deg, rgba(96,0,0,0.85) 0%, rgba(231,76,60,0.85) 50%, rgba(96,0,0,0.85) 100%)', glow:'rgba(231,76,60,0.7)'}
+};
+
+document.getElementById('csv-input').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const lines = ev.target.result.split('\n').filter(l => l.trim());
+    players = lines.map(line => {
+      const parts = line.split(',').map(s => s.trim());
+      return { rank: parseInt(parts[0]), name: parts[1], school: parts[2], grade: parts[3], color: parts[4] || 'blue' };
+    });
+    players.sort((a,b) => a.rank - b.rank);
+    document.getElementById('csv-loaded').innerText = `✓ ${players.length}名 読込済`;
+    document.getElementById('start-btn').style.display = 'block';
+  };
+  reader.readAsText(file, 'UTF-8');
+});
+
+document.getElementById('music-input').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  bgm.src = URL.createObjectURL(file);
+  document.getElementById('music-loaded').innerText = `✓ ${file.name}`;
+});
+
+function startApp() {
+  document.getElementById('upload-screen').style.display = 'none';
+  document.getElementById('stage').style.display = 'flex';
+  if(bgm.src) bgm.play();
+}
+
+function advance() {
+  if (phase === 'idle' || phase === 'card') {
+    currentIdx++;
+    if (currentIdx >= players.length) { showFinale(); return; }
+    showRank();
+  } else {
+    showCard();
+  }
+}
+
+function back() {
+  if (currentIdx <= 0) return;
+  if (phase === 'card') {
+    showRank();
+  } else {
+    currentIdx--;
+    showCard();
+  }
+}
+
+function showRank() {
+  phase = 'rank';
+  const p = players[currentIdx];
+  const num = document.getElementById('rank-number');
+  document.getElementById('card-wrap').style.display = 'none';
+  document.getElementById('rank-layer').style.opacity = '1';
+  num.innerText = p.rank;
+  num.classList.remove('rank-anim');
+  void num.offsetWidth;
+  num.classList.add('rank-anim');
+  updateProgress();
+}
+
+function showCard() {
+  phase = 'card';
+  const p = players[currentIdx];
+  const card = document.getElementById('card');
+  const wrap = document.getElementById('card-wrap');
+  const col = COLORS[p.color.toLowerCase()] || COLORS.blue;
+
+  document.getElementById('rank-layer').style.opacity = '0';
+  wrap.style.display = 'flex';
+  wrap.classList.remove('card-anim');
+  void wrap.offsetWidth;
+  wrap.classList.add('card-anim');
+
+  card.style.background = col.bg;
+  card.style.boxShadow = `0 50px 100px rgba(0,0,0,0.9), 0 0 80px ${col.glow}, inset 0 0 30px rgba(255,255,255,0.2)`;
+  document.getElementById('c-name').innerText = p.name;
+  document.getElementById('c-school').innerText = p.school;
+  document.getElementById('c-grade').innerText = p.grade;
+  
+  const suffix = (p.rank === 1) ? 'st' : (p.rank === 2) ? 'nd' : (p.rank === 3) ? 'rd' : 'th';
+  document.getElementById('c-badge').innerText = p.rank + suffix;
+}
+
+function updateProgress() {
+  const pct = ((currentIdx + 1) / players.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('counter').innerText = `${currentIdx + 1} / ${players.length}`;
+}
+
+function showFinale() {
+  document.getElementById('stage').style.display = 'none';
+  document.getElementById('finale-screen').style.display = 'flex';
+}
+
+window.addEventListener('keydown', e => {
+  if (document.getElementById('stage').style.display === 'flex') {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'Enter') {
+      e.preventDefault();
+      advance();
+    } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+      e.preventDefault();
+      back();
+    }
+  }
+  if (e.key === 'Escape') location.reload();
+});
+
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let pts = [];
+function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+window.addEventListener('resize', resize); resize();
+for(let i=0; i<150; i++) pts.push({x:Math.random()*innerWidth, y:Math.random()*innerHeight, vx:(Math.random()-0.5)*1.5, vy:Math.random()*-1.5-0.5, r:Math.random()*3+1, a:Math.random()});
+function loop() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  pts.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if(p.y < -10) { p.y = canvas.height + 10; p.x = Math.random()*canvas.width; }
+    if(p.x < -10) { p.x = canvas.width + 10; }
+    if(p.x > canvas.width + 10) { p.x = -10; }
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(245, 197, 24, ${p.a * 0.6})`;
+    ctx.fill();
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = "rgba(245,197,24,0.8)";
+  });
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
