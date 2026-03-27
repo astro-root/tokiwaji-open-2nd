@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>常磐路オープン2nd ターンオーバー</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700;900&family=Teko:wght@600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gap: 15px;
+  --accent: #4f8ef7;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0; padding: 0;
+  background-color: #050505;
+  background-image:
+    radial-gradient(circle at center, #181d29 0%, #050505 100%),
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+  color: #fff;
+  font-family: 'Noto Sans JP', sans-serif;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.screen { display: none; width: 100vw; height: 100vh; }
+.screen.active { display: flex; }
+
+#screen1 {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  position: relative;
+}
+
+#screen1::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, rgba(79,142,247,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.s1-logo-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+}
+
+.s1-logo {
+  height: 110px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 24px rgba(79,142,247,0.5));
+}
+
+.s1-title {
+  font-size: 2.4rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-align: center;
+  background: linear-gradient(135deg, #fff 30%, #a0bcf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.3;
+  text-shadow: none;
+}
+
+.upload-area {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 420px;
+}
+
+.upload-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 14px 18px;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s;
+}
+
+.upload-row.loaded { border-color: rgba(79,142,247,0.5); }
+
+.upload-btn {
+  padding: 8px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #3a3a3a, #1a1a1a);
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 6px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.upload-btn:hover { background: linear-gradient(135deg, #555, #2a2a2a); box-shadow: 0 0 12px rgba(255,255,255,0.15); }
+
+input[type="file"] { display: none; }
+
+.upload-filename {
+  font-size: 12px;
+  color: #888;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.upload-filename.has-file { color: #a0bcf8; }
+
+.start-btn {
+  padding: 16px 0;
+  width: 420px;
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  background: linear-gradient(135deg, #2a4fa0, #1a2f60);
+  color: #fff;
+  border: 1px solid rgba(79,142,247,0.4);
+  border-radius: 10px;
+  font-family: 'Noto Sans JP', sans-serif;
+  transition: all 0.3s;
+  box-shadow: 0 0 30px rgba(79,142,247,0.15);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.start-btn.ready {
+  opacity: 1;
+  pointer-events: auto;
+  box-shadow: 0 0 40px rgba(79,142,247,0.35);
+}
+
+.start-btn.ready:hover {
+  background: linear-gradient(135deg, #3a5fc0, #2a3f80);
+  box-shadow: 0 0 60px rgba(79,142,247,0.5);
+  transform: translateY(-2px);
+}
+
+#screen2 {
+  flex-direction: column;
+  perspective: 2000px;
+  perspective-origin: 50% 50%;
+}
+
+.s2-header {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(0,0,0,0.75);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  flex-wrap: wrap;
+}
+
+.s2-logo {
+  height: 36px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(79,142,247,0.4));
+  flex-shrink: 0;
+}
+
+.s2-title {
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: #a0bcf8;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.divider { width: 1px; height: 28px; background: rgba(255,255,255,0.15); flex-shrink: 0; }
+
+.nav-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ctrl-btn {
+  padding: 7px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #2a2a2a, #111);
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 6px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 700;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.ctrl-btn:hover { background: linear-gradient(135deg, #444, #222); box-shadow: 0 0 12px rgba(255,255,255,0.15); }
+.ctrl-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.ctrl-btn.primary {
+  background: linear-gradient(135deg, #1e3a7a, #0f1f45);
+  border-color: rgba(79,142,247,0.5);
+}
+
+.ctrl-btn.primary:hover { background: linear-gradient(135deg, #2a4fa0, #1a2f60); box-shadow: 0 0 16px rgba(79,142,247,0.3); }
+
+.audio-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.audio-playbtn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1px solid #555;
+  background: linear-gradient(135deg, #2a2a2a, #111);
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.audio-playbtn:hover { background: linear-gradient(135deg, #444, #222); }
+
+.audio-vol-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #888;
+}
+
+input[type="range"].vol-slider {
+  -webkit-appearance: none;
+  width: 80px; height: 4px;
+  background: #333;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"].vol-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #a0bcf8;
+  cursor: pointer;
+}
+
+#main-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0 30px;
+  transform-style: preserve-3d;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+#container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--gap);
+  width: 100%;
+  max-width: 1400px;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+.scene {
+  width: calc((100% - (11 * var(--gap))) / 12);
+  aspect-ratio: 1 / 1;
+  position: relative;
+  z-index: 1;
+  transform-style: preserve-3d;
+}
+
+.cube {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  font-size: 1vw;
+  transition:
+    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
+    width 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
+    font-size 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform: translate(-50%, -50%) rotateY(0deg);
+}
+
+.cube.is-popped {
+  width: 45vh; height: 45vh;
+  font-size: 3vw;
+  transform: translate(calc(-50% + var(--move-x)), calc(-50% + var(--move-y))) translateZ(350px) rotateY(0deg);
+}
+
+.cube.is-flipped {
+  width: 75vw; height: 26vw;
+  font-size: 3.2vw;
+  transform: translate(calc(-50% + var(--move-x)), calc(-50% + var(--move-y))) translateZ(450px) rotateY(180deg);
+}
+
+.cube.is-returned {
+  width: 100%; height: 450%;
+  font-size: 1.05vw;
+  transform: translate(-50%, -50%) translateZ(0) rotateY(180deg);
+}
+
+.cube__face {
+  position: absolute;
+  box-sizing: border-box;
+  backface-visibility: hidden;
+  border-radius: 4px;
+}
+
+.cube__face--front {
+  width: 100%; height: 100%; top: 0; left: 0;
+  background: linear-gradient(145deg, #1f2229, #0a0b0e);
+  border: 2px solid #333;
+  display: flex; justify-content: center; align-items: center;
+  transform: translateZ(10px);
+  box-shadow: inset 0 0 25px rgba(0,0,0,0.9), 0 5px 15px rgba(0,0,0,0.5);
+}
+
+.cube__face--back {
+  width: 100%; height: 100%; top: 0; left: 0;
+  background: #eaeaea;
+  transform: rotateY(180deg) translateZ(10px);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.15), 0 15px 35px rgba(0,0,0,0.8);
+  overflow: hidden;
+  border: 1px solid #fff;
+}
+
+.cube__face--left { width: 20px; height: 100%; left: 0; background: #111; transform-origin: left center; transform: translateZ(10px) rotateY(-90deg); }
+.cube__face--right { width: 20px; height: 100%; right: 0; background: #111; transform-origin: right center; transform: translateZ(10px) rotateY(90deg); }
+.cube__face--top { width: 100%; height: 20px; top: 0; background: #222; transform-origin: center top; transform: translateZ(10px) rotateX(90deg); }
+.cube__face--bottom { width: 100%; height: 20px; bottom: 0; background: #050505; transform-origin: center bottom; transform: translateZ(10px) rotateX(-90deg); }
+
+.rank-text {
+  font-family: 'Teko', sans-serif;
+  font-size: 4em;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
+}
+
+.corner { position: absolute; width: 1em; height: 1em; border: 3px solid var(--accent-color); }
+.corner.top-left { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+.corner.top-right { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+.corner.bottom-left { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+.corner.bottom-right { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+.cube__face--back::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 8%;
+  background: linear-gradient(to bottom, #cfcfcf, #efefef); border-bottom: 1px solid #aaa; z-index: 1;
+}
+
+.cube__face--back::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 8%;
+  background: linear-gradient(to top, #cfcfcf, #efefef); border-top: 1px solid #aaa; z-index: 1;
+}
+
+.back-accent {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 4%;
+  background-color: var(--accent-color); z-index: 2;
+  box-shadow: 3px 0 10px rgba(0,0,0,0.2);
+}
+
+.info-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%; height: 100%;
+  padding: 0 5%;
+  gap: 5%;
+  white-space: nowrap;
+  z-index: 3;
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+
+.info-sub {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5em;
+}
+
+.info-school, .info-grade { color: #555; font-weight: 900; font-size: 1.1em; letter-spacing: 2px; white-space: nowrap; }
+.info-name {
+  font-size: 3em; color: #111; font-weight: 900; letter-spacing: 0.1em;
+  text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+  white-space: nowrap;
+}
+
+.cube.is-returned .cube__face--back {
+  overflow: hidden;
+}
+
+.cube.is-returned .info-container {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8%;
+  padding: 5% 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.cube.is-returned .back-accent {
+  width: 100%; height: 4%; bottom: 0; top: auto;
+  box-shadow: 0 -3px 10px rgba(0,0,0,0.2);
+}
+
+.cube.is-returned .info-sub {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5em;
+  width: auto;
+  height: auto;
+}
+
+.cube.is-returned .info-school,
+.cube.is-returned .info-grade {
+  font-size: 1em;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.cube.is-returned .info-name {
+  font-size: 2.8em;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+</style>
+</head>
+<body>
+
+<div id="screen1" class="screen active">
+  <div class="s1-logo-wrap">
+    <img class="s1-logo" src="https://raw.githubusercontent.com/astro-root/tokiwaji-open-2nd/main/tokiwaji-open-2nd-logo.png" alt="常磐路オープン 2nd ロゴ" onerror="this.style.display='none'">
+    <div class="s1-title">常磐路オープン2nd<br>ターンオーバー</div>
+  </div>
+
+  <div class="upload-area">
+    <div class="upload-row" id="csvRow">
+      <label class="upload-btn" for="csvFileInput">📁 プレイヤーCSV</label>
+      <input type="file" id="csvFileInput" accept=".csv">
+      <span class="upload-filename" id="csvFilename">未選択</span>
+    </div>
+    <div class="upload-row" id="bgmRow">
+      <label class="upload-btn" for="audioFileInput">🎵 BGM</label>
+      <input type="file" id="audioFileInput" accept="audio/*">
+      <span class="upload-filename" id="bgmFilename">未選択</span>
+    </div>
+  </div>
+
+  <button class="start-btn" id="startBtn">▶ START</button>
+</div>
+
+<div id="screen2" class="screen">
+  <div class="s2-header">
+    <img class="s2-logo" src="https://raw.githubusercontent.com/astro-root/tokiwaji-open-2nd/main/tokiwaji-open-2nd-logo.png" alt="logo" onerror="this.style.display='none'">
+    <span class="s2-title">1st Round ターンオーバー</span>
+    <div class="divider"></div>
+
+    <div class="nav-group">
+      <button class="ctrl-btn" id="prevBtn">back</button>
+      <button class="ctrl-btn primary" id="nextBtn">next</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="audio-group" id="audioGroup" style="display:none;">
+      <button class="audio-playbtn" id="playPauseBtn" title="再生/停止">▶</button>
+      <div class="audio-vol-wrap">
+        <span>🔈</span>
+        <input type="range" class="vol-slider" id="volSlider" min="0" max="1" step="0.01" value="0.7">
+        <span>🔊</span>
+      </div>
+      <audio id="bgmPlayer" loop></audio>
+    </div>
+  </div>
+
+  <div id="main-wrapper">
+    <div id="container"></div>
+  </div>
+</div>
+
+<script>
+let players = [];
+let currentIndex = 0;
+let isAnimating = false;
+let stepState = 'waiting';
+let audioObjectUrl = null;
+
+const csvFileInput   = document.getElementById('csvFileInput');
+const audioFileInput = document.getElementById('audioFileInput');
+const csvFilename    = document.getElementById('csvFilename');
+const bgmFilename    = document.getElementById('bgmFilename');
+const csvRow         = document.getElementById('csvRow');
+const bgmRow         = document.getElementById('bgmRow');
+const startBtn       = document.getElementById('startBtn');
+const screen1        = document.getElementById('screen1');
+const screen2        = document.getElementById('screen2');
+const prevBtn        = document.getElementById('prevBtn');
+const nextBtn        = document.getElementById('nextBtn');
+const bgmPlayer      = document.getElementById('bgmPlayer');
+const playPauseBtn   = document.getElementById('playPauseBtn');
+const volSlider      = document.getElementById('volSlider');
+const audioGroup     = document.getElementById('audioGroup');
+const mainWrapper    = document.getElementById('main-wrapper');
+
+csvFileInput.addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  csvFilename.textContent = file.name;
+  csvFilename.classList.add('has-file');
+  csvRow.classList.add('loaded');
+  const reader = new FileReader();
+  reader.onload = function(e) { parseCSV(e.target.result); };
+  reader.readAsText(file);
+});
+
+audioFileInput.addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  bgmFilename.textContent = file.name;
+  bgmFilename.classList.add('has-file');
+  bgmRow.classList.add('loaded');
+  if (audioObjectUrl) URL.revokeObjectURL(audioObjectUrl);
+  audioObjectUrl = URL.createObjectURL(file);
+  bgmPlayer.src = audioObjectUrl;
+  bgmPlayer.volume = parseFloat(volSlider.value);
+  audioGroup.style.display = 'flex';
+});
+
+startBtn.addEventListener('click', function() {
+  if (!startBtn.classList.contains('ready')) return;
+  screen1.classList.remove('active');
+  screen2.classList.add('active');
+  renderCubes();
+  if (bgmPlayer.src) {
+    bgmPlayer.play().then(() => { playPauseBtn.textContent = '⏸'; }).catch(() => {});
+  }
+});
+
+playPauseBtn.addEventListener('click', function() {
+  if (bgmPlayer.paused) {
+    bgmPlayer.play().then(() => { playPauseBtn.textContent = '⏸'; }).catch(() => {});
+  } else {
+    bgmPlayer.pause();
+    playPauseBtn.textContent = '▶';
+  }
+});
+
+volSlider.addEventListener('input', function() {
+  bgmPlayer.volume = parseFloat(this.value);
+});
+
+function getOrdinal(n) {
+  let num = parseInt(n, 10);
+  if (isNaN(num)) return n;
+  let j = num % 10, k = num % 100;
+  if (j === 1 && k !== 11) return num + 'st';
+  if (j === 2 && k !== 12) return num + 'nd';
+  if (j === 3 && k !== 13) return num + 'rd';
+  return num + 'th';
+}
+
+function parseCSV(text) {
+  players = [];
+  currentIndex = 0;
+  stepState = 'waiting';
+  const lines = text.trim().split('\n');
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const cols = line.split(',');
+    if (cols.length >= 5) {
+      players.push({ rank: cols[0].trim(), name: cols[1].trim(), school: cols[2].trim(), grade: cols[3].trim(), color: cols[4].trim() });
+    }
+  }
+  if (players.length > 0) {
+    startBtn.classList.add('ready');
+  }
+}
+
+function renderCubes() {
+  const container = document.getElementById('container');
+  container.innerHTML = '';
+  players.forEach((p, index) => {
+    const scene = document.createElement('div');
+    scene.className = 'scene'; scene.id = 'scene-' + index;
+
+    const cube = document.createElement('div');
+    cube.className = 'cube'; cube.id = 'cube-' + index;
+    cube.style.setProperty('--accent-color', p.color);
+
+    const front = document.createElement('div'); front.className = 'cube__face cube__face--front';
+    const rankText = document.createElement('div'); rankText.className = 'rank-text'; rankText.textContent = getOrdinal(p.rank);
+    front.appendChild(rankText);
+    ['top-left','top-right','bottom-left','bottom-right'].forEach(pos => {
+      const corner = document.createElement('div'); corner.className = 'corner ' + pos; front.appendChild(corner);
+    });
+
+    const back = document.createElement('div'); back.className = 'cube__face cube__face--back';
+    const backAccent = document.createElement('div'); backAccent.className = 'back-accent'; back.appendChild(backAccent);
+
+    const infoContainer = document.createElement('div'); infoContainer.className = 'info-container';
+    const subInfo = document.createElement('div'); subInfo.className = 'info-sub';
+    const schoolDiv = document.createElement('div'); schoolDiv.className = 'info-school'; schoolDiv.textContent = p.school;
+    const gradeDiv = document.createElement('div'); gradeDiv.className = 'info-grade'; gradeDiv.textContent = p.grade;
+    subInfo.appendChild(schoolDiv); subInfo.appendChild(gradeDiv);
+    const nameDiv = document.createElement('div'); nameDiv.className = 'info-name'; nameDiv.textContent = p.name;
+    infoContainer.appendChild(subInfo); infoContainer.appendChild(nameDiv);
+    back.appendChild(infoContainer);
+
+    const left   = document.createElement('div'); left.className   = 'cube__face cube__face--left';
+    const right  = document.createElement('div'); right.className  = 'cube__face cube__face--right';
+    const top    = document.createElement('div'); top.className    = 'cube__face cube__face--top';
+    const bottom = document.createElement('div'); bottom.className = 'cube__face cube__face--bottom';
+
+    cube.appendChild(front); cube.appendChild(back);
+    cube.appendChild(left); cube.appendChild(right);
+    cube.appendChild(top); cube.appendChild(bottom);
+    scene.appendChild(cube); container.appendChild(scene);
+  });
+}
+
+function getTransformToCenter(element) {
+  const rect = element.getBoundingClientRect();
+  const elCX = rect.left + rect.width / 2;
+  const elCY = rect.top + rect.height / 2;
+  return { x: window.innerWidth / 2 - elCX, y: window.innerHeight / 2 - elCY };
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function proceedNext() {
+  if (isAnimating || currentIndex >= players.length) return;
+  isAnimating = true;
+
+  const scene = document.getElementById('scene-' + currentIndex);
+  const cube  = document.getElementById('cube-' + currentIndex);
+
+  if (stepState === 'waiting') {
+    scene.style.zIndex = 100;
+    const move = getTransformToCenter(scene);
+    cube.style.setProperty('--move-x', move.x + 'px');
+    cube.style.setProperty('--move-y', move.y + 'px');
+    cube.classList.add('is-popped');
+    await sleep(700);
+    stepState = 'popped';
+    isAnimating = false;
+
+  } else if (stepState === 'popped') {
+    cube.classList.remove('is-popped');
+    cube.classList.add('is-flipped');
+    await sleep(700);
+    stepState = 'flipped';
+    isAnimating = false;
+
+  } else if (stepState === 'flipped') {
+    const infoContainer = cube.querySelector('.info-container');
+    infoContainer.style.opacity = '0';
+    await sleep(150);
+    cube.classList.remove('is-flipped');
+    cube.classList.add('is-returned');
+    await sleep(150);
+    infoContainer.style.opacity = '1';
+    await sleep(400);
+    scene.style.zIndex = 1;
+    currentIndex++;
+    stepState = 'waiting';
+    isAnimating = false;
+  }
+}
+
+async function proceedPrev() {
+  if (isAnimating) return;
+  isAnimating = true;
+
+  if (stepState === 'popped') {
+    const cube = document.getElementById('cube-' + currentIndex);
+    const scene = document.getElementById('scene-' + currentIndex);
+    cube.classList.remove('is-popped');
+    await sleep(700);
+    scene.style.zIndex = 1;
+    stepState = 'waiting';
+    isAnimating = false;
+
+  } else if (stepState === 'flipped') {
+    const cube = document.getElementById('cube-' + currentIndex);
+    cube.classList.remove('is-flipped');
+    cube.classList.add('is-popped');
+    await sleep(700);
+    stepState = 'popped';
+    isAnimating = false;
+
+  } else if (stepState === 'waiting') {
+    if (currentIndex <= 0) { isAnimating = false; return; }
+    currentIndex--;
+    const scene = document.getElementById('scene-' + currentIndex);
+    const cube  = document.getElementById('cube-' + currentIndex);
+    const infoContainer = cube.querySelector('.info-container');
+    scene.style.zIndex = 100;
+    infoContainer.style.opacity = '0';
+    await sleep(150);
+    cube.classList.remove('is-returned');
+    cube.classList.add('is-flipped');
+    await sleep(150);
+    infoContainer.style.opacity = '1';
+    await sleep(550);
+    stepState = 'flipped';
+    isAnimating = false;
+  }
+}
+
+nextBtn.addEventListener('click', proceedNext);
+prevBtn.addEventListener('click', proceedPrev);
+
+document.addEventListener('keydown', function(e) {
+  if (screen2.classList.contains('active')) {
+    if (e.code === 'Space' || e.code === 'Enter' || e.code === 'ArrowRight') {
+      e.preventDefault(); proceedNext();
+    } else if (e.code === 'Backspace' || e.code === 'ArrowLeft') {
+      e.preventDefault(); proceedPrev();
+    }
+  }
+});
+
+mainWrapper.addEventListener('click', function(e) {
+  if (e.target.closest('.s2-header')) return;
+
+  const clickX = e.clientX;
+  const screenWidth = window.innerWidth;
+
+  if (clickX > screenWidth / 2) {
+    proceedNext();
+  } else {
+    proceedPrev();
+  }
+});
+
+</script>
+</body>
+</html>
