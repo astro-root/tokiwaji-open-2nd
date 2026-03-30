@@ -187,7 +187,10 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
         </div>
       </div>
       <div id="player-list" style="display:none;">
-        <h3 style="margin-bottom:.5rem;font-size:.9rem;color:var(--text-secondary);">参加者の配置設定</h3>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">
+          <h3 style="font-size:.9rem;color:var(--text-secondary);">参加者の配置設定</h3>
+          <span style="font-size:.75rem;color:var(--accent-gold);font-weight:700;">ADV = 初期ポイント</span>
+        </div>
         <div id="player-list-content"></div>
       </div>
     </div>
@@ -319,8 +322,22 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
       const span = document.createElement('span');
       span.style.flex = '1';
       span.textContent = `${p.name} (${p.sch})`;
+
+      const advLabel = document.createElement('span');
+      advLabel.style.cssText = 'font-size:.75rem;color:var(--accent-gold);font-weight:700;flex-shrink:0;';
+      advLabel.textContent = 'ADV';
+
+      const advInput = document.createElement('input');
+      advInput.type = 'number';
+      advInput.min = '0';
+      advInput.value = p.adv || 0;
+      advInput.style.cssText = 'width:52px;background:#0f172a;border:1px solid var(--accent-gold);color:var(--accent-gold);padding:.25rem .4rem;font-size:.9rem;font-family:var(--font-num);font-weight:700;outline:none;border-radius:4px;text-align:center;';
+      advInput.oninput = () => { rawP[i].adv = parseInt(advInput.value) || 0; };
+
       item.appendChild(sel);
       item.appendChild(span);
+      item.appendChild(advLabel);
+      item.appendChild(advInput);
       content.appendChild(item);
     });
   }
@@ -486,7 +503,7 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
     rawP.forEach(p => {
       const idx = p.pos - 1;
       if (idx >= 0 && idx < state.seats.length) {
-        state.seats[idx] = { ...p, sc: 0, wr: 0, st: 'active', wRank: 0 };
+        state.seats[idx] = { ...p, sc: p.adv || 0, wr: 0, st: 'active', wRank: 0 };
       }
     });
     
