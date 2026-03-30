@@ -519,7 +519,7 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
     if (state.done) {
         qVal.innerText = 'END';
     } else {
-        qVal.innerText = state.qNum;
+        qVal.innerText = state.qNum - conf.start + 1;
     }
     
     const left = Math.max(0, valids - wins - lost);
