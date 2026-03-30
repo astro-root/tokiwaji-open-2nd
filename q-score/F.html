@@ -730,14 +730,7 @@ function initGame() {
   }, 500);
 }
 
-function applyDrop(exemptIdx) {
-  const lostCount = state.seats.filter(x=>x&&x.st==='lost').length;
-  let need = state.dropQuota - lostCount;
-  if (need<=0) return;
-  state.seats.map((p,i)=>({p,i})).filter(x=>x.p&&x.p.st==="active"&&x.i!==exemptIdx)
-    .sort((a,b)=>a.p.stage!==b.p.stage?a.p.stage-b.p.stage:a.p.sc!==b.p.sc?a.p.sc-b.p.sc:b.p.totalWr-a.p.totalWr||b.p.pos-a.p.pos)
-    .slice(0, need).forEach(x=>x.p.st='lost');
-}
+
 
 function render() {
   const lost = state.seats.filter(x=>x&&x.st==='lost').length;
@@ -850,7 +843,7 @@ function actO(i) {
   triggerPop(domSeats[i]);
   if (p.stage < conf.kNormas.length && p.sc >= conf.kNormas[p.stage]) {
     p.stage++; p.sc=0;
-    if (p.stage===5) { state.gateReachCount++; if (state.gateReachCount%conf.gateTrigger===0) state.dropQuota+=conf.gateDrop; applyDrop(i); }
+    if (p.stage===5) { state.gateReachCount++; }
     if (p.stage >= conf.kNormas.length) { p.st='won'; state.done=true; }
   }
   render(); nextQ();
@@ -869,7 +862,7 @@ function actX(i) {
     if (p.stage < 5) { p.wr++; }
     else { p.rest = state.seats.filter(x=>x&&x.st!=='lost').length * conf.restMult; }
   }
-  render();
+  render(); nextQ();
 }
 
 function actDq(i) {
