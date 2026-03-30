@@ -662,7 +662,7 @@ function buildSeatElements() {
     dot.title = `${p.name}（${p.gr} ${p.sch}）`;
     trackContainer.appendChild(dot);
 
-    domSeats.push({ root, nameEl, scoreEl, wrongs, btnO, btnX, towerEl, overlayRest, restTxt, runnerDot: dot, popTimer: null });
+    domSeats.push({ root, nameEl, scoreEl, wrongs, wdots, btnO, btnX, towerEl, overlayRest, restTxt, runnerDot: dot, popTimer: null });
   });
 
   cachedGeo = null;
@@ -762,17 +762,21 @@ function render() {
       }
     }
 
-    dom.wrongs.innerHTML = '';
-    if (p.st !== 'lost') {
-      if (p.stage < 5) {
-        for (let k=0; k<conf.maxX; k++) {
+    if (p.st === 'lost') {
+      dom.wrongs.innerHTML = '';
+    } else if (p.stage >= 5) {
+      dom.wrongs.innerHTML = `<span style="color:#ef4444;font-size:0.8rem;font-weight:bold">通算×: ${p.totalWr}</span>`;
+    } else {
+      if (!dom.wdots || dom.wdots.length !== conf.maxX) {
+        dom.wrongs.innerHTML = '';
+        dom.wdots = [];
+        for (let k = 0; k < conf.maxX; k++) {
           const d = document.createElement('div');
-          d.className = 'w-dot' + (k<p.wr ? ' on' : '');
           dom.wrongs.appendChild(d);
+          dom.wdots.push(d);
         }
-      } else {
-        dom.wrongs.innerHTML = `<span style="color:#ef4444;font-size:0.8rem;font-weight:bold">通算×: ${p.totalWr}</span>`;
       }
+      dom.wdots.forEach((d, k) => { d.className = 'w-dot' + (k < p.wr ? ' on' : ''); });
     }
   }
 
@@ -780,8 +784,16 @@ function render() {
 }
 
 function save() {
-  state.hist.push(JSON.stringify(state));
-  if (state.hist.length > 50) state.hist.shift();
+  const snap = {
+    qIdx: state.qIdx,
+    qNum: state.qNum,
+    seats: JSON.parse(JSON.stringify(state.seats)),
+    done: state.done,
+    gateReachCount: state.gateReachCount,
+    dropQuota: state.dropQuota
+  };
+  state.hist.push(JSON.stringify(snap));
+  if (state.hist.length > 20) state.hist.shift();
 }
 
 function progressRest() {
@@ -842,8 +854,13 @@ function nextQ() {
 
 function actUndo() {
   if (!state.hist.length) return;
-  Object.assign(state, JSON.parse(state.hist.pop()));
-  
+  const prev = JSON.parse(state.hist.pop());
+  state.qIdx = prev.qIdx;
+  state.qNum = prev.qNum;
+  state.seats = prev.seats;
+  state.done = prev.done;
+  state.gateReachCount = prev.gateReachCount;
+  state.dropQuota = prev.dropQuota;
   render();
 }
 </script>
