@@ -302,6 +302,10 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
           <input id="r-maxq" type="number" value="0" placeholder="0=無制限" />
         </div>
         <div class="s-grp">
+          <label>問題開始番号</label>
+          <input id="r-start" type="number" value="1" min="1" />
+        </div>
+        <div class="s-grp">
           <label>関門到達トリガー人数</label>
           <input id="r-gate-trigger" type="number" value="1" />
         </div>
@@ -404,7 +408,7 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
 
 <script>
 let state = { qIdx: -1, qNum: 1, qs: [], seats: [], hist: [], done: false, gateReachCount: 0, dropQuota: 0 };
-let conf = { maxQ: 0, kNormas: [1,1,2,2,2,2,2,2,2,3], totalNorma: 19, gateTrigger: 1, gateDrop: 2, maxX: 4, restMult: 1 };
+let conf = { maxQ: 0, start: 1, kNormas: [1,1,2,2,2,2,2,2,2,3], totalNorma: 19, gateTrigger: 1, gateDrop: 2, maxX: 4, restMult: 1 };
 let rawP = [];
 let domSeats = [];
 let resizeObserver = null;
@@ -698,13 +702,14 @@ function buildSeatElements() {
 
 function initGame() {
   conf.maxQ = parseInt(document.getElementById('r-maxq').value)||0;
+  conf.start = parseInt(document.getElementById('r-start').value)||1;
   conf.kNormas = [1,2,3,4,5,6,7,8,9,10].map(k => parseInt(document.getElementById('n'+k).value)||1);
   conf.totalNorma = conf.kNormas.reduce((a,b)=>a+b,0);
   conf.gateTrigger = parseInt(document.getElementById('r-gate-trigger').value)||1;
   conf.gateDrop = parseInt(document.getElementById('r-gate-drop').value)||2;
   conf.maxX = parseInt(document.getElementById('r-max-x').value)||4;
   conf.restMult = parseInt(document.getElementById('r-rest-mult').value)||1;
-  state.qNum=1; state.qIdx=-1; state.gateReachCount=0; state.dropQuota=0; state.done=false;
+  state.qNum=conf.start; state.qIdx=conf.start-2; state.gateReachCount=0; state.dropQuota=0; state.done=false;
   const maxPos = rawP.length;
   state.seats = Array(maxPos).fill(null);
   rawP.forEach(p => {
@@ -733,7 +738,7 @@ function render() {
   const lost = state.seats.filter(x=>x&&x.st==='lost').length;
   const valids = state.seats.filter(x=>x).length;
   document.getElementById('d-alive-slot').innerText = `${Math.max(0,valids-lost)}▶1`;
-  document.getElementById('d-qnum').innerText = state.done ? 'END' : state.qNum;
+  document.getElementById('d-qnum').innerText = state.done ? 'END' : state.qNum - conf.start + 1;
 
   const qEl = document.getElementById('q-text'), aEl = document.getElementById('a-text');
   if (state.qIdx < 0) {
