@@ -61,7 +61,8 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
 .q-ctrls:hover { opacity: 1; }
 .sys-btn { background: rgba(255,255,255,.05); border: 1px solid var(--border-color); color: var(--text-secondary); padding: .3rem .6rem; font-size: .75rem; font-weight: 700; border-radius: 4px; cursor: pointer; transition: all .15s ease; }
 .sys-btn:hover { background: var(--text-secondary); color: var(--bg-main); }
-.sys-btn.btn-void:hover { background: var(--accent-void); color: white; border-color: var(--accent-void); }
+.sys-btn.btn-reset:hover { background: var(--accent-red); color: white; border-color: var(--accent-red); }
+
 #q-text { 
   font-size: 32px; 
   font-weight: 700; 
@@ -99,14 +100,14 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
 .pc-meta { color: #fff; font-size: 1.5rem; height: 100%; font-weight: 700; letter-spacing: 0.1em; width: 35%; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 6px; }
 .pc-overlay-lose { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; opacity: 0; transition: opacity 0.3s ease; }
 .p-card.state-lost .pc-overlay-lose { opacity: 1; background: rgba(15,23,42,.85); backdrop-filter: blur(2px); }
-.lose-txt { font-family: var(--font-num); font-size: 3rem; color: #64748b; font-weight: 700; transform: rotate(-15deg); border: 3px solid #64748b; padding: 0.5rem 1rem; border-radius: 8px; opacity: 0.8; }
-.pc-status { height: 80px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,.2); border-top: 1px solid rgba(255,255,255,.05); z-index: 2; position: relative; }
-.pc-score { font-family: var(--font-num); font-size: 3rem; font-weight: 700; line-height: 1; color: var(--text-primary); transition: all 0.2s; text-shadow: 2px 2px 0px rgba(0,0,0,.3); margin-bottom: 4px; }
+.lose-txt { font-family: var(--font-num); font-size: clamp(1rem, 3.5vw, 2.8rem); color: #64748b; font-weight: 700; transform: rotate(-15deg); border: 3px solid #64748b; padding: 0.4em 0.7em; border-radius: 8px; opacity: 0.8; white-space: nowrap; }
+.pc-status { height: 110px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,.2); border-top: 1px solid rgba(255,255,255,.05); z-index: 2; position: relative; gap: 8px; padding: 8px 4px; }
+.pc-score { font-family: var(--font-num); font-size: 3rem; font-weight: 700; line-height: 1; color: var(--text-primary); transition: all 0.2s; text-shadow: 2px 2px 0px rgba(0,0,0,.3); }
 .pc-score.pop { transform: scale(1.4); color: var(--accent-blue); }
 .pc-score.won { color: var(--accent-gold); font-size: 2.5rem; text-shadow: 0 0 15px rgba(245,158,11,.6); }
-.pc-wrongs { display: flex; gap: 8px; height: 14px; align-items: center; }
-.w-dot { width: 12px; height: 12px; background: #334155; border-radius: 50%; box-shadow: inset 0 1px 3px rgba(0,0,0,.3); transition: all 0.3s ease; }
-.w-dot.on { background: linear-gradient(135deg, var(--accent-red), #dc2626); box-shadow: 0 0 8px var(--accent-red); }
+.pc-wrongs { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: 100%; padding: 0 4px; }
+.w-dot { width: 20px; height: 20px; background: #334155; border-radius: 50%; border: 2px solid #475569; box-shadow: inset 0 1px 3px rgba(0,0,0,.3); transition: all 0.3s ease; }
+.w-dot.on { background: linear-gradient(135deg, var(--accent-red), #dc2626); border-color: #ef4444; box-shadow: 0 0 10px rgba(239,68,68,0.7), 0 0 4px var(--accent-red); }
 .pc-actions { height: 36px; flex-shrink: 0; display: flex; z-index: 10; }
 .btn-act { flex: 1; border: none; cursor: pointer; font-size: 1.1rem; font-weight: 900; color: white; transition: all 0.15s ease; position: relative; padding: 0; }
 .btn-act:disabled { opacity: .3; cursor: default; filter: grayscale(1); }
@@ -154,18 +155,18 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
           <input id="r-name" type="text" value="1st Step" />
         </div>
         <div class="s-grp">
-          <label>勝ち抜け</label>
-          <input id="r-win" type="number" value="2" />
+          <label>勝ち抜け (m◯)</label>
+          <input id="r-win" type="number" value="7" />
         </div>
         <div class="s-grp">
           <label>勝ち抜け人数</label>
-          <input id="r-slot" type="number" value="2" />
+          <input id="r-slot" type="number" value="3" />
         </div>
       </div>
       <div class="s-row">
         <div class="s-grp">
-          <label>失格</label>
-          <input id="r-max" type="number" value="1" />
+          <label>失格 (n×)</label>
+          <input id="r-max" type="number" value="3" />
         </div>
         <div class="s-grp">
           <label>問題開始番号</label>
@@ -225,6 +226,7 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
 
   <div id="question-area">
     <div class="q-ctrls">
+      <button class="sys-btn btn-reset" onclick="resetGame()">リセット</button>
       <button class="sys-btn" onclick="actUndo()">戻る</button>
       <button class="sys-btn btn-void" onclick="actVoid()">廃問</button>
       <button class="sys-btn" onclick="actThru()">スルー</button>
@@ -519,7 +521,7 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
     if (state.done) {
         qVal.innerText = 'END';
     } else {
-        qVal.innerText = state.qNum;
+        qVal.innerText = state.qNum - conf.start + 1;
     }
     
     const left = Math.max(0, valids - wins - lost);
@@ -671,6 +673,20 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
         aEl.classList.remove('fade-out');
         render();
     }, 250);
+  }
+
+  function resetGame() {
+    if (!confirm('設定画面に戻りますか？\n現在の進行状況はすべてリセットされます。')) return;
+    state = { qIdx: -1, qNum: 1, qs: state.qs, seats: [], hist: [], done: false, winCnt: 0, domSeats: [] };
+    // rawP はあえて消さない（再アップロード不要にする）
+    if (resizeObserver) { resizeObserver.disconnect(); resizeObserver = null; }
+    document.getElementById('scoreboard-screen').style.display = 'none';
+    // プレイヤーリストを再表示
+    if (rawP.length > 0) displayPlayerList();
+    const setup = document.getElementById('setup-screen');
+    setup.style.opacity = '0';
+    setup.style.display = 'flex';
+    requestAnimationFrame(() => { setup.style.opacity = '1'; });
   }
 
   function actUndo() {
