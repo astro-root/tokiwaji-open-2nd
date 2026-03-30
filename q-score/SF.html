@@ -577,7 +577,7 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
         qVal.innerText = 'END';
         qVal.style.color = 'var(--accent-red)';
     } else {
-        qVal.innerText = state.qNum;
+        qVal.innerText = state.qNum - conf.start + 1;
         qVal.style.color = '';
     }
 
