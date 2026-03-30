@@ -253,6 +253,10 @@ header { height: 10vh; flex-shrink: 0; display: flex; align-items: center; backg
 .btn-o:not(:disabled):hover { background: linear-gradient(to bottom, #10b981, #059669); }
 .btn-x { background: linear-gradient(to bottom, #991b1b, #7f1d1d); }
 .btn-x:not(:disabled):hover { background: linear-gradient(to bottom, #ef4444, #991b1b); }
+.btn-dq { background: linear-gradient(to bottom, #4b1d7f, #3b1263); font-size: 0.6rem; letter-spacing: 0.02em; }
+.btn-dq:not(:disabled):hover { background: linear-gradient(to bottom, #7c3aed, #4b1d7f); }
+.btn-dq.is-lost { background: linear-gradient(to bottom, #334155, #1e293b); color: #94a3b8; }
+.btn-dq.is-lost:not(:disabled):hover { background: linear-gradient(to bottom, #475569, #334155); }
 
 #setup-screen { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.95);  z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; transition: opacity 0.5s ease; }
 .setup-box { width: 100%; max-width: 860px; max-height: 90vh; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-primary); box-shadow: 0 25px 50px -12px rgba(0,0,0,.5); display: flex; flex-direction: column; overflow: hidden; }
@@ -667,8 +671,9 @@ function buildSeatElements() {
     const actions = document.createElement('div'); actions.className = 'pc-actions';
     const btnO = document.createElement('button'); btnO.className = 'btn-act btn-o'; btnO.textContent = '○';
     const btnX = document.createElement('button'); btnX.className = 'btn-act btn-x'; btnX.textContent = '×';
-    btnO.onclick = () => actO(i); btnX.onclick = () => actX(i);
-    actions.appendChild(btnO); actions.appendChild(btnX);
+    const btnDq = document.createElement('button'); btnDq.className = 'btn-act btn-dq'; btnDq.textContent = '失格';
+    btnO.onclick = () => actO(i); btnX.onclick = () => actX(i); btnDq.onclick = () => actDq(i);
+    actions.appendChild(btnO); actions.appendChild(btnX); actions.appendChild(btnDq);
 
     const overlayLose = document.createElement('div'); overlayLose.className = 'pc-overlay-lose';
     overlayLose.innerHTML = '<div class="lose-txt">LOSE</div>';
@@ -685,7 +690,7 @@ function buildSeatElements() {
     dot.title = `${p.name}（${p.gr} ${p.sch}）`;
     trackContainer.appendChild(dot);
 
-    domSeats.push({ root, nameEl, scoreEl, wrongs, wdots, btnO, btnX, towerEl, overlayRest, restTxt, runnerDot: dot, popTimer: null });
+    domSeats.push({ root, nameEl, scoreEl, wrongs, wdots, btnO, btnX, btnDq, towerEl, overlayRest, restTxt, runnerDot: dot, popTimer: null });
   });
 
   cachedGeo = null;
@@ -766,11 +771,15 @@ function render() {
       dom.scoreEl.className = 'pc-score won';
       dom.scoreEl.textContent = 'WIN';
       dom.towerEl.style.background = 'linear-gradient(to right,rgba(245,158,11,0.55),rgba(245,158,11,0.15))';
+      dom.btnX.disabled = false;
+      dom.btnDq.disabled = false; dom.btnDq.classList.remove('is-lost'); dom.btnDq.textContent = '失格';
     } else if (p.st==='lost') {
       dom.root.classList.add('state-lost');
       dom.scoreEl.className = 'pc-score';
       dom.scoreEl.textContent = 'LOSE';
       dom.towerEl.style.background = 'linear-gradient(to right,rgba(59,130,246,0.38),rgba(59,130,246,0.06))';
+      dom.btnX.disabled = false;
+      dom.btnDq.disabled = false; dom.btnDq.classList.add('is-lost'); dom.btnDq.textContent = '復活';
     } else {
       dom.scoreEl.className = 'pc-score';
       dom.towerEl.style.background = 'linear-gradient(to right,rgba(59,130,246,0.38),rgba(59,130,246,0.06))';
@@ -779,6 +788,7 @@ function render() {
         dom.restTxt.innerText = p.rest+' 休';
       }
       dom.btnO.disabled = false; dom.btnX.disabled = false;
+      dom.btnDq.disabled = false; dom.btnDq.classList.remove('is-lost'); dom.btnDq.textContent = '失格';
       if (p.stage < conf.kNormas.length) {
         dom.scoreEl.innerHTML = `${p.sc}<span style="font-size:0.5em;color:#94a3b8;"> / ${conf.kNormas[p.stage]}</span>`;
       } else {
@@ -848,16 +858,31 @@ function actO(i) {
 
 function actX(i) {
   if (state.done) return;
-  save(); progressRest();
   const p = state.seats[i];
-  if (p.st!=='active') return;
+  if (!p) return;
+  save(); progressRest();
   p.totalWr++;
   triggerPop(domSeats[i]);
   const dom = domSeats[i];
   dom.root.classList.add('animate-shake'); setTimeout(()=>dom.root.classList.remove('animate-shake'),500);
-  if (p.stage < 5) { p.wr++; p.sc=0; if (p.wr>=conf.maxX) p.st='lost'; }
-  else { p.rest = state.seats.filter(x=>x&&x.st!=='lost').length * conf.restMult; }
-  render(); nextQ();
+  if (p.st==='active') {
+    if (p.stage < 5) { p.wr++; }
+    else { p.rest = state.seats.filter(x=>x&&x.st!=='lost').length * conf.restMult; }
+  }
+  render();
+}
+
+function actDq(i) {
+  const p = state.seats[i];
+  if (!p) return;
+  save();
+  if (p.st === 'lost') {
+    // 失格解除
+    p.st = 'active';
+  } else {
+    p.st = 'lost';
+  }
+  render();
 }
 
 function actThru() { if (state.done) return; save(); progressRest(); render(); nextQ(); }
