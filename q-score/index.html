@@ -90,7 +90,7 @@ body {
   align-items: center;
   gap: 1.2rem;
   width: 100%;
-  max-width: 360px;
+  max-width: 500px;
   padding: 2.5rem;
   background: var(--surface);
   border: 1px solid var(--surface-border);
@@ -328,7 +328,7 @@ body {
     <div class="lock-subtitle">得点表示一覧</div>
   </div>
   <div class="passcode-form">
-    <input type="password" id="passcode-input" class="passcode-input" placeholder="●●●●" autocomplete="off" inputmode="numeric">
+    <input type="password" id="passcode-input" class="passcode-input" placeholder="Enter Password" autocomplete="off" inputmode="numeric">
     <button class="passcode-btn" id="unlock-btn">Unlock</button>
     <div class="error-msg" id="error-msg"></div>
   </div>
@@ -340,6 +340,19 @@ body {
     <div class="site-title">常磐路オープン2nd</div>
     <div class="site-sub">当日使用した得点表示ツール</div>
   </header>
+  <section class="round-section">
+    <div class="round-label">1st Round</div>
+    <div class="links-grid">
+      <a href="https://astro-root.github.io/tokiwaji-open-2nd/q-score/turnover.html" target="_blank" class="score-link">
+        <span class="link-icon">🔄</span>
+        <div class="link-body">
+          <div class="link-name">ターンオーバー</div>
+          <div class="link-url">turnover.html</div>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+    </div>
+  </section>
   <section class="round-section">
     <div class="round-label">2nd Round</div>
     <div class="links-grid multi">
@@ -423,7 +436,7 @@ body {
   </section>
 </div>
 <script>
-const PASSCODE_HASH = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4";
+const PASSCODE_HASH = "a1775f37439700254e0045c08fb662903c2f900440a118a860b9b7433d1c68fb";
 const lockScreen = document.getElementById('lock-screen');
 const mainContent = document.getElementById('main-content');
 const input = document.getElementById('passcode-input');
